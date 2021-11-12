@@ -1,0 +1,15 @@
+{
+  "name": "questionnaire",
+  "version": "1.0.0",
+  "description": "A question-and-answer based discussion forum.",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Group2-CS546",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "nodemon": "^2.0.15"
+  }
+}
