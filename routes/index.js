@@ -2,8 +2,8 @@ const questionRoutes = require("./questions");
 
 const constructorMethod = (app) => {
   app.use("/questions", questionRoutes);
-  app.use("*", async (req, res) => {
-    // TODO fill in incorrect route information
+  app.use('*', (req, res) => {
+    res.status(404).json({ error: 'invalid request' });
   });
 };
 
