@@ -4,6 +4,7 @@
   "description": "A question-and-answer based discussion forum.",
   "main": "app.js",
   "scripts": {
+    "start": "node app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Group2-CS546",

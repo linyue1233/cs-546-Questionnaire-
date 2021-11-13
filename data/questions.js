@@ -1,4 +1,4 @@
-const mongoCollections = require("../config/mongoCollection");
+const mongoCollections = require("../config/mongoCollections");
 const questions = mongoCollections.questions;
 
 module.exports = {

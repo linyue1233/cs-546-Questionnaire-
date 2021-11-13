@@ -1,4 +1,4 @@
-const express = requre('express');
+const express = require('express');
 const data = require('../data');
 const questions = data.questions;
 
@@ -27,3 +27,5 @@ router.put('/:id', async(req, res) => {
     }
     
 });
+
+module.exports = router;
