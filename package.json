@@ -4,7 +4,9 @@
   "description": "A question-and-answer based discussion forum.",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js",
+    "seed": "node --trace-warnings tasks/seed.js"
   },
   "author": "Group2-CS546",
   "license": "ISC",

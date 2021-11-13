@@ -5,6 +5,10 @@ const mongoConfig = settings.mongoConfig;
 let _connection = undefined;
 let _db = undefined;
 
+async function createSearchIndexesOnQuestionsColl(_db) {
+  (await _db).collection("questions").createIndex({ title: "text", description: "text" }, { background: true });
+}
+
 async function getDb() {
   if (!_connection) {
     _connection = await MongoClient.connect(mongoConfig.serverUrl, {
@@ -13,6 +17,7 @@ async function getDb() {
     });
     _db = await _connection.db(mongoConfig.database);
   }
+  createSearchIndexesOnQuestionsColl(_db);
   return _db;
 }
 
