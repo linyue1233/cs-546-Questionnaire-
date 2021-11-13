@@ -19,10 +19,32 @@ let exportMethods = {
             throw 'id is whitespace';
         }
         const questionCollection = await questions();
-        const questionAns = await questionCollection.findOne({id: questionId});
+        const questionAns = await questionCollection.findOne({_id: questionId});
         if(questionAns === null){
             throw `no question with this id`;
         }
         return questionAns;
+    },
+
+    async getAllQuestions(communityId,userId){
+        if(arguments.length > 2){
+            throw `you can not pass any parameters`;
+        }
+        if(arguments.length === 0){
+            throw `you must pass a parameter at least`;
+        }
+        const questionCollection = await questions();
+        if( communityId !== undefined && userId !== undefined){
+            const questionCollections = await questionCollection.find({'communityId': communityId, 'posterId': userId}).toArray();
+            return questionCollections;
+        }else if(communityId !== undefined){
+            const questionCollections = await questionCollection.find({'communityId': communityId}).toArray();
+            return questionCollections;
+        }else{
+            const questionCollections = await questionCollection.find({'posterId': userId}).toArray();
+            return questionCollections;
+        }
     }
 }
+
+module.exports = exportMethods;
