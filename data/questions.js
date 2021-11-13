@@ -23,7 +23,7 @@ let exportMethods = {
         }
         const questionCollection = await questions();
         
-        const questionCollections = await questionCollection.find({'communityId': communityId, 'posterId': userId}).toArray();
+        const questionCollections = await questionCollection.find({communityId: communityId, posterId: userId}).toArray();
         return questionCollections;
     },
 }
