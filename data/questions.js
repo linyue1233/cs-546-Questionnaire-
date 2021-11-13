@@ -5,7 +5,7 @@ let questions = mongoCollections.questions;
 
 let exportMethods = {
     // get details of an individual question
-    async getQuestion(questionId){
+    async getQuestionById(questionId){
         if(arguments.length > 1){
             throw `you can not pass more parameters`;
         }
@@ -27,23 +27,13 @@ let exportMethods = {
     },
 
     async getAllQuestions(communityId,userId){
-        if(arguments.length > 2){
-            throw `you can not pass any parameters`;
-        }
-        if(arguments.length === 0){
-            throw `you must pass a parameter at least`;
+        if(arguments.length !== 2){
+            throw `You should pass right parameters`;
         }
         const questionCollection = await questions();
-        if( communityId !== undefined && userId !== undefined){
-            const questionCollections = await questionCollection.find({'communityId': communityId, 'posterId': userId}).toArray();
-            return questionCollections;
-        }else if(communityId !== undefined){
-            const questionCollections = await questionCollection.find({'communityId': communityId}).toArray();
-            return questionCollections;
-        }else{
-            const questionCollections = await questionCollection.find({'posterId': userId}).toArray();
-            return questionCollections;
-        }
+        
+        const questionCollections = await questionCollection.find({'communityId': communityId, 'posterId': userId}).toArray();
+        return questionCollections;
     }
 }
 

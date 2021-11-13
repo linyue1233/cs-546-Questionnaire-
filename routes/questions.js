@@ -11,7 +11,7 @@ router.get("/questions/search", async (req, res) => {
 
 router.get("/:id", async (req, res) => {
   try {
-    let quesiontAns = await questionData.getQuestion(req.params.id);
+    let quesiontAns = await questionData.getQuestionById(req.params.id);
     res.status(200).json(quesiontAns);
   } catch (e) {
     res.status(404).json({ error: "can not find restaurant with this id" });
