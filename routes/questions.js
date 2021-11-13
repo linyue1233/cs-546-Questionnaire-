@@ -3,7 +3,7 @@ const router = express.Router();
 const questionsData = require("../data/questions");
 
 router.get('/new', async (req, res) => {
-  res.render('Questions/new', {});
+  res.status(200).render('Questions/new', {});
 });
 
 router.post('/', async (req, res) => {
