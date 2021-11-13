@@ -1,6 +1,6 @@
 const communities = require('./communities');
 const questions = require('./questions');
-const users = requrie('./users');
+const users = require('./users');
 
 module.exports = {
     communities: communities,
