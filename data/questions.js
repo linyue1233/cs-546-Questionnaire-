@@ -8,12 +8,13 @@ const search = async (body) => {
   // TODO: add validation wherever necessary
   let tokenizedKeywords = body.keyword.split(" ");
   const questionsCollection = await questions();
-  const allMatches = await questionsCollection.find({ $text: { $search: body.keyword } }).toArray();
-  const allArrayMatches = await questionsCollection.find({ tags: tokenizedKeywords }).toArray();
-  console.log(tokenizedKeywords, allArrayMatches);
+  let allMatches = await questionsCollection.find({ $text: { $search: body.keyword } }).toArray();
+  let allArrayMatches = await questionsCollection.find({ tags: tokenizedKeywords }).toArray();
+
   if (allArrayMatches.length > 0) {
-    allMatches.push(allArrayMatches);
+    allMatches = allMatches.concat(allArrayMatches);
   }
+  // console.log(allMatches);
   return allMatches;
 };
 
