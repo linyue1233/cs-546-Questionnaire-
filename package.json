@@ -4,8 +4,14 @@
   "description": "A question-and-answer based discussion forum.",
   "main": "app.js",
   "scripts": {
+<<<<<<< HEAD
     "start": "node app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
+=======
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js",
+    "seed": "node --trace-warnings tasks/seed.js"
+>>>>>>> f55d9bc70587d7951333cfa4d9f7c1c4c52af7ab
   },
   "author": "Group2-CS546",
   "license": "ISC",
@@ -14,6 +20,7 @@
     "express-handlebars": "^5.3.4",
     "express-session": "^1.17.2",
     "mongodb": "^4.1.4",
-    "nodemon": "^2.0.15"
+    "nodemon": "^2.0.15",
+    "uuid": "^8.3.2"
   }
 }
