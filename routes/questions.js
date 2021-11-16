@@ -5,7 +5,51 @@ const data = require('../data');
 const questionData = data.questions;
 const validator = require("../helpers/routeValidators/questionValidator");
 
+router.get("/:id/edit", async(req,res)=> {
+  if (!req.params.id) res.status(400).json({error: "No id found"});
+  try{
+    const question = await questions.getID(req.params.id);
+    if (!questions) res.status(400).json({error: "No question with that id"});
+    res.render("questions/edit-question",{
+      question: question
+    });
+  }catch(e){
+    res.status(400).json({error: e});
+  }
+});
+
+router.post("/:id", async(req,res)=>{
+  let body = req.body;
+  errors = "";
+  if (!body) errors = "No data for updation found";
+  if (!body.title || !body.description || !body.tags || !body.communityId) error="Incomplete Data received";
+  if (!req.params.id) errors = "No ID found";
+
+  try{
+    const question = await questions.getID(req.params.id);
+    if (!question) throw "No question with that id";
+  }catch(e){
+    res.status(400).json({error: e})
+  }
+  try{
+    const tagsArray = body.tags.split(",");
+    for(let i=0;i<tagsArray.length;i++){
+      tagsArray[i]=tagsArray[i].trim();
+    }
+    await questions.editQuestion(req.params.id, body.title, body.description, tagsArray, body.communityId);
+    res.status(200).json({Message: "Updation Complete"})
+  }catch(e){
+    res.status(500).json({error: e});
+  }
+});
+
 router.get("/search", async (req, res) => {
+  console.log("GET: /search");
+  // res.json({ search: "success" });
+  res.render("search/search", {});
+});
+
+router.post("/search", async (req, res) => {
   let body = req.body;
   let validate = validator.validateSearchBody(body);
   if (!validate.isValid) {
@@ -24,10 +68,16 @@ router.get("/search", async (req, res) => {
     res.status(200).json({ totalResults: 0, results: searchResult });
     return;
   }
+  console.log(searchResult);
   // FOR NOW, returning JSON
-  res.status(200).json({ totalResults: searchResult.length, results: searchResult });
+  // res.status(200).json({ totalResults: searchResult.length, results: searchResult });
   // ideally, do this:
   // res.status(200).render("questions/search_results", { totalResults: searchResult.length, searchResult });
+  res.status(200).render("search/search_results", {
+    searchTerm: body.keyword,
+    searchTotal: searchResult.length,
+    searchResults: searchResult,
+  });
 });
 
 

@@ -1,0 +1,17 @@
+<header>
+    <div>
+        <h1>Questions related to "{{searchTerm}}"</h1>
+    </div>
+    <div>
+        <h3>Total Results: {{searchTotal}}</h3>
+    </div>
+    <div>
+        <!-- List of questions with details -->
+        {{#each searchResults}}
+        <div>
+            <h4>{{this.title}}</h4>
+            <p>{{this.description}}</p>
+        </div>
+        {{/each}}
+    </div>
+</header>

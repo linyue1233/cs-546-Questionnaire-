@@ -3,64 +3,73 @@ const mongoCollections = require('../config/mongoCollections');
 let questions = mongoCollections.questions;
 const uuid = require('uuid/v4');
 
-let exportMethods = {
-    // get details of an individual question
-    async getQuestionById(id){
-        if(arguments.length > 1){
-            throw `you can not pass more parameters`;
-        }
-        console.log(id);
-        const questionCollection = await questions();
-        console.log(id);
-        const questionAns = await questionCollection.findOne({_id: id});
-        if(questionAns === null){
-            throw `no question with this id`;
-        }
-        return questionAns;
-    },
-
-    async getAllQuestions(communityId,userId){
-        if(arguments.length !== 2){
-            throw `You should pass right parameters`;
-        }
-        const questionCollection = await questions();
-        
-        const questionCollections = await questionCollection.find({communityId: communityId, posterId: userId}).toArray();
-        return questionCollections;
-    },
+const getAll = async (communityId, userId) => {
+  if(arguments.length > 2){
+    throw `you can not pass any parameters`;
+}
+if(arguments.length === 0){
+    throw `you must pass a parameter at least`;
+}
+const questionCollection = await questions();
+if( communityId !== undefined && userId !== undefined){
+    const questionCollections = await questionCollection.find({'communityId': communityId, 'posterId': userId}).toArray();
+    return questionCollections;
+}else if(communityId !== undefined){
+    const questionCollections = await questionCollection.find({'communityId': communityId}).toArray();
+    return questionCollections;
+}else{
+    const questionCollections = await questionCollection.find({'posterId': userId}).toArray();
+    return questionCollections;
+}
 }
 
-module.exports = exportMethods;
+const getID = async (id) => {
+  if (!id) throw "Error : No ID found";
+  const questionsCollection = await questions();
 
-// const search = async (body) => {
-//   /* Assuming the body comes like this:
-//      { keyword: <string> } */
-//   // TODO: add validation wherever necessary
-//   let tokenizedKeywords = body.keyword.split(" ");
-//   const questionsCollection = await questions();
-//   let allMatches = await questionsCollection.find({ $text: { $search: body.keyword } }).toArray();
-//   let allArrayMatches = await questionsCollection.find({ tags: tokenizedKeywords }).toArray();
+  let question = await questionsCollection.findOne({ _id: id });
+  if (!question) throw "Error : Question not found";
+  return question;
+}
 
-//   if (allArrayMatches.length > 0) {
-//     allMatches = allMatches.concat(allArrayMatches);
-//   }
-//   // console.log(allMatches);
-//   return allMatches;
-// };
+const editQuestion = async (id, title, description, tags, communityId) => {
+  if (!id) throw "No ID found";
+  if (!title || !description || !tags || !communityId) throw "No data found";
 
-// const remove = async (id) => {
-//   // return the following object for deletion status: { deleted: true, id: id }
-//   // TODO: add validation wherever necessary
-//   const questionsCollection = await questions();
-//   const removedInfo = await questionsCollection.deleteOne({ _id: id });
-//   if (removedInfo.deletedCount === 0) {
-//     console.log("Something went wrong during question deletion!");
-//     return { deleted: false, id: id };
-//   }
-//   return { deleted: true, id: id };
-// };
+  const questionsCollection = await questions();
 
-// module.exports = {
-//   search,
-//   remove,
-// };
+  let question = await questionsCollection.findOne({ _id: id });
+  if (!question) throw "Question not found";
+  let updateQuestion = {
+    title: title,
+    description: description,
+    tags: tags,
+    communityId: communityId,
+  };
+  const updatedInfo = await questionsCollection.updateOne(
+    { _id: id },
+    { $set: updateQuestion }
+  );
+  if (updatedInfo.modifiedCount == 0) throw "Could not update the question";
+  return true;
+}
+
+const remove = async (id) => {
+  // return the following object for deletion status: { deleted: true, id: id }
+  // TODO: add validation wherever necessary
+  const questionsCollection = await questions();
+  const removedInfo = await questionsCollection.deleteOne({ _id: id });
+  if (removedInfo.deletedCount === 0) {
+    console.log("Something went wrong during question deletion!");
+    return { deleted: false, id: id };
+  }
+  return { deleted: true, id: id };
+};
+
+module.exports = {
+  search,
+  remove,
+  editQuestion,
+  getID,
+  getAll,
+};
