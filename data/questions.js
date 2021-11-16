@@ -18,6 +18,37 @@ const search = async (body) => {
   return allMatches;
 };
 
+const getID = async(id)=>{
+  if (!id) throw "Error : No ID found";
+  const questionsCollection = await questions();
+
+  let question = await questionsCollection.findOne({_id: id});
+  if (!question) throw "Error : Question not found";
+  return question;
+}
+
+const editQuestion = async(id, title, description, tags, communityId)=>{
+  if (!id) throw "No ID found";
+  if (!title || !description || !tags || !communityId) throw "No data found";
+
+  const questionsCollection = await questions();
+
+  let question = await questionsCollection.findOne({_id: id});
+  if (!question) throw "Question not found";
+  let updateQuestion = {
+    title: title,
+    description: description,
+    tags: tags,
+    communityId: communityId,
+  };
+  const updatedInfo = await questionsCollection.updateOne(
+    {_id:id},
+    {$set:updateQuestion}
+  );
+  if (updatedInfo.modifiedCount == 0) throw "Could not update the question";
+  return true;
+}
+
 const remove = async (id) => {
   // return the following object for deletion status: { deleted: true, id: id }
   // TODO: add validation wherever necessary
@@ -33,4 +64,6 @@ const remove = async (id) => {
 module.exports = {
   search,
   remove,
+  editQuestion,
+  getID,
 };
