@@ -1,0 +1,16 @@
+<div>
+    <h1>Question: {{questionInfo.title}}</h1>
+    <h2>Description: {{questionInfo.description}}</h2>
+    <h2>Posted By: {{questionInfo.posterId}}</h2>
+    <br>
+    <h2>Tags :{{questionInfo.tags}}</h2>
+
+    {{#if questionInfo.answers.length}}
+    <ol>
+        {{#each questionInfo.answers}}
+        <li>
+            {{this.description}}
+        </li>
+        {{/each}}
+    </ol>
+</div>

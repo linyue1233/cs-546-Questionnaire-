@@ -1,26 +1,25 @@
 // Add DB operations on questions here.
 const mongoCollections = require('../config/mongoCollections');
 let questions = mongoCollections.questions;
-const uuid = require('uuid/v4');
 
 const getAll = async (communityId, userId) => {
-  if(arguments.length > 2){
+  if (arguments.length > 2) {
     throw `you can not pass any parameters`;
-}
-if(arguments.length === 0){
+  }
+  if (arguments.length === 0) {
     throw `you must pass a parameter at least`;
-}
-const questionCollection = await questions();
-if( communityId !== undefined && userId !== undefined){
-    const questionCollections = await questionCollection.find({'communityId': communityId, 'posterId': userId}).toArray();
+  }
+  const questionCollection = await questions();
+  if (communityId !== undefined && userId !== undefined) {
+    const questionCollections = await questionCollection.find({ 'communityId': communityId, 'posterId': userId }).toArray();
     return questionCollections;
-}else if(communityId !== undefined){
-    const questionCollections = await questionCollection.find({'communityId': communityId}).toArray();
+  } else if (communityId !== undefined) {
+    const questionCollections = await questionCollection.find({ 'communityId': communityId }).toArray();
     return questionCollections;
-}else{
-    const questionCollections = await questionCollection.find({'posterId': userId}).toArray();
+  } else {
+    const questionCollections = await questionCollection.find({ 'posterId': userId }).toArray();
     return questionCollections;
-}
+  }
 }
 
 const getID = async (id) => {

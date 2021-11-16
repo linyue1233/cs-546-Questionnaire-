@@ -83,10 +83,11 @@ router.post("/search", async (req, res) => {
 
 router.get("/:id", async (req, res) => {
   let id = req.params.id;
-  console.log(id);
   try {
-    let quesiontAns = await questionData.getQuestionById(req.params.id);
-    res.status(200).json(quesiontAns);
+    let questionAns = await questionData.getID(req.params.id);
+    res.status(200).render('quesions/individual-question',{
+      questionInfo: questionAns
+    });
   } catch (e) {
     res.status(404).json({ error: "can not find question with this id" });
   }
@@ -100,7 +101,7 @@ router.get("/", async (req, res) => {
     return;
   }
   try{
-    const allQuestions = await questionData.getAllQuestions(communityId,posterId);
+    const allQuestions = await questionData.getAll(communityId,posterId);
     res.status(200).json(allQuestions);
   }catch(e){
     res.status(500);
