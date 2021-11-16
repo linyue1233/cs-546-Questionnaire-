@@ -17,7 +17,7 @@ async function main() {
       tags: [],
       upvotes: [],
       downvotes: [],
-      posterId: [],
+      posterId: uuid.v4(),
       answers: [],
       acceptedAnswer: null,
       createdAt: new Date(),

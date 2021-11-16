@@ -4,6 +4,12 @@ const questions = require("../data/questions");
 const validator = require("../helpers/routeValidators/questionValidator");
 
 router.get("/search", async (req, res) => {
+  console.log("GET: /search");
+  // res.json({ search: "success" });
+  res.render("search/search", {});
+});
+
+router.post("/search", async (req, res) => {
   let body = req.body;
   let validate = validator.validateSearchBody(body);
   if (!validate.isValid) {
@@ -22,10 +28,16 @@ router.get("/search", async (req, res) => {
     res.status(200).json({ totalResults: 0, results: searchResult });
     return;
   }
+  console.log(searchResult);
   // FOR NOW, returning JSON
-  res.status(200).json({ totalResults: searchResult.length, results: searchResult });
+  // res.status(200).json({ totalResults: searchResult.length, results: searchResult });
   // ideally, do this:
   // res.status(200).render("questions/search_results", { totalResults: searchResult.length, searchResult });
+  res.status(200).render("search/search_results", {
+    searchTerm: body.keyword,
+    searchTotal: searchResult.length,
+    searchResults: searchResult,
+  });
 });
 
 router.delete("/:id/delete", async (req, res) => {
