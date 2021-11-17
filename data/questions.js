@@ -1,6 +1,7 @@
 // Add DB operations on questions here.
 const mongoCollections = require('../config/mongoCollections');
 let questions = mongoCollections.questions;
+const uuid = require("uuid");
 
 const getAll = async (communityId, userId) => {
   if (arguments.length > 2) {
@@ -65,10 +66,42 @@ const remove = async (id) => {
   return { deleted: true, id: id };
 };
 
+const addQuestion= async(title,description,community,tagsstring,posterId)=> {
+  //Initial testing-posterid is not available 
+  if(!title || !description || !community || !tagsstring ){
+    throw " not a valid inputs";
+  }
+  if (typeof title !== 'string' ||typeof description !== 'string' ||typeof community !== 'string' || typeof tagsstring !== 'string'){
+    throw " not a valid inputs";
+  }
+
+  const questionsCollection = await questions();
+  //To enter multiple tags users has to separate by spaces
+  let tags=  tagsstring.split(" ")
+  let newQuestion = {
+    _id: uuid.v4(),
+    title:title,
+    description:description,
+    community:community,
+    tags:tags,
+    posterId:"testphase",  
+    upvotes:[],
+    downvotes:[],
+    answers:[],
+    acceptedAnswer:"",
+    createdAt:new Date(),
+    updatedAt:new Date()
+  };
+
+  const newInsertInformation = await questionsCollection.insertOne(newQuestion);
+  if (newInsertInformation.insertedCount === 0) throw 'Insert failed!';
+  return await getID(newInsertInformation.insertedId);
+}
 module.exports = {
-  search,
+  // search,
   remove,
   editQuestion,
   getID,
   getAll,
+  addQuestion
 };

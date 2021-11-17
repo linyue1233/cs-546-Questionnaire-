@@ -18,7 +18,7 @@ router.get("/:id/edit", async(req,res)=> {
   }
 });
 
-router.post("/:id", async(req,res)=>{
+router.put("/:id", async(req,res)=>{
   let body = req.body;
   errors = "";
   if (!body) errors = "No data for updation found";
@@ -81,17 +81,17 @@ router.post("/search", async (req, res) => {
 });
 
 
-router.get("/:id", async (req, res) => {
+/* router.get("/:id", async (req, res) => {
   let id = req.params.id;
   try {
-    let questionAns = await questionData.getID(req.params.id);
-    res.status(200).render('quesions/individual-question',{
+    let questionAns = await questions.getID(req.params.id);
+    res.status(200).render('questions/individual-question',{
       questionInfo: questionAns
     });
   } catch (e) {
     res.status(404).json({ error: "can not find question with this id" });
   }
-});
+}); */
 
 router.get("/", async (req, res) => {
   let communityId = req.query.communityId;
@@ -122,4 +122,54 @@ router.delete("/:id/delete", async (req, res) => {
   res.status(200).json({ deleted: question.deleted, id: question.id });
 });
 
+router.get('/new', async (req, res) => {
+  res.status(200).render('Questions/new', {});
+});
+
+router.post('/', async (req, res) => {
+  const QuestionPostData = req.body;
+
+  QuestionPostData.posterId="test";
+  let errors=[];
+
+  if (!QuestionPostData.title) {
+    errors.push('You must provide the title');
+  }
+  if (!QuestionPostData.description) {
+    errors.push('You must provide the description');
+  }
+  if (!QuestionPostData.posterId) {
+    errors.push('You must provide the posterId');
+  }
+  if (!QuestionPostData.community) {
+    errors.push('You must provide the community');
+  }
+  if (!QuestionPostData.tags) {
+    errors.push('You must provide tags');
+  }
+  
+  if (errors.length > 0) {
+    res.render('questions/new', {
+      errors: errors,
+      hasErrors: true,
+      title:QuestionPostData.title,
+      description:QuestionPostData.description,
+      community:QuestionPostData.community,
+      tags:QuestionPostData.tags,
+
+
+    });
+    return;
+  }
+  
+
+  try {
+    const { title, description, posterId, community,tags } = QuestionPostData;
+    const newQuestion = await questions.addQuestion(title, description,posterId,community,tags);
+   // ideal resonse res.redirect(`/questions/${newQuestion._id}`);
+   res.status(200).json({msg:"question has been added to db"})
+  } catch (e) {
+    res.status(500).json({ error: e });
+  }
+});
 module.exports = router;
