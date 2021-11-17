@@ -1,0 +1,16 @@
+<main>
+    {{#if questions.length}}
+    <ol>
+        {{#each questions}}
+        <li>
+            <h1>{{this.title}}</h1>>
+            <p> {{this.description}} </p>
+            <p>{{this.tags}}</p>
+            <p>Posted Date: {{this.createdAt}}</p>
+        </li>
+        {{/each}}
+    </ol>
+    {{else}}
+    <p>There no question in this community.</p>
+    {{/if}}
+</main>
