@@ -1,16 +1,19 @@
 <div>
-    <h1>Question: {{questionInfo.title}}</h1>
-    <h2>Description: {{questionInfo.description}}</h2>
-    <h2>Posted By: {{questionInfo.posterId}}</h2>
+    <span><h1>{{questionInfo.title}}</h1><h3>(Posted By: {{questionInfo.posterId}})</h3></span>
+    <p>{{questionInfo.description}}</p>
+    
     <br>
     <h2>Tags :{{questionInfo.tags}}</h2>
 
     {{#if questionInfo.answers.length}}
-    <ol>
-        {{#each questionInfo.answers}}
-        <li>
-            {{this.description}}
-        </li>
-        {{/each}}
-    </ol>
+    <h3>Answers</h3>
+    <ul>
+    {{#each questionInfo.answers}}    
+    <li>
+        <p>{{this.description}}</p>
+        <h5>Posted By: {{this.posterId}}</h5>
+    </li>
+    {{/each}}
+    </ul>
+    {{/if}}
 </div>

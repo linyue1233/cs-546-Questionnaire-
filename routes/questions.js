@@ -1,45 +1,52 @@
 const express = require("express");
 const router = express.Router();
 const questions = require("../data/questions");
-const data = require('../data');
+const data = require("../data");
 const questionData = data.questions;
 const validator = require("../helpers/routeValidators/questionValidator");
 
-router.get("/:id/edit", async(req,res)=> {
-  if (!req.params.id) res.status(400).json({error: "No id found"});
-  try{
+router.get("/all", async (req, res) => {
+  const allQuestions = await questions.getAllWithoutParams();
+  console.log(allQuestions);
+  res.render("questions/all_questions", { questions: allQuestions });
+  return;
+});
+
+router.get("/:id/edit", async (req, res) => {
+  if (!req.params.id) res.status(400).json({ error: "No id found" });
+  try {
     const question = await questions.getID(req.params.id);
-    if (!questions) res.status(400).json({error: "No question with that id"});
-    res.render("questions/edit-question",{
-      question: question
+    if (!questions) res.status(400).json({ error: "No question with that id" });
+    res.render("questions/edit-question", {
+      question: question,
     });
-  }catch(e){
-    res.status(400).json({error: e});
+  } catch (e) {
+    res.status(400).json({ error: e });
   }
 });
 
-router.post("/:id", async(req,res)=>{
+router.post("/:id", async (req, res) => {
   let body = req.body;
   errors = "";
   if (!body) errors = "No data for updation found";
-  if (!body.title || !body.description || !body.tags || !body.communityId) error="Incomplete Data received";
+  if (!body.title || !body.description || !body.tags || !body.communityId) error = "Incomplete Data received";
   if (!req.params.id) errors = "No ID found";
 
-  try{
+  try {
     const question = await questions.getID(req.params.id);
     if (!question) throw "No question with that id";
-  }catch(e){
-    res.status(400).json({error: e})
+  } catch (e) {
+    res.status(400).json({ error: e });
   }
-  try{
+  try {
     const tagsArray = body.tags.split(",");
-    for(let i=0;i<tagsArray.length;i++){
-      tagsArray[i]=tagsArray[i].trim();
+    for (let i = 0; i < tagsArray.length; i++) {
+      tagsArray[i] = tagsArray[i].trim();
     }
     await questions.editQuestion(req.params.id, body.title, body.description, tagsArray, body.communityId);
-    res.status(200).json({Message: "Updation Complete"})
-  }catch(e){
-    res.status(500).json({error: e});
+    res.status(200).json({ Message: "Updation Complete" });
+  } catch (e) {
+    res.status(500).json({ error: e });
   }
 });
 
@@ -53,7 +60,7 @@ router.post("/search", async (req, res) => {
   let body = req.body;
   let validate = validator.validateSearchBody(body);
   if (!validate.isValid) {
-    res.status(400).json({ error: validate.message });
+    res.status(400).json({ hasErrors: true, error: validate.message });
     return;
   }
   // TODO: apply validation wherever necessary
@@ -80,13 +87,12 @@ router.post("/search", async (req, res) => {
   });
 });
 
-
 router.get("/:id", async (req, res) => {
   let id = req.params.id;
   try {
     let questionAns = await questionData.getID(req.params.id);
-    res.status(200).render('quesions/individual-question',{
-      questionInfo: questionAns
+    res.status(200).render("questions/individual-question", {
+      questionInfo: questionAns,
     });
   } catch (e) {
     res.status(404).json({ error: "can not find question with this id" });
@@ -96,18 +102,17 @@ router.get("/:id", async (req, res) => {
 router.get("/", async (req, res) => {
   let communityId = req.query.communityId;
   let posterId = req.query.userId;
-  if(communityId === undefined || posterId === undefined){
-    res.status(400).json({error: 'You should provide valid parameters'});
+  if (communityId === undefined || posterId === undefined) {
+    res.status(400).json({ error: "You should provide valid parameters" });
     return;
   }
-  try{
-    const allQuestions = await questionData.getAll(communityId,posterId);
+  try {
+    const allQuestions = await questionData.getAll(communityId, posterId);
     res.status(200).json(allQuestions);
-  }catch(e){
+  } catch (e) {
     res.status(500);
   }
-})
-
+});
 
 router.delete("/:id/delete", async (req, res) => {
   let id = req.params.id;
@@ -120,6 +125,39 @@ router.delete("/:id/delete", async (req, res) => {
     return;
   }
   res.status(200).json({ deleted: question.deleted, id: question.id });
+});
+
+router.get("/:questionId/answers/:answerId/edit", async (req, res) => {
+  let questionId = req.params.questionId;
+  let answerId = req.params.answerId;
+  let url = `/questions/${questionId}/answers/${answerId}`;
+  res.render("answers/edit_answer", { url });
+});
+
+router.put("/:questionId/answers/:answerId", async (req, res) => {
+  let questionId = req.params.questionId;
+  let answerId = req.params.answerId;
+  let updatePayload = req.body;
+  /* Assuming the update body as below:
+  {
+    description: "CONTENT",
+  }
+  */
+  let validate = validator.validateUpdateBody(updatePayload);
+  if (!validate.isValid) {
+    // sending body to retain old values in the form
+    res.status(400).render("answers/edit_answer", { hasErrors: true, error: validate.message, body: updatePayload });
+    return;
+  }
+  try {
+    const updatedQuestionWithAnswer = await questions.updateAnswer(questionId, answerId, updatePayload);
+    res.status(200).render("questions/individual-question.handlebars", { questionInfo: updatedQuestionWithAnswer });
+    return;
+  } catch (e) {
+    console.log(e);
+    res.status(500).render("errors/internal_server_error.handlebars");
+    return;
+  }
 });
 
 module.exports = router;

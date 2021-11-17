@@ -1,0 +1,15 @@
+<form method="POST" action="{{ url }}">
+    <label for="description">Description</label>
+    <textarea name="description" id="description" rows="3" cols="20">{{ body.description }}</textarea>
+    <input hidden name="_method" value="PUT">
+    <input type="submit" id="edit_answer_submit">
+</form>
+ {{#if hasErrors}}
+  <ul class="error-list">
+    
+    <li>
+      {{error}}
+    </li>
+    
+  </ul>
+  {{/if}}

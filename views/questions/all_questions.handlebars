@@ -1,0 +1,17 @@
+<main>
+    {{#each questions}}
+    <h4><a href="/questions/{{this._id}}">{{ this.title }}</a></h4>
+    <p>{{ this.description }}</p>
+    <span>Tags:
+    {{#if this.tags}}
+        {{#each this.tags }}
+            <span>{{ this }}</span>
+        {{/each}}
+        </span>
+        {{/if}}
+        {{#unless this.tags}}
+        No tags available.
+        {{/unless}}
+    <hr>
+    {{/each}}
+</main>
