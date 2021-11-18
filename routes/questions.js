@@ -162,7 +162,6 @@ router.post('/', async (req, res) => {
     return;
   }
   
-
   try {
     const { title, description, posterId, community,tags } = QuestionPostData;
     const newQuestion = await questions.addQuestion(title, description,posterId,community,tags);
@@ -172,4 +171,25 @@ router.post('/', async (req, res) => {
     res.status(500).json({ error: e });
   }
 });
+
+router.delete("/:questionId/answers/:answerId/edit", async (req, res) => {
+  let questionId = req.params.questionId;
+  let answerId = req.params.answerId;
+  const que = await questions.deleteAnswer(answerId)
+  const questionInfo = await questions.getID(questionId);
+  res.status(200).render('individual-question',questionInfo)
+});
+
+router.get("/:questionId/answers", async(req,res)=> {
+  if (!req.params.questionId) res.status(400).json({error: "No id found"});
+  try{
+    const answersarray = await questions.getAllAnsweres(req.params.questionId)
+    let questionInfo = {};
+    questionInfo.answeres=answersarray;
+    res.status(200).render("individual-question",questionInfo);
+  }catch(e){
+    res.status(400).json({error: e});
+  }
+});
+
 module.exports = router;
