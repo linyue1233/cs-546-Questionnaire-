@@ -153,4 +153,17 @@ router.get('/:questionId/answers/:answerId', async (req, res) => {
   res.status(404).json({error: "Error: No answer found" });
 })
 
+//create an answer
+router.post('/:id/answers/create', async (req, res)=>{
+  const body = req.body;
+  error = ""
+  if (!body) error="No data found for updation";
+  try{
+    await questions.createAns(req.params.id, body);
+    res.redirect('/questions/req.params.id');
+  }catch(e){
+    res.status(404).json({error: e})
+  }
+});
+
 module.exports = router;

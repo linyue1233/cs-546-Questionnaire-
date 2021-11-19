@@ -2,6 +2,18 @@
 const mongoCollections = require('../config/mongoCollections');
 let questions = mongoCollections.questions;
 
+const createAns = async (qId, ans) => {
+  if (!ans || !qId) throw "Invalid parameters";
+  const questionCollection = await questions();
+
+  const answer = await questionCollection.updateOne({_id:qId},{$push : {answers: {
+    description: ans
+  }}});
+  
+  if (answer.insertedCount === 0) throw 'Could not add answer';
+  return true;
+}
+
 const getAll = async (communityId, userId) => {
   if (arguments.length > 2) {
     throw `you can not pass any parameters`;
@@ -66,9 +78,9 @@ const remove = async (id) => {
 };
 
 module.exports = {
-  search,
   remove,
   editQuestion,
   getID,
   getAll,
+  createAns
 };
