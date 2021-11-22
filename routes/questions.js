@@ -1,9 +1,19 @@
 const express = require("express");
 const router = express.Router();
 const questions = require("../data/questions");
-const data = require('../data');
+const data = require("../data");
 const questionData = data.questions;
 const validator = require("../helpers/routeValidators/questionValidator");
+
+
+router.get("/all", async (req, res) => {
+  const allQuestions = await questions.getAllWithoutParams();
+  console.log(allQuestions);
+  res.render("questions/all_questions", { questions: allQuestions });
+  return;
+});
+
+
 
 router.get("/:id/edit", async (req, res) => {
   if (!req.params.id) res.status(400).json({ error: "No id found" });
@@ -11,7 +21,7 @@ router.get("/:id/edit", async (req, res) => {
     const question = await questions.getID(req.params.id);
     if (!questions) res.status(400).json({ error: "No question with that id" });
     res.render("questions/edit-question", {
-      question: question
+      question: question,
     });
   } catch (e) {
     res.status(400).json({ error: e });
@@ -29,7 +39,8 @@ router.post("/:id", async (req, res) => {
     const question = await questions.getID(req.params.id);
     if (!question) throw "No question with that id";
   } catch (e) {
-    res.status(400).json({ error: e })
+    res.status(400).json({ error: e });
+    return;
   }
   try {
     const tagsArray = body.tags.split(",");
@@ -37,7 +48,7 @@ router.post("/:id", async (req, res) => {
       tagsArray[i] = tagsArray[i].trim();
     }
     await questions.editQuestion(req.params.id, body.title, body.description, tagsArray, body.communityId);
-    res.status(200).json({ Message: "Updation Complete" })
+    res.status(200).json({ Message: "Updation Complete" });
   } catch (e) {
     res.status(500).json({ error: e });
   }
@@ -53,7 +64,7 @@ router.post("/search", async (req, res) => {
   let body = req.body;
   let validate = validator.validateSearchBody(body);
   if (!validate.isValid) {
-    res.status(400).json({ error: validate.message });
+    res.status(400).json({ hasErrors: true, error: validate.message });
     return;
   }
   // TODO: apply validation wherever necessary
@@ -80,12 +91,11 @@ router.post("/search", async (req, res) => {
   });
 });
 
-
 router.get("/:id", async (req, res) => {
   let id = req.params.id;
   try {
     let questionAns = await questionData.getID(req.params.id);
-    res.status(200).render('quesions/individual-question', {
+    res.status(200).render("questions/individual-question", {
       questionInfo: questionAns
     });
   } catch (e) {
@@ -110,7 +120,6 @@ router.get("/", async (req, res) => {
   }
 });
 
-
 router.delete("/:id/delete", async (req, res) => {
   let id = req.params.id;
   // TODO: apply validation wherever necessary
@@ -122,6 +131,39 @@ router.delete("/:id/delete", async (req, res) => {
     return;
   }
   res.status(200).json({ deleted: question.deleted, id: question.id });
+});
+
+router.get("/:questionId/answers/:answerId/edit", async (req, res) => {
+  let questionId = req.params.questionId;
+  let answerId = req.params.answerId;
+  let url = `/questions/${questionId}/answers/${answerId}`;
+  res.render("answers/edit_answer", { url });
+});
+
+router.put("/:questionId/answers/:answerId", async (req, res) => {
+  let questionId = req.params.questionId;
+  let answerId = req.params.answerId;
+  let updatePayload = req.body;
+  /* Assuming the update body as below:
+  {
+    description: "CONTENT",
+  }
+  */
+  let validate = validator.validateUpdateBody(updatePayload);
+  if (!validate.isValid) {
+    // sending body to retain old values in the form
+    res.status(400).render("answers/edit_answer", { hasErrors: true, error: validate.message, body: updatePayload });
+    return;
+  }
+  try {
+    const updatedQuestionWithAnswer = await questions.updateAnswer(questionId, answerId, updatePayload);
+    res.status(200).render("questions/individual-question.handlebars", { questionInfo: updatedQuestionWithAnswer });
+    return;
+  } catch (e) {
+    console.log(e);
+    res.status(500).render("errors/internal_server_error.handlebars");
+    return;
+  }
 });
 
 // get individual answer: 
@@ -152,5 +194,6 @@ router.get('/:questionId/answers/:answerId', async (req, res) => {
   }
   res.status(404).json({error: "Error: No answer found" });
 })
+
 
 module.exports = router;
