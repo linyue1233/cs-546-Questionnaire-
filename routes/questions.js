@@ -5,12 +5,15 @@ const data = require("../data");
 const questionData = data.questions;
 const validator = require("../helpers/routeValidators/questionValidator");
 
+
 router.get("/all", async (req, res) => {
   const allQuestions = await questions.getAllWithoutParams();
   console.log(allQuestions);
   res.render("questions/all_questions", { questions: allQuestions });
   return;
 });
+
+
 
 router.get("/:id/edit", async (req, res) => {
   if (!req.params.id) res.status(400).json({ error: "No id found" });
@@ -37,6 +40,7 @@ router.post("/:id", async (req, res) => {
     if (!question) throw "No question with that id";
   } catch (e) {
     res.status(400).json({ error: e });
+    return;
   }
   try {
     const tagsArray = body.tags.split(",");
@@ -92,7 +96,7 @@ router.get("/:id", async (req, res) => {
   try {
     let questionAns = await questionData.getID(req.params.id);
     res.status(200).render("questions/individual-question", {
-      questionInfo: questionAns,
+      questionInfo: questionAns
     });
   } catch (e) {
     res.status(404).json({ error: "can not find question with this id" });
@@ -103,14 +107,16 @@ router.get("/", async (req, res) => {
   let communityId = req.query.communityId;
   let posterId = req.query.userId;
   if (communityId === undefined || posterId === undefined) {
-    res.status(400).json({ error: "You should provide valid parameters" });
+    res.status(400).json({ error: 'You should provide valid parameters' });
     return;
   }
   try {
     const allQuestions = await questionData.getAll(communityId, posterId);
-    res.status(200).json(allQuestions);
+    res.status(200).render('all_questions',{
+      questions: allQuestions
+    });
   } catch (e) {
-    res.status(500);
+    res.status(500).json({error: e});
   }
 });
 
@@ -159,5 +165,35 @@ router.put("/:questionId/answers/:answerId", async (req, res) => {
     return;
   }
 });
+
+// get individual answer: 
+router.get('/:questionId/answers/:answerId', async (req, res) => {
+  let questionId = req.params.questionId;
+  let answerId = req.params.answerId;
+  if (questionId.trim() === ""){
+    res.status(400).json({ error: "You should provide questionId"});
+    return;
+  }
+  if (answerId.trim() === ""){
+    res.status(400).json({ error: "You should provide answerId"});
+    return;
+  }
+  try{
+    const individualQustion = await questionData.getID(questionId);
+    const answerList = individualQustion.answers;
+    for(let answer of answerList){
+      if(answerId === answer._id){
+        res.status(200).render('quesions/new_answer_form',{
+          question: individualQustion,
+          singalAnswer: answer 
+        });
+      } 
+    }
+  }catch(e){
+    res.status(404).json({error: e});
+  }
+  res.status(404).json({error: "Error: No answer found" });
+})
+
 
 module.exports = router;
