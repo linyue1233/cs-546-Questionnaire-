@@ -81,7 +81,7 @@ router.post("/search", async (req, res) => {
 });
 
 
-/* router.get("/:id", async (req, res) => {
+ router.get("/:id", async (req, res) => {
   let id = req.params.id;
   try {
     let questionAns = await questions.getID(req.params.id);
@@ -91,7 +91,7 @@ router.post("/search", async (req, res) => {
   } catch (e) {
     res.status(404).json({ error: "can not find question with this id" });
   }
-}); */
+}); 
 
 router.get("/", async (req, res) => {
   let communityId = req.query.communityId;
