@@ -1,0 +1,32 @@
+<div>
+    <div>
+        <h1>{{question.title}}</h1>
+        <h2>{{question.description}}</h1>
+
+            <h1>The answer is</h1>
+            <h2>{{singalAnswer.description}}</h2>
+    </div>
+    {{#if singalAnswer.comments.length}}
+    <ol>
+        {{#each singalAnswer.comments}}
+        <li>
+            {{this.commentText}}
+        </li>
+        {{/each}}
+    </ol>
+    {{else}}
+    <p> There are no comments for this answer.</p>
+    {{/if}}
+
+    {{!-- build a rich text box to submit answer --}}
+    <div id="markDown">
+
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    import richText 'wangeditor'
+    const editor = new E('#markDown')
+    editor.create()
+</script>

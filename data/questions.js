@@ -1,7 +1,14 @@
 // Add DB operations on questions here.
-const mongoCollections = require('../config/mongoCollections');
+const mongoCollections = require("../config/mongoCollections");
+const validator = require("../helpers/dataValidators/questionValidator");
 let questions = mongoCollections.questions;
 const uuid = require('uuid');
+
+const getAllWithoutParams = async () => {
+  const questionCollection = await questions();
+  const allQuestions = await questionCollection.find({}).limit(30).toArray();
+  return allQuestions;
+};
 
 const getAll = async (communityId, userId) => {
   if (arguments.length > 2) {
@@ -12,19 +19,13 @@ const getAll = async (communityId, userId) => {
   }
   const questionCollection = await questions();
   if (communityId !== undefined && userId !== undefined) {
-    const questionCollections = await questionCollection
-      .find({ communityId: communityId, posterId: userId })
-      .toArray();
+    const questionCollections = await questionCollection.find({ communityId: communityId, posterId: userId }).toArray();
     return questionCollections;
   } else if (communityId !== undefined) {
-    const questionCollections = await questionCollection
-      .find({ communityId: communityId })
-      .toArray();
+    const questionCollections = await questionCollection.find({ communityId: communityId }).toArray();
     return questionCollections;
   } else {
-    const questionCollections = await questionCollection
-      .find({ posterId: userId })
-      .toArray();
+    const questionCollections = await questionCollection.find({ posterId: userId }).toArray();
     return questionCollections;
   }
 };
@@ -52,11 +53,8 @@ const editQuestion = async (id, title, description, tags, communityId) => {
     tags: tags,
     communityId: communityId,
   };
-  const updatedInfo = await questionsCollection.updateOne(
-    { _id: id },
-    { $set: updateQuestion }
-  );
-  if (updatedInfo.modifiedCount == 0) throw 'Could not update the question';
+  const updatedInfo = await questionsCollection.updateOne({ _id: id }, { $set: updateQuestion });
+  if (updatedInfo.modifiedCount == 0) throw "Could not update the question";
   return true;
 };
 
@@ -142,15 +140,48 @@ const deleteAnswer = async (answerId) => {
 
   let result = { answerId: answerId, deleted: true };
   return result;
+}
+const updateAnswer = async (questionId, answerId, body) => {
+  const questionsCollection = await questions();
+  validator.validateId(questionId);
+  validator.validateId(answerId);
+  validator.validateUpdateBody(body);
+  const description = body.description;
+  const updateQuestion = await questionsCollection.updateOne(
+    { _id: questionId, "answers._id": answerId },
+    { $set: { "answers.$.description": description } }
+  );
+  if (updateQuestion.modifiedCount === 0 && updateQuestion.matchedCount === 0) {
+    throw `Something went wrong during answer update`;
+  }
+  // returning question with all answer information
+  return await getID(questionId);
+};
+
+const search = async (body) => {
+  /* Assuming the body comes like this:
+     { keyword: <string> } */
+  // TODO: add validation wherever necessary
+  const questionsCollection = await questions();
+  let tokenizedKeywords = body.keyword.split(" ");
+  const allMatches = await questionsCollection.find({ $text: { $search: body.keyword } }).toArray();
+  const allArrayMatches = await questionsCollection.find({ tags: tokenizedKeywords }).toArray();
+  console.log(tokenizedKeywords, allArrayMatches);
+  if (allArrayMatches.length > 0) {
+    allMatches = allMatches.concat(allArrayMatches);
+  }
+  return allMatches;
 };
 
 module.exports = {
-  // search,
+  search,
   remove,
   editQuestion,
   getID,
   getAll,
   addQuestion,
   getAllAnsweres,
-  deleteAnswer
+  deleteAnswer,
+  updateAnswer,
+  getAllWithoutParams,
 };
