@@ -1,0 +1,55 @@
+
+
+<article class="new-question">
+  <h1>Ask a Question</h1>
+  <form action="/questions" method="POST" class="new-question-form">
+        <label >  Community: <br>
+        <select class="full-width-input" name="community">
+      <option value="test">Select community...</option>
+      {{#each communities}}
+        <option value="{{communityid}}">{{communityName}}</option>
+      {{/each}}
+      
+    </select>
+   
+    </label>
+    <br>
+    <label>
+       Title: <br>
+      <input type="text" name="title" placeholder="Enter Title" value="{{title}}" class="full-width-input"/>
+    </label>
+   <br>
+    <label>
+        Description: <br>
+      <textarea id="Question-Description"  rows="6"  name="description" placeholder="Enter Description" class="full-width-input" >{{description}}</textarea>
+
+    </label>
+  <br>
+    <label>
+       Tags: <br>
+      <input type="text" name="tags" placeholder="Enter Tags seprated by spaces" value="{{tags}}" class="full-width-input"/>
+    </label>
+    <br>
+    <br>
+    </label> 
+        <button> submitform</button>
+     
+    </label>
+   
+
+  
+  </form>
+
+
+
+{{#if hasErrors}}
+  <ul class="error-list">
+    {{#each errors}}
+    <li>
+      {{this}}
+    </li>
+    {{/each}}
+  </ul>
+  {{/if}}
+</article>
+

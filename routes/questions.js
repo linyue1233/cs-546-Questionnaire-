@@ -28,7 +28,7 @@ router.get("/:id/edit", async (req, res) => {
   }
 });
 
-router.post("/:id", async (req, res) => {
+router.put("/:id", async(req,res)=>{
   let body = req.body;
   errors = "";
   if (!body) errors = "No data for updation found";
@@ -101,7 +101,7 @@ router.get("/:id", async (req, res) => {
   } catch (e) {
     res.status(404).json({ error: "can not find question with this id" });
   }
-});
+}); 
 
 router.get("/", async (req, res) => {
   let communityId = req.query.communityId;
@@ -134,6 +134,75 @@ router.delete("/:id/delete", async (req, res) => {
   res.status(200).json({ deleted: question.deleted, id: question.id });
 });
 
+router.get('/new', async (req, res) => {
+  res.status(200).render('Questions/new', {});
+});
+
+router.post('/', async (req, res) => {
+  const QuestionPostData = req.body;
+
+  QuestionPostData.posterId="test";
+  let errors=[];
+
+  if (!QuestionPostData.title) {
+    errors.push('You must provide the title');
+  }
+  if (!QuestionPostData.description) {
+    errors.push('You must provide the description');
+  }
+  if (!QuestionPostData.posterId) {
+    errors.push('You must provide the posterId');
+  }
+  if (!QuestionPostData.community) {
+    errors.push('You must provide the community');
+  }
+  if (!QuestionPostData.tags) {
+    errors.push('You must provide tags');
+  }
+  
+  if (errors.length > 0) {
+    res.render('questions/new', {
+      errors: errors,
+      hasErrors: true,
+      title:QuestionPostData.title,
+      description:QuestionPostData.description,
+      community:QuestionPostData.community,
+      tags:QuestionPostData.tags,
+
+
+    });
+    return;
+  }
+  
+  try {
+    const { title, description, posterId, community,tags } = QuestionPostData;
+    const newQuestion = await questions.addQuestion(title, description,posterId,community,tags);
+   // ideal resonse res.redirect(`/questions/${newQuestion._id}`);
+   res.status(200).json({msg:"question has been added to db"})
+  } catch (e) {
+    res.status(500).json({ error: e });
+  }
+});
+
+router.delete("/:questionId/answers/:answerId/edit", async (req, res) => {
+  let questionId = req.params.questionId;
+  let answerId = req.params.answerId;
+  const que = await questions.deleteAnswer(answerId)
+  const questionInfo = await questions.getID(questionId);
+  res.status(200).render('individual-question',questionInfo)
+});
+
+router.get("/:questionId/answers", async(req,res)=> {
+  if (!req.params.questionId) res.status(400).json({error: "No id found"});
+  try{
+    const answersarray = await questions.getAllAnsweres(req.params.questionId)
+    let questionInfo = {};
+    questionInfo.answeres=answersarray;
+    res.status(200).render("individual-question",questionInfo);
+  }catch(e){
+    res.status(400).json({error: e});
+  }
+});
 router.get("/:questionId/answers/:answerId/edit", async (req, res) => {
   let questionId = req.params.questionId;
   let answerId = req.params.answerId;
