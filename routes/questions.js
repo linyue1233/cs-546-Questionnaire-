@@ -106,13 +106,14 @@ router.get("/:id", async (req, res) => {
 router.get("/", async (req, res) => {
   let communityId = req.query.communityId;
   let posterId = req.query.userId;
-  if (communityId === undefined || posterId === undefined) {
+  // provide one parameter is ok
+  if (communityId === undefined && posterId === undefined) {
     res.status(400).json({ error: 'You should provide valid parameters' });
     return;
   }
   try {
     const allQuestions = await questionData.getAll(communityId, posterId);
-    res.status(200).render('all_questions',{
+    res.status(200).render('questions/all_questions',{
       questions: allQuestions
     });
   } catch (e) {
@@ -183,11 +184,12 @@ router.get('/:questionId/answers/:answerId', async (req, res) => {
     const answerList = individualQustion.answers;
     for(let answer of answerList){
       if(answerId === answer._id){
-        res.status(200).render('quesions/new_answer_form',{
+        res.status(200).render('answers/new_answer_form',{
           question: individualQustion,
           singalAnswer: answer 
         });
       } 
+      return;
     }
   }catch(e){
     res.status(404).json({error: e});
