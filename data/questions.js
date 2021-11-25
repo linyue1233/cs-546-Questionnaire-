@@ -1,18 +1,33 @@
 // Add DB operations on questions here.
-const mongoCollections = require('../config/mongoCollections');
+const mongoCollections = require("../config/mongoCollections");
+const validator = require("../helpers/dataValidators/questionValidator");
 let questions = mongoCollections.questions;
+const uuid = require("uuid");
+
+const getAllWithoutParams = async () => {
+  const questionCollection = await questions();
+  const allQuestions = await questionCollection.find({}).limit(30).toArray();
+  return allQuestions;
+};
 
 const createAns = async (qId, ans) => {
   if (!ans || !qId) throw "Invalid parameters";
   const questionCollection = await questions();
 
-  const answer = await questionCollection.updateOne({_id:qId},{$push : {answers: {
-    description: ans
-  }}});
-  
-  if (answer.insertedCount === 0) throw 'Could not add answer';
+  const answer = await questionCollection.updateOne(
+    { _id: qId },
+    {
+      $push: {
+        answers: {
+          description: ans,
+        },
+      },
+    }
+  );
+
+  if (answer.insertedCount === 0) throw "Could not add answer";
   return true;
-}
+};
 
 const getAll = async (communityId, userId) => {
   if (arguments.length > 2) {
@@ -23,16 +38,22 @@ const getAll = async (communityId, userId) => {
   }
   const questionCollection = await questions();
   if (communityId !== undefined && userId !== undefined) {
-    const questionCollections = await questionCollection.find({ 'communityId': communityId, 'posterId': userId }).toArray();
+    const questionCollections = await questionCollection
+      .find({ communityId: communityId, posterId: userId })
+      .toArray();
     return questionCollections;
   } else if (communityId !== undefined) {
-    const questionCollections = await questionCollection.find({ 'communityId': communityId }).toArray();
+    const questionCollections = await questionCollection
+      .find({ communityId: communityId })
+      .toArray();
     return questionCollections;
   } else {
-    const questionCollections = await questionCollection.find({ 'posterId': userId }).toArray();
+    const questionCollections = await questionCollection
+      .find({ posterId: userId })
+      .toArray();
     return questionCollections;
   }
-}
+};
 
 const getID = async (id) => {
   if (!id) throw "Error : No ID found";
@@ -41,7 +62,7 @@ const getID = async (id) => {
   let question = await questionsCollection.findOne({ _id: id });
   if (!question) throw "Error : Question not found";
   return question;
-}
+};
 
 const editQuestion = async (id, title, description, tags, communityId) => {
   if (!id) throw "No ID found";
@@ -63,7 +84,7 @@ const editQuestion = async (id, title, description, tags, communityId) => {
   );
   if (updatedInfo.modifiedCount == 0) throw "Could not update the question";
   return true;
-}
+};
 
 const remove = async (id) => {
   // return the following object for deletion status: { deleted: true, id: id }
@@ -77,10 +98,121 @@ const remove = async (id) => {
   return { deleted: true, id: id };
 };
 
+const addQuestion = async (
+  title,
+  description,
+  community,
+  tagsstring,
+  posterId
+) => {
+  //Initial testing-posterid is not available
+  if (!title || !description || !community || !tagsstring) {
+    throw " not a valid inputs";
+  }
+  if (
+    typeof title !== "string" ||
+    typeof description !== "string" ||
+    typeof community !== "string" ||
+    typeof tagsstring !== "string"
+  ) {
+    throw " not a valid inputs";
+  }
+
+  const questionsCollection = await questions();
+  //To enter multiple tags users has to separate by spaces
+  let tags = tagsstring.split(" ");
+  let newQuestion = {
+    _id: uuid.v4(),
+    title: title,
+    description: description,
+    communityId: community,
+    tags: tags,
+    posterId: "testphase",
+    upvotes: [],
+    downvotes: [],
+    answers: [],
+    acceptedAnswer: "",
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  };
+
+  const newInsertInformation = await questionsCollection.insertOne(newQuestion);
+  if (newInsertInformation.insertedCount === 0) throw "Insert failed!";
+  return await getID(newInsertInformation.insertedId);
+};
+
+const getAllAnsweres = async (questionId) => {
+  if (!questionId) throw "Error : No question ID found";
+  let question = await getID(questionId);
+  return question.answers;
+};
+const deleteAnswer = async (answerId) => {
+  if (!answerId) throw " must provide id";
+  if (typeof answerId !== "string") throw " id must be string";
+  if (answerId.trim().length === 0) throw " error:empty string";
+  const questionsCollection = await questions();
+
+  let find = await questionsCollection.findOne({
+    answers: { $elemMatch: { _id: answerId } },
+  });
+  if (find === null) throw "no  answer exist with that answerid";
+
+  //deleteing the answer  from answers-sub document
+  let fu = await questionsCollection.updateOne(
+    { reviews: { $elemMatch: { _id: answerId } } },
+    { $pull: { answers: { _id: answerId } } }
+  );
+
+  if (!fu.matchedCount && !fu.modifiedCount) throw "delete failed";
+
+  let result = { answerId: answerId, deleted: true };
+  return result;
+};
+const updateAnswer = async (questionId, answerId, body) => {
+  const questionsCollection = await questions();
+  validator.validateId(questionId);
+  validator.validateId(answerId);
+  validator.validateUpdateBody(body);
+  const description = body.description;
+  const updateQuestion = await questionsCollection.updateOne(
+    { _id: questionId, "answers._id": answerId },
+    { $set: { "answers.$.description": description } }
+  );
+  if (updateQuestion.modifiedCount === 0 && updateQuestion.matchedCount === 0) {
+    throw `Something went wrong during answer update`;
+  }
+  // returning question with all answer information
+  return await getID(questionId);
+};
+
+const search = async (body) => {
+  /* Assuming the body comes like this:
+     { keyword: <string> } */
+  // TODO: add validation wherever necessary
+  const questionsCollection = await questions();
+  let tokenizedKeywords = body.keyword.split(" ");
+  const allMatches = await questionsCollection
+    .find({ $text: { $search: body.keyword } })
+    .toArray();
+  const allArrayMatches = await questionsCollection
+    .find({ tags: tokenizedKeywords })
+    .toArray();
+  console.log(tokenizedKeywords, allArrayMatches);
+  if (allArrayMatches.length > 0) {
+    allMatches = allMatches.concat(allArrayMatches);
+  }
+  return allMatches;
+};
+
 module.exports = {
   remove,
   editQuestion,
   getID,
   getAll,
-  createAns
+  createAns,
+  addQuestion,
+  getAllAnsweres,
+  deleteAnswer,
+  updateAnswer,
+  getAllWithoutParams,
 };
