@@ -8,15 +8,13 @@
     {{#if questionInfo.answers.length}}
     <h3>Answers</h3>
     <ul>
-    {{#each questionInfo.answers}}    
-    <li>
-        <p>{{this.description}}</p>
-        <h5>Posted By: {{this.posterId}}</h5>
-        <br>
-        <h5>like: {{this.upvotes}}</h5>
-        <h5>dislike: {{this.downvotes}}</h5>
-    </li>
-    {{/each}}
+        {{#each questionInfo.answers}}    
+        <li>
+            <p>{{this.description}}</p>
+            <h5>Posted By: {{this.posterId}}</h5>
+            <p><a href='/questions/{{../questionInfo._id}}/answers/{{this._id}}/edit'>Edit Answer</a></p>
+        </li>
+        {{/each}}
     </ul>
     {{/if}}
 </div>

@@ -4,7 +4,6 @@ let changeMethodToPutForAnswerUpdate = (req, res, next) => {
   if (req.body._method === "PUT") {
     req.method = "put";
   }
-  console.log(req.body);
   next();
 };
 
