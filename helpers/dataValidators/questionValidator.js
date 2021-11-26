@@ -1,7 +1,3 @@
-// This is a routeValidator. All routeValidators functions are supposed to throw the following object:
-// { isValid: <boolean>, message: <string>, status: 200/400/... }
-// isValid is true/false based on whether the input is good or bad, message is a string given based on the error.
-
 const validateId = (id) => {
   if (!id) throw "Expected id field is not provided";
   if (typeof id !== "string") throw "Expected id field is in invalid format";
