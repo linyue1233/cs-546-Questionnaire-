@@ -19,14 +19,21 @@
     {{/if}}
 
     {{!-- build a rich text box to submit answer --}}
-    <div id="markDown">
+    {{!-- action need to modify --}}
+    <form id="textSubmit" action="/test" method="post">
+        <textarea name="content" id="editor">
+  </textarea>
+        <p><input type="submit" value="Submit"></p>
+    </form>
 
-    </div>
+
 </div>
 
 
-<script type="text/javascript">
-    import richText 'wangeditor'
-    const editor = new E('#markDown')
-    editor.create()
+<script>
+    ClassicEditor
+        .create(document.querySelector('#editor'))
+        .catch(error => {
+            console.error(error);
+        });
 </script>
