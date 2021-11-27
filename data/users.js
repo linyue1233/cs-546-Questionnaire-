@@ -111,4 +111,5 @@ const userSignUp = async (firstName, lastName, displayName, password, emailAddre
 module.exports = {
   deleteUser,
   checkUser,
+  userSignUp,
 };
