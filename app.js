@@ -1,10 +1,20 @@
 const express = require("express");
 const path = require("path");
 const exphbs = require("express-handlebars");
+const session = require("express-session");
 
 const app = express();
 const routes = require("./routes");
 const middlewares = require("./middlewares/middlewares");
+
+app.use(
+  session({
+    name: "AuthCookie",
+    secret: "sacredword",
+    resave: false,
+    saveUninitialized: false,
+  })
+);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

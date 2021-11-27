@@ -1,0 +1,48 @@
+.sidenav {
+  height: 100%;
+  background-color: coral;
+  opacity: 0.9;
+  overflow-x: hidden;
+  padding-top: 20px;
+  width: 41%;
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+
+.btn-no-dec {
+  text-decoration: none;
+  color: white;
+}
+
+.btn-no-dec:hover {
+  text-decoration: none;
+  color: white;
+}
+
+.login-splash-image {
+  width: 27%;
+}
+
+.main {
+  margin-left: 42%;
+  padding: 0px 10px;
+}
+.login-form {
+  margin-top: 80%;
+}
+
+.register-form {
+  margin-top: 20%;
+}
+
+.login-main-text {
+  margin-top: 20%;
+  padding: 60px;
+  color: #fff;
+}
+
+.btn-black {
+  color: white;
+  background-color: black;
+}
