@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const questions = require("../data/questions");
+const answers = require("../data/answers");
 const data = require("../data");
 const questionData = data.questions;
 const validator = require("../helpers/routeValidators/questionValidator");
@@ -111,7 +112,11 @@ router.get("/", async (req, res) => {
   let communityId = req.query.communityId;
   let posterId = req.query.userId;
   // provide one parameter is ok
+<<<<<<< HEAD
   if (communityId === undefined && posterId === undefined) {
+=======
+  if (communityId === undefined || posterId === undefined) {
+>>>>>>> 8f9c392a523815d3f1090eb7c562c3552968c39a
     res.status(400).json({ error: "You should provide valid parameters" });
     return;
   }
@@ -215,7 +220,9 @@ router.get("/:questionId/answers/:answerId/edit", async (req, res) => {
   let questionId = req.params.questionId;
   let answerId = req.params.answerId;
   let url = `/questions/${questionId}/answers/${answerId}`;
-  res.render("answers/edit_answer", { url });
+  let currentAnswer = await answers.getAnswer(questionId, answerId);
+  // console.log(currentAnswer);
+  res.render("answers/edit_answer", { url, currentAnswer });
 });
 
 router.put("/:questionId/answers/:answerId", async (req, res) => {

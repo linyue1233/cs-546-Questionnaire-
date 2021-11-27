@@ -1,3 +1,8 @@
+<div>
+  <h2>Edit Answer</h2>
+  <h5>Current Answer:</h5>
+  <p>{{ currentAnswer.description }}</p>
+</div>
 <form method="POST" action="{{ url }}">
     <label for="description">Description</label>
     <textarea name="description" id="description" rows="3" cols="20">{{ body.description }}</textarea>
@@ -6,10 +11,8 @@
 </form>
  {{#if hasErrors}}
   <ul class="error-list">
-    
     <li>
       {{error}}
     </li>
-    
   </ul>
   {{/if}}

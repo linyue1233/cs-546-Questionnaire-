@@ -1,22 +1,22 @@
 <main>
-
-    {{#each questions}}
-    <h4><a href="/questions/{{this._id}}">{{ this.title }}</a></h4>
-    <p>{{ this.description }}</p>
+  {{#each questions}}
+    <h4><a href="/questions/{{this._id}}">{{this.title}}</a></h4>
+    <p>{{this.description}}</p>
     <span>Tags:
-    {{#if this.tags}}
-        {{#each this.tags }}
-            <span>{{ this }}</span>
+      {{#if this.tags}}
+        {{#each this.tags}}
+          <span>{{this}}</span>
         {{/each}}
-        </span>
-        {{/if}}
-        {{#unless this.tags}}
-        No tags available.
-        {{/unless}}
-    <hr>
-    {{/each}}
-<!-- There was a merge conflict here. I'm keeping both - we'll finalize once we decide on the UI. -->
-    {{#if questions.length}}
+      {{/if}}
+    </span>
+    {{#unless this.tags}}
+      No tags available.
+    {{/unless}}
+    <hr />
+  {{/each}}
+  <!-- This is not the show questions by community page. -->
+  <!-- There was a merge conflict here. I'm keeping both - we'll finalize once we decide on the UI. -->
+  <!--    {{#if questions.length}}
     <ol>
         {{#each questions}}
         <li>
@@ -29,6 +29,5 @@
     </ol>
     {{else}}
     <p>There no question in this community.</p>
-    {{/if}}
-
+    {{/if}} -->
 </main>
