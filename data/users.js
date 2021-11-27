@@ -3,6 +3,7 @@ const mongoCollections = require("../config/mongoCollections");
 const validator = require("../helpers/dataValidators/userValidator");
 const bcrypt = require("bcrypt");
 let users = mongoCollections.users;
+const saltRounds = 10;
 const uuid = require("uuid");
 
 const checkUser = async (emailAddress, password) => {
@@ -50,28 +51,59 @@ const deleteUser = async (userId) => {
   return { deleted: true, _id: userId };
 };
 
-const userSignUp = async (firstName, lastName, password, emailAddress, avatarPath) => {
+const userSignUp = async (firstName, lastName, displayName, password, emailAddress, avatarPath) => {
   // parames needed user firstName, lastName, emailAddress, password
   // if user's does not upload avatar, give him a default imageOrientation
   // produce createTime when signUp
   if (avatarPath === undefined) {
     avatarPath = "public/images/defaultAvatar.jpg";
   }
-  if (firstName === undefined || lastName === undefined || emailAddress === undefined || password === undefined) {
+  if (firstName === undefined || lastName === undefined || emailAddress === undefined || password === undefined || displayName === undefined) {
     throw `Please provide all information.`;
   }
-  const allUsers = await users();
-  const usersList = await allUsers.find({}).toArray();
-  // validate email and displayName
+  const userCollection = await users();
+  const usersList = await userCollection.find({}).toArray();
 
-  lowerEmailAddress = emailAddress.toLowerCase();
+  validator.validateEmailAddress(emailAddress);
+  // validate email, displayName, password
+  let lowerEmailAddress = emailAddress.toLowerCase();
   for (let item of usersList) {
-    let tempUserName = item.username;
-    let temp = tempUserName.toLocaleLowerCase();
-    if (temp === lowerName) {
-      return { userInserted: false };
+    let tempEmail = item.emailAddress;
+    let temp = tempEmail.toLowerCase();
+    if (temp === lowerEmailAddress) {
+      throw `This email has been registered`;
+    }
+
+    let tempDisplayname = item.displayName.toLowerCase();
+    temp = tempDisplayname.toLowerCase();
+    if (temp === tempDisplayname) {
+      throw `This displayName has been registered`;
     }
   }
+
+  validator.validatePassword(password);
+  const hash = await bcrypt.hash(password, saltRounds);
+
+  let addUser = {
+    _id: uuid.v4(),
+    firstName: firstName,
+    lastName: lastName,
+    emailAddress: lowerEmailAddress,
+    subscribedCommunities: [],
+    adminCommunities: [],
+    password: hash,
+    profileImage: avatarPath,
+    deleted: false,
+    displayName: displayName,
+    createdAt: new Date().toUTCString(),
+    updatedAt: new Date().toUTCString(),
+  }
+
+  const addRes = await userCollection.insertOne(addUser);
+  if (addRes.insertedCount === 0) {
+    throw `Something went wrong during add.`;
+  }
+  return { userInserted: true };
 };
 
 
