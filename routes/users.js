@@ -27,6 +27,15 @@ router.delete("/:id", async (req, res) => {
   }
 });
 
+router.get("/signup",async(req,res)=>{
+  if (!req.session.userId) {
+    res.status(200).render('users/create_user');
+    return;
+} else {
+    res.redirect('/questions/all');
+}
+})
+
 // create a new user
 router.post("/", async (req, res) => {
   if (!req.body.firstName || !req.body.lastName || !req.body.password || !req.body.emailAddress || !req.body.displayName) {
