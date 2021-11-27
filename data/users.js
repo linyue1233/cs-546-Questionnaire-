@@ -29,7 +29,30 @@ const deleteUser = async (userId) => {
   return { deleted: true, _id: userId };
 };
 
-const userSignUp = async()
+const userSignUp = async (firstName, lastName, password, emailAddress, avatarPath) => {
+  // parames needed user firstName, lastName, emailAddress, password
+  // if user's does not upload avatar, give him a default imageOrientation
+  // produce createTime when signUp
+  if (avatarPath === undefined) {
+    avatarPath = "public/images/defaultAvatar.jpg";
+  }
+  if (firstName === undefined || lastName === undefined || emailAddress === undefined || password === undefined) {
+    throw `Please provide all information.`;
+  }
+  const allUsers = await users();
+  const usersList = await allUsers.find({}).toArray();
+  // validate email and displayName
+
+  lowerEmailAddress = emailAddress.toLowerCase();
+  for (let item of usersList) {
+    let tempUserName = item.username;
+    let temp = tempUserName.toLocaleLowerCase();
+    if (temp === lowerName) {
+      return { userInserted: false };
+    }
+  }
+};
+
 
 
 module.exports = {
