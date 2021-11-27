@@ -27,4 +27,43 @@ router.delete("/:id", async (req, res) => {
   }
 });
 
+// create a new user
+router.post("/", async (req, res) => {
+  if (!req.body.firstName || !req.body.lastName || !req.body.password || !req.body.emailAddress || !req.body.displayName) {
+    res.render("users/create_user", { error: "Please provide all information." });
+    return;
+  }
+  let { firstName, lastName, password, emailAddress, displayName, avatarPath } = req.body;
+  let passwordValid = validator.validatePassword(password);
+  let emailValid = validator.validateEmailAddress(emailAddress);
+  if (!passwordValid || !emailValid) {
+    res.render("users/create_user", { error: "Please provide valid information." });
+    return;
+  }
+  if (avatarPath === undefined) {
+    avatarPath = "public/images/defaultAvatar.jpg";
+  }
+  if (firstName.length === 0 || firstName.trim().length === 0
+    || lastName.length === 0 || lastName.trim().length === 0
+    || password.length === 0 || password.trim().length === 0
+    || emailAddress.length === 0 || emailAddress.trim().length === 0
+    || displayName.length === 0 || displayName.trim().length === 0
+    || avatarPath.length === 0 || avatarPath.trim().length === 0) {
+    res.render("users/create_user", { error: "Please provide valid information." });
+    return;
+  }
+  try{
+    const addUser = await users.userSignUp(firstName,lastName,displayName,password,emailAddress,avatarPath);
+    if(addUser.userInserted){
+      res.redirect("/site/login");
+      return;
+    }
+    res.status(400).render("users/create_user", { error: "Something went wrong." });
+  }catch(e){
+    res.status(400).render("users/create_user", { error: e});
+    return;
+  }
+});
+
+
 module.exports = router;

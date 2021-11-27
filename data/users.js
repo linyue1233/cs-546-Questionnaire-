@@ -64,7 +64,10 @@ const userSignUp = async (firstName, lastName, displayName, password, emailAddre
   const userCollection = await users();
   const usersList = await userCollection.find({}).toArray();
 
-  validator.validateEmailAddress(emailAddress);
+  let {isValid} = validator.validateEmailAddress(emailAddress);
+  if(!isValid){
+    throw `This email is not valid.`;
+  }
   // validate email, displayName, password
   let lowerEmailAddress = emailAddress.toLowerCase();
   for (let item of usersList) {
