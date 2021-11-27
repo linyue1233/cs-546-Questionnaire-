@@ -1,0 +1,22 @@
+<div>
+    <h1 class="user-login">User Signup</h1>
+    <form id="signup-form" action="/signup" method="post">
+        <label>username: </label>
+        <input id="username" name="username" placeholder="Enter username">
+        <br>
+        <label>password: </label>
+        <input id="password" name="password" type="password" placeholder="Enter password">
+        <br>
+        <input id="emailAddress" name="emailAddress" placeholder="Enter emailAddress">
+        <br>
+        <input id="displayName" name="displayName" placeholder="Enter displayName">
+        <br>
+        <button type="submit">sumbit</button>
+    </form>
+
+    {{#if error_message}}
+    <p> {{this.error_message}}</p>
+    {{/if}}
+
+    <a href="/">Already have an account? Click here to log-in</a>
+</div>

@@ -29,6 +29,9 @@ const deleteUser = async (userId) => {
   return { deleted: true, _id: userId };
 };
 
+const userSignUp = async()
+
+
 module.exports = {
   deleteUser,
 };
