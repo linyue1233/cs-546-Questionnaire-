@@ -1,8 +1,29 @@
 // Add DB operations on users here.
 const mongoCollections = require("../config/mongoCollections");
 const validator = require("../helpers/dataValidators/userValidator");
+const bcrypt = require("bcrypt");
 let users = mongoCollections.users;
 const uuid = require("uuid");
+
+const checkUser = async (emailAddress, password) => {
+  validator.validateEmailAddress(emailAddress);
+  validator.validatePassword(password);
+  const userCollection = await users();
+  const findUser = await userCollection.findOne({ emailAddress });
+  if (findUser === null) {
+    throw `No user identity found with this email address.`;
+  }
+  const comparison = await bcrypt.compare(password, findUser.password);
+  if (!comparison) {
+    throw `Invalid emailAddress/password combination.`;
+  }
+  return {
+    authenticated: true,
+    userId: findUser._id,
+    userEmail: findUser.emailAddress,
+    userDispName: findUser.displayName,
+  };
+};
 
 const deleteUser = async (userId) => {
   validator.validateId(userId);
@@ -31,4 +52,5 @@ const deleteUser = async (userId) => {
 
 module.exports = {
   deleteUser,
+  checkUser,
 };
