@@ -112,11 +112,7 @@ router.get("/", async (req, res) => {
   let communityId = req.query.communityId;
   let posterId = req.query.userId;
   // provide one parameter is ok
-<<<<<<< HEAD
-  if (communityId === undefined && posterId === undefined) {
-=======
   if (communityId === undefined || posterId === undefined) {
->>>>>>> 8f9c392a523815d3f1090eb7c562c3552968c39a
     res.status(400).json({ error: "You should provide valid parameters" });
     return;
   }
@@ -237,13 +233,11 @@ router.put("/:questionId/answers/:answerId", async (req, res) => {
   let validate = validator.validateUpdateBody(updatePayload);
   if (!validate.isValid) {
     // sending body to retain old values in the form
-    res
-      .status(400)
-      .render("answers/edit_answer", {
-        hasErrors: true,
-        error: validate.message,
-        body: updatePayload,
-      });
+    res.status(400).render("answers/edit_answer", {
+      hasErrors: true,
+      error: validate.message,
+      body: updatePayload,
+    });
     return;
   }
   try {
@@ -252,11 +246,9 @@ router.put("/:questionId/answers/:answerId", async (req, res) => {
       answerId,
       updatePayload
     );
-    res
-      .status(200)
-      .render("questions/individual-question.handlebars", {
-        questionInfo: updatedQuestionWithAnswer,
-      });
+    res.status(200).render("questions/individual-question.handlebars", {
+      questionInfo: updatedQuestionWithAnswer,
+    });
     return;
   } catch (e) {
     console.log(e);
