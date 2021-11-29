@@ -4,24 +4,21 @@ const communities = require("../data/communities");
 
 router.get("/create/new", async (req, res) => {
   if (req.session.userId) {
-    res.render("communities/new-comunity", {
-      error: false,
+    res.render("communities/new-community", {
+      loginError: false,
     });
   } else {
     res.render("communities/new-community", {
       message: "You need to login to create a community",
-      error: true,
+      loginError: true,
     });
   }
 });
 
-router.post("/", async (req, res) => {
+router.post("/create/new", async (req, res) => {
   if (!req.session.userId) {
-    res.render("communities/new-community", {
-      message: "Unauthorized Access",
-      error: true,
-    });
-  } else if (!req.body) {
+    res.redirect("/communities/create/new");
+  } else if (!req.body.name || !req.body.description) {
     res.render("communities/new-community", {
       message: "Fill all the fields to create a community",
       error: true,
@@ -30,10 +27,10 @@ router.post("/", async (req, res) => {
     try {
       let name = req.body.name;
       let description = req.body.description;
-      const res = communities.createCom(name, description, req.session.userId);
-      if (res) {
-        res.render("communities/new-community", {
-          message: "Community successfully created",
+      const done = communities.createCom(name, description, req.session.userId);
+      if (done) {
+        res.render("communities/success", {
+          message: name + " Community successfully created",
           success: true,
           error: false,
         });
@@ -46,3 +43,5 @@ router.post("/", async (req, res) => {
     }
   }
 });
+
+module.exports = router;

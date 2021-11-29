@@ -1,0 +1,12 @@
+{{#if loginError}}
+<div>{{message}}</div>
+{{else}}
+<form method="post" action="/communities/create/new">
+    <input type="text" name="name" id="name">
+    <input type="text" name="description" id="description">
+    <input type="submit" value="Create">
+</form>
+{{/if}}
+{{#if error}}
+<div>{{message}}</div>
+{{/if}}
