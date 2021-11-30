@@ -4,6 +4,16 @@ const validator = require("../helpers/dataValidators/userValidator");
 let users = mongoCollections.users;
 const uuid = require("uuid");
 
+const listUser = async (userId) => {
+  validator.validateId(userId);
+  const userCollection = await users();
+  const user = await userCollection.findOne({ _id: userId });
+  if (user === null) {
+    throw `No user present with the id.`;
+  }
+  return user;
+};
+
 const deleteUser = async (userId) => {
   validator.validateId(userId);
   const userCollection = await users();
@@ -58,5 +68,6 @@ const updateUser= async(userId,firstName,lastName,profileImage)=> {
 
 module.exports = {
   deleteUser,
-  updateUser
+  updateUser,
+  listUser
 };

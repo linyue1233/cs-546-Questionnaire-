@@ -1,29 +1,30 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const users = require("../data/users");
-const validator = require("../helpers/routeValidators/userValidator");
+const users = require('../data/users');
+const validator = require('../helpers/routeValidators/userValidator');
 
-const path = require("path");
-const multer  = require('multer')
+const path = require('path');
+const multer = require('multer');
+const fs = require('fs');
 
-// This will store the image first in temorrarydisk called storage
-let storage= multer.diskStorage({
-  destination:"/public/images/",
-  filename: (req,file,cb)=>{
-    cb(null,file.fieldname+"_"+Date.now()+path.extname(file.originalname));  
-  }
-})
-// defining multer middleware
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, path.join(__dirname, '../public/images/userprofile'));
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + '_' + file.originalname);
+  },
+});
 
-let upload=multer({
-  storage:storage
+let upload = multer({
+  storage: storage,
 }).single('profileImage');
-// profileImage is the name atribute of html form
-router.delete("/:id", async (req, res) => {
+
+router.delete('/:id', async (req, res) => {
   let userId = req.params.id;
   let validate = validator.validateId(userId);
   if (!validate.isValid) {
-    res.render("users/get_specific_user", { error: validate.message });
+    res.render('users/get_specific_user', { error: validate.message });
     return;
   }
   try {
@@ -32,57 +33,79 @@ router.delete("/:id", async (req, res) => {
       // Maybe throw a success prompt, but delete the user and log them out
       // for now, redirecting to questions
       // TODO: revisit with logout code
-      res.redirect("/questions/all");
+      res.redirect('/questions/all');
       return;
     }
-    res.status(400).render("users/get_specific_user", { error: "Something went wrong." });
+    res
+      .status(400)
+      .render('users/get_specific_user', { error: 'Something went wrong.' });
     return;
   } catch (e) {
-    res.status(400).render("users/get_specific_user", { error: e });
+    res.status(400).render('users/get_specific_user', { error: e });
     return;
   }
 });
-
 
 router.get('/:id/edit', async (req, res) => {
   let userId = req.params.id;
   // Kindly verify below function name with data functions
-  const User = await users.getUserbyId(userId);
+  const User = await users.listUser(userId);
 
-
-  res.status(200).render('users/Update_userForm',User);
+  res.status(200).render('users/Update_userForm', User);
 });
-router.put("/:id", upload, async (req, res, next) => {
-
- 
-/*   let validate = validator.validateId(userId);
-  if (!validate.isValid) {
-    res.render("users/get_specific_user", { error: validate.message });
-    return;
-  } */
+router.put('/:id', upload, async (req, res, next) => {
+// we get file name through multer req object : req.file.filename 
   try {
-    if (!req.body.firstName|| !req.body.lastName || !req.params.id || !req.file.filename) throw " error : Incomplete Data received";
-     
-  let userId = req.params.id;
-  let firstName=req.body.firstName;
-  let lastName=req.body.lastName;
-  let profileImage= req.file.filename;
-  if (
-    typeof userId !== 'string' ||
-    typeof firstName !== 'string' ||
-    typeof lastName !== 'string' ||
-    typeof profileImage !== 'string'
-  ) {
-    throw ' not a valid inputs';
-  }
-
-    const updateUser = await users.updateUser(userId,firstName,lastName,profileImage);
-   // updateuser returns the updated user from users collection
-  //  let success = req.file.filename+ "uploaded successfully"
-    res.status(200).render("users/get_specific_user", updateUser);
+    let userId = req.params.id;
+    let firstName = req.body.firstName;
+    let lastName = req.body.lastName;
+    const User = await users.listUser(userId);
+    let profImage=User.profileImage;
+    let profileImage;
+    if (req.file){
+     profileImage = req.file.filename;
+    }
+    else{
+     profileImage=profImage
+    }
+    if (
+      typeof userId !== 'string' ||
+      typeof firstName !== 'string' ||
+      typeof lastName !== 'string' ||
+      typeof profileImage !== 'string'
+    ) {
+      throw ' not a valid inputs';
+    }
+    if (
+       userId.trim()==="" ||
+       firstName.trim()===""||
+       lastName.trim()===""||
+       profileImage.trim()===""
+    ) {
+      throw ' not a valid inputs';
+    }
+    const updateUser = await users.updateUser(
+      userId,
+      firstName,
+      lastName,
+      profileImage
+    );
+    res.status(200).render('users/get_specific_user', updateUser);
+    if (profileImage!=profImage){
+      const pat = path.join(__dirname, `../public/images/userprofile/${profImage}`);
+      fs.unlink(pat, (err) => {
+        if (err) {
+          console.error(err);
+          return;
+        }
+        //old image removed from public/images/userprofile
+      });
+    }
     return;
   } catch (e) {
-    res.status(400).render("users/get_specific_user", { error: e });
+    const User = await users.listUser(req.params.id);
+    User.error=e;
+    res.status(400).render('users/Update_userForm', User);
     return;
   }
 });

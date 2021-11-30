@@ -89,6 +89,12 @@ const addQuestion = async (
   ) {
     throw ' not a valid inputs';
   }
+  if (title.trim().length === 0) throw ' error:empty string';
+  if (description.trim().length === 0) throw ' error:empty string';
+  if (community.trim().length === 0) throw ' error:empty string';
+  if (tagsstring.trim().length === 0) throw ' error:empty string';
+
+
 
   const questionsCollection = await questions();
   //To enter multiple tags users has to separate by spaces

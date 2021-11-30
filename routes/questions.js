@@ -132,7 +132,7 @@ router.delete("/:id/delete", async (req, res) => {
   res.status(200).json({ deleted: question.deleted, id: question.id });
 });
 
-router.get('/new', async (req, res) => {
+router.get('/create/new', async (req, res) => {
   res.status(200).render('Questions/new', {});
 });
 
@@ -157,6 +157,10 @@ router.post('/', async (req, res) => {
   if (!QuestionPostData.tags) {
     errors.push('You must provide tags');
   }
+  if (QuestionPostData.title.length === 0) errors.push(' error:empty string') ;
+  if (QuestionPostData.description.trim().length === 0) errors.push(' error:empty string');
+  if (QuestionPostData.community.trim().length === 0) errors.push(' error:empty string');
+  if (QuestionPostData.tags.trim().length === 0) errors.push(' error:empty string');
   
   if (errors.length > 0) {
     res.render('questions/new', {
@@ -174,7 +178,7 @@ router.post('/', async (req, res) => {
   
   try {
     const { title, description, posterId, community,tags } = QuestionPostData;
-    const newQuestion = await questions.addQuestion(title, description,posterId,community,tags);
+    const newQuestion = await questions.addQuestion(title, description,community,tags,posterId);
    // ideal resonse res.redirect(`/questions/${newQuestion._id}`);
    res.status(200).json({msg:"question has been added to db"})
   } catch (e) {
