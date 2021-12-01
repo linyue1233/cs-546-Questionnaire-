@@ -64,12 +64,14 @@ const userSignUp = async (firstName, lastName, displayName, password, emailAddre
   const userCollection = await users();
   const usersList = await userCollection.find({}).toArray();
 
-  let {isValid} = validator.validateEmailAddress(emailAddress);
-  if(!isValid){
-    throw `This email is not valid.`;
+  try{
+    validator.validateEmailAddress(emailAddress);
+  }catch(e){
+    throw e;
   }
   // validate email, displayName, password
   let lowerEmailAddress = emailAddress.toLowerCase();
+  let lowerDisplayname = displayName.toLowerCase();
   for (let item of usersList) {
     let tempEmail = item.emailAddress;
     let temp = tempEmail.toLowerCase();
@@ -79,7 +81,7 @@ const userSignUp = async (firstName, lastName, displayName, password, emailAddre
 
     let tempDisplayname = item.displayName.toLowerCase();
     temp = tempDisplayname.toLowerCase();
-    if (temp === tempDisplayname) {
+    if (temp === lowerDisplayname) {
       throw `This displayName has been registered`;
     }
   }

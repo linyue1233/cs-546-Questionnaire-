@@ -1,20 +1,29 @@
 <div>
     <h1 class="user-login">User Signup</h1>
-    <form id="signup-form" action="/signup" method="post">
-        <label>firstName: </label>
-        <input id="firstName" name="firstName" placeholder="Enter firstName">
+    <form id="signup-form" action="/users" method="post" role="form" enctype="multipart/form-data">
+        <label>*firstName: 
+        <input type="text" id="firstName" name="firstName" placeholder="Enter firstName">
+        </label>
         <br>
-        <label>lastName: </label>
-        <input id="lastName" name="lastName" placeholder="Enter lastName">
+        <label>*lastName: 
+        <input type="text" id="lastName" name="lastName" placeholder="Enter lastName">
+        </label>
         <br>
-        <label>password: </label>
+        <label>*password: 
         <input id="password" name="password" type="password" placeholder="Enter password">
+        </label>
         <br>
-        <label>emailAddress: </label>
-        <input id="emailAddress" name="emailAddress" placeholder="Enter emailAddress">
+        <label>*emailAddress: 
+        <input type="text" id="emailAddress" name="emailAddress" placeholder="Enter emailAddress">
+        </label>
         <br>
-        <label>displayName: </label>
-        <input id="displayName" name="displayName" placeholder="Enter displayName">
+        <label>*displayName: 
+        <input type="text" id="displayName" name="displayName" placeholder="Enter displayName">
+        </label>
+        <br>
+        <label>ProfileImage: (We will allocate a default avatar, if you don't upload)
+        <input type="file" id="profileImage" name="profileImage" value="choose file">
+        </label>
         <br>
         <button type="submit">sumbit</button>
     </form>
