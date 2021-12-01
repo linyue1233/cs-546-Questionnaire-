@@ -105,7 +105,7 @@ router.get("/", async (req, res) => {
   let communityId = req.query.communityId;
   let posterId = req.query.userId;
   // provide one parameter is ok
-  if (communityId === undefined || posterId === undefined) {
+  if (communityId === undefined && posterId === undefined) {
     res.status(400).json({ error: "You should provide valid parameters" });
     return;
   }

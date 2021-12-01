@@ -33,7 +33,6 @@ const getID = async (id) => {
 
   let question = await questionsCollection.findOne({ _id: id });
   if (!question) throw 'Error : Question not found';
-  console.log(11);
   return question;
 };
 
