@@ -110,8 +110,6 @@ router.get("/", async (req, res) => {
     return;
   }
   try {
-    console.log(communityId);
-    console.log(posterId);
     const allQuestions = await questionData.getAll(communityId, posterId);
     res.status(200).render('questions/all_questions',{
       questions: allQuestions
@@ -197,7 +195,6 @@ router.get("/:questionId/answers", async(req,res)=> {
   try{
     const answersarray = await questions.getAllAnsweres(req.params.questionId)
     let questionInfo = await questions.getID(req.params.questionId);;
-    console.log(questionInfo);
     questionInfo.answeres=answersarray;
     res.status(200).render("questions/individual-question",{questionInfo:questionInfo});
   }catch(e){
