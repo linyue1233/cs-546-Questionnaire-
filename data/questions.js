@@ -11,9 +11,6 @@ const getAllWithoutParams = async () => {
 };
 
 const getAll = async (communityId, userId) => {
-  if (arguments.length > 2) {
-    throw `you can not pass any parameters`;
-  }
   if (arguments.length === 0) {
     throw `you must pass a parameter at least`;
   }
@@ -36,6 +33,7 @@ const getID = async (id) => {
 
   let question = await questionsCollection.findOne({ _id: id });
   if (!question) throw 'Error : Question not found';
+  console.log(11);
   return question;
 };
 
