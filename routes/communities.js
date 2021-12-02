@@ -6,12 +6,10 @@ router.get("/create/new", async (req, res) => {
   if (req.session.userId) {
     res.render("communities/new-community", {
       loginError: false,
+      session: req.session,
     });
   } else {
-    res.render("communities/new-community", {
-      message: "You need to login to create a community",
-      loginError: true,
-    });
+    res.redirect("/site/login");
   }
 });
 

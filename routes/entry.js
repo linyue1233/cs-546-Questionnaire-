@@ -20,7 +20,9 @@ router.post("/login", async (req, res) => {
   const validateUsername = validator.validateEmailAddress(emailAddress);
   const validatePassword = validator.validatePassword(password);
   if (!validateUsername.isValid || !validatePassword.isValid) {
-    res.status(400).render("entry_pages/login", { error: "Invalid email address or password combination." });
+    res.status(400).render("entry_pages/login", {
+      error: "Invalid email address or password combination.",
+    });
     return;
   }
   try {
@@ -31,21 +33,25 @@ router.post("/login", async (req, res) => {
       req.session.userEmail = userLogin.userEmail;
       req.session.userDispName = userLogin.userDispName;
       req.session.userId = userLogin.userId;
-      res.redirect("/questions/all");
+      res.redirect("/");
       return;
     }
     // code is not supposed to reach here, but if it does, reload login page with error.
-    res.status(400).render("entry_pages/login", { error: "Invalid email address or password combination." });
+    res.status(400).render("entry_pages/login", {
+      error: "Invalid email address or password combination.",
+    });
     return;
   } catch (e) {
-    res.status(400).render("entry_pages/login", { error: "Invalid email address or password combination." });
+    res.status(400).render("entry_pages/login", {
+      error: "Invalid email address or password combination.",
+    });
     return;
   }
 });
 
-router.get("/site/logout", async (req, res) => {
+router.get("/logout", async (req, res) => {
   req.session.destroy();
-  res.redirect("/questions/all");
+  res.redirect("/");
   return;
 });
 

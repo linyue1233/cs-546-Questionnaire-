@@ -9,7 +9,10 @@ const validator = require("../helpers/routeValidators/questionValidator");
 router.get("/all", async (req, res) => {
   const allQuestions = await questions.getAllWithoutParams();
   console.log(allQuestions);
-  res.render("questions/all_questions", { questions: allQuestions });
+  res.render("questions/all_questions", {
+    questions: allQuestions,
+    session: req.session,
+  });
   return;
 });
 
@@ -20,6 +23,7 @@ router.get("/:id/edit", async (req, res) => {
     if (!questions) res.status(400).json({ error: "No question with that id" });
     res.render("questions/edit-question", {
       question: question,
+      session: req.session,
     });
   } catch (e) {
     res.status(400).json({ error: e });
@@ -93,15 +97,18 @@ router.post("/search", async (req, res) => {
     searchTerm: body.keyword,
     searchTotal: searchResult.length,
     searchResults: searchResult,
+    session: req.session,
   });
 });
 
 router.get("/:id", async (req, res) => {
   let id = req.params.id;
+  console.log(req.session);
   try {
     let questionAns = await questionData.getID(req.params.id);
     res.status(200).render("questions/individual-question", {
       questionInfo: questionAns,
+      session: req.session,
     });
   } catch (e) {
     res.status(404).json({ error: "can not find question with this id" });

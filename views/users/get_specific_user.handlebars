@@ -1,5 +1,13 @@
-<h1>This page will list specific user details.</h1>
-<div>{{user}}</div>
+{{#if user}}
+<div class="d-grid gap-2 d-md-flex justify-content-md-end">
+  <button class="btn btn-info btn-sm" type="button">Create Community</button>&nbsp;
+  <button class="btn btn-info btn-sm" type="button">Change Password</button>
+</div>
+<h2>{{user.displayName}}</h2>
+<div>{{user.firstName}} {{user.lastName}}</div>
+<div>Email : {{user.emailAddress}}</div>
+<div>Communities : {{user.subscribedCommunities}}</div>
+{{/if}}
 {{#if error}}
 <p>{{ error }}</p>
 {{/if}}

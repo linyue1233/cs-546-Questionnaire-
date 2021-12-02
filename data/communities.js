@@ -14,7 +14,7 @@ const createCom = async (name, description, userId) => {
     name: name,
     description: description,
     questions: [],
-    subscribedUsers: [],
+    subscribedUsers: [userId],
     administrator: userId,
     flaggedQuestions: [],
     flaggedAnswers: [],

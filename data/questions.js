@@ -213,4 +213,5 @@ module.exports = {
   deleteAnswer,
   updateAnswer,
   getAllWithoutParams,
+  search,
 };
