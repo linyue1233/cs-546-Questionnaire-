@@ -1,0 +1,17 @@
+<h1>Edit Community {{community.title}}</h1>
+<form action="/communities/{{community._id}}/" method="post">
+  <input type="text" name="title" placeholder="Community Title" />
+  <input type="textarea" name="description" placeholder="Community Description" />
+  <select name="administrator">
+    <option>Choose An administrator</option>
+    {{#each subscribedUsers}}
+    <option value="{{this.userId}}">{{this.displayName}}</option>
+    {{/each}}
+  </select>
+  <input name="_method" type="hidden" value="PUT" />
+  <input type="submit" value="Edit" />
+</form>
+
+{{#if error}}
+  <p> {{error}} </p>
+{{/if}}

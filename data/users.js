@@ -1,8 +1,29 @@
 // Add DB operations on users here.
 const mongoCollections = require("../config/mongoCollections");
 const validator = require("../helpers/dataValidators/userValidator");
+const bcrypt = require("bcrypt");
 let users = mongoCollections.users;
 const uuid = require("uuid");
+
+const checkUser = async (emailAddress, password) => {
+  validator.validateEmailAddress(emailAddress);
+  validator.validatePassword(password);
+  const userCollection = await users();
+  const findUser = await userCollection.findOne({ emailAddress });
+  if (findUser === null) {
+    throw `No user identity found with this email address.`;
+  }
+  const comparison = await bcrypt.compare(password, findUser.password);
+  if (!comparison) {
+    throw `Invalid emailAddress/password combination.`;
+  }
+  return {
+    authenticated: true,
+    userId: findUser._id,
+    userEmail: findUser.emailAddress,
+    userDispName: findUser.displayName,
+  };
+};
 
 const listUser = async (userId) => {
   validator.validateId(userId);
@@ -32,7 +53,10 @@ const deleteUser = async (userId) => {
     displayName: "deletedUser_" + uuid.v1().slice(0, 8),
     updatedAt: new Date().toUTCString(),
   };
-  const updateUser = await userCollection.updateOne({ _id: userId }, { $set: deletedUser });
+  const updateUser = await userCollection.updateOne(
+    { _id: userId },
+    { $set: deletedUser }
+  );
   if (updateUser.modifiedCount === 0) {
     throw `Something went wrong during deletion.`;
   }
@@ -66,8 +90,18 @@ const updateUser= async(userId,firstName,lastName,profileImage)=> {
   
 }
 
+const getDisplayNameByUserId = async (userId) => {
+  validator.validateId(userId);
+  const userCollection = await users();
+  const user = await userCollection.findOne({ _id: userId }, { $projection: { displayName: 1 } });
+  console.log(user);
+  return user.displayName;
+};
+
 module.exports = {
   deleteUser,
+  checkUser,
+  listUser,
+  getDisplayNameByUserId,
   updateUser,
-  listUser
 };
