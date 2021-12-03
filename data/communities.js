@@ -9,15 +9,15 @@ const getCommunityById = async (communityId) => {
         throw `Please provide communityId`;
     }
     // get a list of questions
-    let allQuestions = await questionData.getAll(communityId, null);
-    const communitiesCollection = await questions();
+    let allQuestions = await questionData.getAll(communityId);
+    const communitiesCollection = await communities();
     let community = await communitiesCollection.findOne({ _id: communityId });
     if (community === null) {
         throw 'Error : Community not found';
     }
     return {
         community: community,
-        questions: allQuestions
+        questions: allQuestions.splice(0,20)
     };
 };
 

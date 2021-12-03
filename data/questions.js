@@ -11,14 +11,14 @@ const getAllWithoutParams = async () => {
 };
 
 const getAll = async (communityId, userId) => {
-  if (arguments.length === 0) {
+  if (communityId === undefined && userId === undefined) {
     throw `you must pass a parameter at least`;
   }
   const questionCollection = await questions();
-  if (communityId !== undefined && userId !== undefined) {
+  if ((communityId !== undefined && communityId !== null) && (userId !== undefined && userId !== null)) {
     const questionCollections = await questionCollection.find({ communityId: communityId, posterId: userId }).toArray();
     return questionCollections;
-  } else if (communityId !== undefined) {
+  } else if (communityId !== undefined || communityId !== null) {
     const questionCollections = await questionCollection.find({ communityId: communityId }).toArray();
     return questionCollections;
   } else {

@@ -1,0 +1,19 @@
+{{!-- shows a page where the user can see the community details--}}
+<h1>community title:{{communityInfo.community.name}}</h1>
+
+<h2>community description:{{communityInfo.community.description}}</h2>
+
+<input type="submit" id="userSubscribe" value="Subscribe"></button>
+
+{{#if communityInfo.questions.length}}
+<ul>
+    {{#each communityInfo.questions}}
+    <li>
+        <a href="/questions/{{this._id}}">{{this.title}}</a>
+        <p>{{this.description}}</p>
+    </li>
+    {{/each}}
+</ul>
+{{else}}
+<p>There are no questions in this community now. You can post first question.</p>
+{{/if}}

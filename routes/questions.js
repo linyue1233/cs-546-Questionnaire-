@@ -101,6 +101,7 @@ router.get("/:id", async (req, res) => {
   }
 }); 
 
+//localhost:3000/questions/?communityId=112&userId=121
 router.get("/", async (req, res) => {
   let communityId = req.query.communityId;
   let posterId = req.query.userId;
