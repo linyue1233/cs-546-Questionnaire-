@@ -20,7 +20,19 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use("/public", express.static(path.resolve(__dirname + "/public")));
 
-app.use("/questions/:questionId/answers/:answerId", middlewares.changeMethodToPutForAnswerUpdate);
+app.use(
+  "/questions/:questionId/answers/:answerId",
+  middlewares.changeMethodToPutForAnswerUpdate
+);
+
+app.use("/questions/search", (req, res, next) => {
+  if (req.method == "POST") {
+    if (req.body.keyword.trim().length == 0) res.redirect("/");
+    else next();
+  } else {
+    next();
+  }
+});
 
 app.engine("handlebars", exphbs({ defaultLayout: "main" }));
 app.set("view engine", "handlebars");
