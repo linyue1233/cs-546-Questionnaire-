@@ -5,8 +5,7 @@ const uuid = require("uuid");
 
 const createCom = async (name, description, userId) => {
   if (!name || !description) throw "Not a valid input";
-  if (typeof name != "string" || typeof description != "string")
-    throw "Not a valid input";
+  if (typeof name != "string" || typeof description != "string") throw "Not a valid input";
 
   const communityCollections = await communities();
   let newCom = {

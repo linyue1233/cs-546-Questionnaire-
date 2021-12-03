@@ -35,19 +35,13 @@ const getAll = async (communityId, userId) => {
   }
   const questionCollection = await questions();
   if (communityId !== undefined && userId !== undefined) {
-    const questionCollections = await questionCollection
-      .find({ communityId: communityId, posterId: userId })
-      .toArray();
+    const questionCollections = await questionCollection.find({ communityId: communityId, posterId: userId }).toArray();
     return questionCollections;
   } else if (communityId !== undefined) {
-    const questionCollections = await questionCollection
-      .find({ communityId: communityId })
-      .toArray();
+    const questionCollections = await questionCollection.find({ communityId: communityId }).toArray();
     return questionCollections;
   } else {
-    const questionCollections = await questionCollection
-      .find({ posterId: userId })
-      .toArray();
+    const questionCollections = await questionCollection.find({ posterId: userId }).toArray();
     return questionCollections;
   }
 };
@@ -76,10 +70,7 @@ const editQuestion = async (id, title, description, tags, communityId) => {
     tags: tags,
     communityId: communityId,
   };
-  const updatedInfo = await questionsCollection.updateOne(
-    { _id: id },
-    { $set: updateQuestion }
-  );
+  const updatedInfo = await questionsCollection.updateOne({ _id: id }, { $set: updateQuestion });
   if (updatedInfo.modifiedCount == 0) throw "Could not update the question";
   return true;
 };
@@ -96,13 +87,7 @@ const remove = async (id) => {
   return { deleted: true, id: id };
 };
 
-const addQuestion = async (
-  title,
-  description,
-  community,
-  tagsstring,
-  posterId
-) => {
+const addQuestion = async (title, description, community, tagsstring, posterId) => {
   //Initial testing-posterid is not available
   if (!title || !description || !community || !tagsstring) {
     throw " not a valid inputs";
@@ -189,12 +174,8 @@ const search = async (body) => {
   // TODO: add validation wherever necessary
   const questionsCollection = await questions();
   let tokenizedKeywords = body.keyword.split(" ");
-  const allMatches = await questionsCollection
-    .find({ $text: { $search: body.keyword } })
-    .toArray();
-  const allArrayMatches = await questionsCollection
-    .find({ tags: tokenizedKeywords })
-    .toArray();
+  const allMatches = await questionsCollection.find({ $text: { $search: body.keyword } }).toArray();
+  const allArrayMatches = await questionsCollection.find({ tags: tokenizedKeywords }).toArray();
   console.log(tokenizedKeywords, allArrayMatches);
   if (allArrayMatches.length > 0) {
     allMatches = allMatches.concat(allArrayMatches);
