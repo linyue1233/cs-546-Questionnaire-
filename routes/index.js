@@ -4,6 +4,7 @@ const entryRoutes = require("./entry");
 const communityRoutes = require("./communities");
 const frontPage = require("./frontPage");
 
+
 const constructorMethod = (app) => {
   app.use("/site", entryRoutes);
   app.use("/questions", questionRoutes);

@@ -63,8 +63,17 @@ const deleteUser = async (userId) => {
   return { deleted: true, _id: userId };
 };
 
+const getDisplayNameByUserId = async (userId) => {
+  validator.validateId(userId);
+  const userCollection = await users();
+  const user = await userCollection.findOne({ _id: userId }, { $projection: { displayName: 1 } });
+  console.log(user);
+  return user.displayName;
+};
+
 module.exports = {
   deleteUser,
   checkUser,
   listUser,
+  getDisplayNameByUserId,
 };

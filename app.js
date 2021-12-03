@@ -34,6 +34,8 @@ app.use("/questions/search", (req, res, next) => {
   }
 });
 
+app.use("/communities/:id", middlewares.changeMethodToPutForAnswerUpdate);
+
 app.engine("handlebars", exphbs({ defaultLayout: "main" }));
 app.set("view engine", "handlebars");
 
