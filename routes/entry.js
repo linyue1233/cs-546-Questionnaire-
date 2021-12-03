@@ -10,7 +10,7 @@ router.get("/login", async (req, res) => {
     return;
   }
   // show login form
-  res.status(200).render("entry_pages/login");
+  res.status(200).render("entry_pages/login", { session: req.session });
   return;
 });
 

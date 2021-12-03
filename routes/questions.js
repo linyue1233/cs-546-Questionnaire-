@@ -101,6 +101,10 @@ router.post("/search", async (req, res) => {
   });
 });
 
+router.get("/new", async (req, res) => {
+  res.status(200).render("questions/new", { session: req.session });
+});
+
 router.get("/:id", async (req, res) => {
   let id = req.params.id;
   console.log(req.session);
@@ -146,10 +150,6 @@ router.delete("/:id/delete", async (req, res) => {
     return;
   }
   res.status(200).json({ deleted: question.deleted, id: question.id });
-});
-
-router.get("/new", async (req, res) => {
-  res.status(200).render("Questions/new", {});
 });
 
 router.post("/", async (req, res) => {

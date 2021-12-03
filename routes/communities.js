@@ -31,6 +31,7 @@ router.post("/create/new", async (req, res) => {
           message: name + " Community successfully created",
           success: true,
           error: false,
+          session: req.session,
         });
       }
     } catch (e) {
