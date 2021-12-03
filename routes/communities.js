@@ -1,7 +1,6 @@
 const express = require("express");
 const router = express.Router();
 const communities = require("../data/communities");
-const router = express.Router();
 const community = require("../data/communities");
 const users = require("../data/users");
 const validator = require("../helpers/routeValidators/communityValidator");
@@ -45,6 +44,8 @@ router.post("/create/new", async (req, res) => {
         error: true,
       });
     }
+  }
+});
 
 router.get("/:id/edit", async (req, res) => {
   try {
