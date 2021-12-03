@@ -12,11 +12,28 @@
     />
   </head>
   <body>
-    <nav class="navbar navbar-light bg-light shadow-sm rounded">
-      <a class="navbar-brand" href="#"><i class="fas fa-comments"></i> Questionnaire</a>
+    <nav class="navbar navbar-light bg-light shadow-sm rounded sticky-top">
+      <a class="navbar-brand" href="/"><i class="fas fa-comments"></i> Questionnaire</a>
+      <form class="form-inline my-2 my-lg-0 w-50" method="post" action="/questions/search">
+      <input class="form-control mr-sm-2 w-50 search" type="search" placeholder="Search" name="keyword" aria-label="Search">
+      <input class="btn btn-secondary" type="submit" value="Search">
+    </form>
+    {{#if session.userId}}
+      <div class="btn-group" role="group" aria-label="">
+        <a href="/users/{{session.userId}}"><button type="button" class="btn btn-secondary">My Account</button></a>&nbsp;
+        <a href="/site/logout"><button type="button" class="btn btn-secondary">Logout</button></a>
+      </div>
+      {{else}}
+      <div class="btn-group" role="group" aria-label="">
+        <a href="#"><button type="button" class="btn btn-secondary">Register</button></a>&nbsp;
+        <a href="/site/login"><button type="button" class="btn btn-secondary">Login</button></a>
+      </div>
+      {{/if}}
     </nav>
     <br />
+    <div class="ml-5 mr-5 con">
     {{{body}}}
+    </div>
     <script
       src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
       integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
@@ -33,5 +50,15 @@
       crossorigin="anonymous"
     ></script>
     <script src="https://kit.fontawesome.com/6bb6871a7b.js" crossorigin="anonymous"></script>
+  <!-- Footer -->
+  <footer class="bg-dark text-center text-white">
+  <!-- Copyright -->
+  <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
+    © 2020 Copyright:
+    <a class="text-white" href="/">Questionnaire</a>
+  </div>
+  <!-- Copyright -->  
+  </footer>
+<!-- Footer -->
   </body>
 </html>

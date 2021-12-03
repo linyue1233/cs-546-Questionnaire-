@@ -25,6 +25,16 @@ const checkUser = async (emailAddress, password) => {
   };
 };
 
+const listUser = async (userId) => {
+  validator.validateId(userId);
+  const userCollection = await users();
+  const user = await userCollection.findOne({ _id: userId });
+  if (user === null) {
+    throw `No user present with the id.`;
+  }
+  return user;
+};
+
 const deleteUser = async (userId) => {
   validator.validateId(userId);
   const userCollection = await users();
@@ -43,7 +53,10 @@ const deleteUser = async (userId) => {
     displayName: "deletedUser_" + uuid.v1().slice(0, 8),
     updatedAt: new Date().toUTCString(),
   };
-  const updateUser = await userCollection.updateOne({ _id: userId }, { $set: deletedUser });
+  const updateUser = await userCollection.updateOne(
+    { _id: userId },
+    { $set: deletedUser }
+  );
   if (updateUser.modifiedCount === 0) {
     throw `Something went wrong during deletion.`;
   }
@@ -61,5 +74,6 @@ const getDisplayNameByUserId = async (userId) => {
 module.exports = {
   deleteUser,
   checkUser,
+  listUser,
   getDisplayNameByUserId,
 };
