@@ -1,0 +1,11 @@
+
+    
+<h1> All COMMUNITIES</h1>
+      {{#each this.com}}
+      <h2>Name: <a href="/communities/{{this._id}}">{{this.name}}</a></h2>
+      <p>Description:{{this.description}}</p>
+      {{/each}}
+     {{#if error}}
+      <p> {{error}}</p>
+      {{/if}}
+    

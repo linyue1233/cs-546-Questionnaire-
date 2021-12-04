@@ -63,6 +63,33 @@ const deleteUser = async (userId) => {
   }
   return { deleted: true, _id: userId };
 };
+const updateUser= async(userId,firstName,lastName,profileImage)=> {
+  const userCollection = await users();
+
+  if(!userId) throw "UserId must be present";
+  if(!firstName) throw "firstName must be present";
+  if(!lastName) throw "lastname must be present";
+  if(!profileImage) throw "profileImage must be present";
+
+
+  let userUpdateInfo = {
+    firstName: firstName,
+    lastName: lastName,
+    profileImage:profileImage
+
+  };
+
+  const updateInfo = await userCollection.updateOne(
+    { _id: userId },
+    { $set: userUpdateInfo }
+  );
+  if (!updateInfo.matchedCount && !updateInfo.modifiedCount)
+    throw 'Update failed';
+
+    const updateduser = await userCollection.findOne({ _id: userId });
+  return updateduser
+  
+}
 
 const getDisplayNameByUserId = async (userId) => {
   validator.validateId(userId);
@@ -140,5 +167,5 @@ module.exports = {
   listUser,
   getDisplayNameByUserId,
   userSignUp,
+  updateUser,
 }
-

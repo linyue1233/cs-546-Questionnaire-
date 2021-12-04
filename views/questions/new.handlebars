@@ -5,9 +5,9 @@
   <form action="/questions" method="POST" class="new-question-form">
         <label >  Community: <br>
         <select class="full-width-input" name="community">
-      <option value="test">Select community...</option>
-      {{#each communities}}
-        <option value="{{communityid}}">{{communityName}}</option>
+      <option value="">Select community...</option>
+      {{#each this.com}}
+        <option value="{{this._id}}">{{this.name}}</option>
       {{/each}}
       
     </select>
@@ -27,12 +27,12 @@
   <br>
     <label>
        Tags: <br>
-      <input type="text" name="tags" placeholder="Enter Tags seprated by spaces" value="{{tags}}" class="full-width-input"/>
+      <input type="text" name="tags" placeholder="Tags seprated by spaces" value="{{tags}}" class="full-width-input"/>
     </label>
     <br>
     <br>
     </label> 
-        <button type="button" class="btn btn-secondary btn-sm">Submit</button>
+        <button type="submit" class="btn btn-secondary btn-sm">Submit</button>
      
     </label>
    

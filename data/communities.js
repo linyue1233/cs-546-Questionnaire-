@@ -124,6 +124,21 @@ const userSubscribe = async (userId, communityId) => {
   }
 
 };
+const getAllcommunities = async () => {
+  const communityCollections = await communities();
+  const allCommunities = await communityCollections.find({}).toArray();
+  return allCommunities;
+}
+
+const addQuestiontocommunity = async (communityId,questionId) =>{
+  validator.validateCommunityId(communityId);
+  const communityCollection = await communities();
+  let existingCommunity = await communityCollection.updateOne({ _id: communityId },{ $push: { questions: questionId } });
+  if (existingCommunity === null) {
+    throw `There's no community present with that id.`;
+  }
+  return true;
+}
 
 module.exports = {
   editCommunity,
@@ -131,5 +146,7 @@ module.exports = {
   createCom,
   userUnsubscribe,
   userSubscribe,
+  getAllcommunities,
+  addQuestiontocommunity
 };
 

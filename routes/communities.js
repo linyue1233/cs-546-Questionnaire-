@@ -1,9 +1,23 @@
 const express = require("express");
 const router = express.Router();
-const communities = require("../data/communities");
 const community = require("../data/communities");
 const users = require("../data/users");
 const validator = require("../helpers/routeValidators/communityValidator");
+router.get("/", async (req, res) => {
+    try{
+        let com= await community.getAllcommunities()
+        res.render("communities/getAllcommunity",{com:com})
+
+    }catch(e){
+        res.render("communities/getAllcommunity",e)
+
+    }
+  });
+
+
+
+
+
 // Needs cleanup
 
 router.get("/create/new", async (req, res) => {
