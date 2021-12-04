@@ -34,5 +34,35 @@ router.get("/:id", async (req, res) => {
     }
 })
 
+router.post("userSubscribe",async (req, res=>{
+    if(!req.session.userId){
+        res.status(400).json({ error: "Please login first" });
+        return;
+    }
+    let userId = req.session.userId;
+    let communityId = req.body.communityId;
+    if( !userId === undefined || !communityId){
+        res.status(400).json({ error: "Please reload the page" });
+        return;
+    }
+    if(userId.trim() === "" || communityId.trim() === ""){
+        res.status(400).json({ error: "Please reload the page" });
+        return; 
+    }
+    let currentStatus = req.body.subscribeStatus;
+    try{
+        if(currentStatus){
+            let subscribeResult = await communities.userUnsubscribe(userId, communityId);
+            return subscribeResult;
+        }else{
+            let subscribeResult = await communities.userSubscribe(userId, communityId);
+            return subscribeResult;
+        }
+    }catch(e){
+        res.status(400).json({ error: e});
+        return; 
+    }
+}));
+
 module.exports = router;
 

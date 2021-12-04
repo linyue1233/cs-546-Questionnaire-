@@ -1,9 +1,9 @@
 {{!-- shows a page where the user can see the community details--}}
 <h1>community title:{{communityInfo.community.name}}</h1>
 
-<h2>community description:{{communityInfo.community.description}}</h2>
+<h2 id="test">community description:{{communityInfo.community.description}}</h2>
 
-<input type="submit" id="userSubscribe" value="Subscribe"></button>
+
 
 {{#if communityInfo.questions.length}}
 <ul>
@@ -17,3 +17,4 @@
 {{else}}
 <p>There are no questions in this community now. You can post first question.</p>
 {{/if}}
+<input type="text" value="{{isSubscribed}}" id="isSubscribed" disabled="disabled"></input>
