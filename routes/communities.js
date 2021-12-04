@@ -115,4 +115,67 @@ router.put("/:id", async (req, res) => {
   }
 });
 
+router.get("/:id", async (req, res) => {
+    if (!req.params.id) {
+        res.status(400).json({ error: "No communityId found" });
+        return;
+    }
+    try {
+        const communityInfo = await communities.getCommunityById(req.params.id);
+        if (!communityInfo) {
+            res.status(400).json({ error: "No community for the Id" });
+            return;
+        }
+        let currentUser = req.session.userId;
+        // check user if they subscribe the community
+        if (currentUser === null) {
+            res.render("communities/view_community_details", { communityInfo: communityInfo, isSubscribed: false });
+            return;
+        }else{
+            let allCommunityUser = communityInfo.community.subscribedUsers;
+            for(let item of allCommunityUser){
+                if(currentUser === item){
+                    res.render("communities/view_community_details", { communityInfo: communityInfo, isSubscribed: true });
+                    return;
+                }
+            }
+            res.render("communities/view_community_details", { communityInfo: communityInfo, isSubscribed: false });
+        }
+    } catch (e) {
+        res.status(400).json({ error: e });
+    }
+})
+
+router.post("/userSubscribe",async (req, res)=>{
+    if(!req.session.userId){
+        res.status(400).json({ error: "Please login first" });
+        return;
+    }
+    let userId = req.session.userId;
+    // let userId = "2b14beb4-446e-44e3-a04f-855d5bf309ae";
+    let communityId = req.body.communityId;
+    if( !userId === undefined || !communityId){
+        res.status(400).json({ error: "Please reload the page" });
+        return;
+    }
+    if(userId.trim() === "" || communityId.trim() === ""){
+        res.status(400).json({ error: "Please reload the page" });
+        return; 
+    }
+    let currentStatus = req.body.subscribeStatus;
+    try{
+        if(currentStatus){
+            let subscribeResult = await communities.userUnsubscribe(userId, communityId);
+            res.json(subscribeResult);
+        }else{
+            let subscribeResult = await communities.userSubscribe(userId, communityId);
+            res.json(subscribeResult);
+        }
+    }catch(e){
+        res.status(400).json({ error: e});
+        return; 
+    }
+});
+
 module.exports = router;
+

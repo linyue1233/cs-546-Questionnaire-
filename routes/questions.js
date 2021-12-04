@@ -119,17 +119,16 @@ router.get("/:id", async (req, res) => {
   }
 });
 
+//localhost:3000/questions/?communityId=112&userId=121
 router.get("/", async (req, res) => {
   let communityId = req.query.communityId;
   let posterId = req.query.userId;
   // provide one parameter is ok
-  if (communityId === undefined || posterId === undefined) {
+  if (communityId === undefined && posterId === undefined) {
     res.status(400).json({ error: "You should provide valid parameters" });
     return;
   }
   try {
-    console.log(communityId);
-    console.log(posterId);
     const allQuestions = await questionData.getAll(communityId, posterId);
     res.status(200).render("questions/all_questions", {
       questions: allQuestions,
@@ -210,20 +209,18 @@ router.delete("/:questionId/answers/:answerId/edit", async (req, res) => {
   res.status(200).render("individual-question", questionInfo);
 });
 
-router.get("/:questionId/answers", async (req, res) => {
-  if (!req.params.questionId) res.status(400).json({ error: "No id found" });
-  try {
-    const answersarray = await questions.getAllAnsweres(req.params.questionId);
-    let questionInfo = await questions.getID(req.params.questionId);
-    console.log(questionInfo);
-    questionInfo.answeres = answersarray;
-    res
-      .status(200)
-      .render("questions/individual-question", { questionInfo: questionInfo });
-  } catch (e) {
-    res.status(400).json({ error: e });
+router.get("/:questionId/answers", async(req,res)=> {
+  if (!req.params.questionId) res.status(400).json({error: "No id found"});
+  try{
+    const answersarray = await questions.getAllAnsweres(req.params.questionId)
+    let questionInfo = await questions.getID(req.params.questionId);;
+    questionInfo.answeres=answersarray;
+    res.status(200).render("questions/individual-question",{questionInfo:questionInfo});
+  }catch(e){
+    res.status(400).json({error: e});
   }
 });
+
 router.get("/:questionId/answers/:answerId/edit", async (req, res) => {
   let questionId = req.params.questionId;
   let answerId = req.params.answerId;

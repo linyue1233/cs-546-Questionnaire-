@@ -30,14 +30,14 @@ const createAns = async (qId, ans) => {
 };
 
 const getAll = async (communityId, userId) => {
-  if (arguments.length === 0) {
+  if (communityId === undefined && userId === undefined) {
     throw `you must pass a parameter at least`;
   }
   const questionCollection = await questions();
-  if (communityId !== undefined && userId !== undefined) {
+  if ((communityId !== undefined && communityId !== null) && (userId !== undefined && userId !== null)) {
     const questionCollections = await questionCollection.find({ communityId: communityId, posterId: userId }).toArray();
     return questionCollections;
-  } else if (communityId !== undefined) {
+  } else if (communityId !== undefined || communityId !== null) {
     const questionCollections = await questionCollection.find({ communityId: communityId }).toArray();
     return questionCollections;
   } else {
@@ -51,8 +51,7 @@ const getID = async (id) => {
   const questionsCollection = await questions();
 
   let question = await questionsCollection.findOne({ _id: id });
-  if (!question) throw "Error : Question not found";
-  console.log(11);
+  if (!question) throw 'Error : Question not found';
   return question;
 };
 

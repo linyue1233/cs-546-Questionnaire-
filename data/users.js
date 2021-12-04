@@ -3,6 +3,7 @@ const mongoCollections = require("../config/mongoCollections");
 const validator = require("../helpers/dataValidators/userValidator");
 const bcrypt = require("bcrypt");
 let users = mongoCollections.users;
+const saltRounds = 10;
 const uuid = require("uuid");
 
 const checkUser = async (emailAddress, password) => {
@@ -71,9 +72,73 @@ const getDisplayNameByUserId = async (userId) => {
   return user.displayName;
 };
 
+const userSignUp = async (firstName, lastName, displayName, password, emailAddress, avatarPath) => {
+  // parames needed user firstName, lastName, emailAddress, password
+  // if user's does not upload avatar, give him a default imageOrientation
+  // produce createTime when signUp
+  if (avatarPath === undefined) {
+    avatarPath = "public/images/defaultAvatar.jpg";
+  }
+  if (firstName === undefined || lastName === undefined || emailAddress === undefined || password === undefined || displayName === undefined) {
+    throw `Please provide all information.`;
+  }
+  const userCollection = await users();
+  const usersList = await userCollection.find({}).toArray();
+
+  try{
+    validator.validateEmailAddress(emailAddress);
+  }catch(e){
+    throw e;
+  }
+  // validate email, displayName, password
+  let lowerEmailAddress = emailAddress.toLowerCase();
+  let lowerDisplayname = displayName.toLowerCase();
+  for (let item of usersList) {
+    let tempEmail = item.emailAddress;
+    let temp = tempEmail.toLowerCase();
+    if (temp === lowerEmailAddress) {
+      throw `This email has been registered`;
+    }
+
+    let tempDisplayname = item.displayName.toLowerCase();
+    temp = tempDisplayname.toLowerCase();
+    if (temp === lowerDisplayname) {
+      throw `This displayName has been registered`;
+    }
+  }
+
+  validator.validatePassword(password);
+  const hash = await bcrypt.hash(password, saltRounds);
+
+  let addUser = {
+    _id: uuid.v4(),
+    firstName: firstName,
+    lastName: lastName,
+    emailAddress: lowerEmailAddress,
+    subscribedCommunities: [],
+    adminCommunities: [],
+    password: hash,
+    profileImage: avatarPath,
+    deleted: false,
+    displayName: displayName,
+    createdAt: new Date().toUTCString(),
+    updatedAt: new Date().toUTCString(),
+  }
+
+  const addRes = await userCollection.insertOne(addUser);
+  if (addRes.insertedCount === 0) {
+    throw `Something went wrong during add.`;
+  }
+  return { userInserted: true };
+};
+
+
+
 module.exports = {
   deleteUser,
   checkUser,
   listUser,
   getDisplayNameByUserId,
-};
+  userSignUp,
+}
+
