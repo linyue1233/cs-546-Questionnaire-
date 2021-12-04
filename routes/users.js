@@ -47,14 +47,18 @@ router.delete('/:id', async (req, res) => {
 });
 
 router.get('/:id/edit', async (req, res) => {
-  let userId = req.params.id;
-  // Kindly verify below function name with data functions
-  const User = await users.listUser(userId);
-
-  res.status(200).render('users/Update_userForm', User);
+  if (req.session.userId) {
+    let userId = req.params.id;
+    const User = await users.listUser(userId);
+    res.status(200).render('users/Update_userForm', User);
+  } else{
+    res.redirect("/site/login");
+  }
+  
 });
 router.put('/:id', upload, async (req, res, next) => {
 // we get file name through multer req object : req.file.filename 
+if (req.session.userId) {
   try {
     let userId = req.params.id;
     let firstName = req.body.firstName;
@@ -90,7 +94,7 @@ router.put('/:id', upload, async (req, res, next) => {
       lastName,
       profileImage
     );
-    res.status(200).render('users/get_specific_user', updateUser);
+    res.redirect(`/users/${userId}`);
     if (profileImage!=profImage){
       const pat = path.join(__dirname, `../public/images/userprofile/${profImage}`);
       fs.unlink(pat, (err) => {
@@ -108,6 +112,11 @@ router.put('/:id', upload, async (req, res, next) => {
     res.status(400).render('users/Update_userForm', User);
     return;
   }
+  
+} else {
+  res.redirect("/site/login");
+}
+  
 });
 
 router.get("/:id", async (req, res) => {

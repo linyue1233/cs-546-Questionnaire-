@@ -72,9 +72,20 @@ const getAllcommunities = async () => {
   return allCommunities;
 }
 
+const addQuestiontocommunity = async (communityId,questionId) =>{
+  validator.validateCommunityId(communityId);
+  const communityCollection = await communities();
+  let existingCommunity = await communityCollection.updateOne({ _id: communityId },{ $push: { questions: questionId } });
+  if (existingCommunity === null) {
+    throw `There's no community present with that id.`;
+  }
+  return true;
+}
+
 module.exports = {
   editCommunity,
   getCommunityById,
   createCom,
-  getAllcommunities
+  getAllcommunities,
+  addQuestiontocommunity
 };

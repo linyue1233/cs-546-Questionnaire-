@@ -87,7 +87,7 @@ const remove = async (id) => {
   return { deleted: true, id: id };
 };
 
-const addQuestion = async (title, description, community, tagsstring, posterId) => {
+const addQuestion = async (title, description, posterId,community, tagsstring) => {
   //Initial testing-posterid is not available
   if (!title || !description || !community || !tagsstring) {
     throw " not a valid inputs";
@@ -96,7 +96,8 @@ const addQuestion = async (title, description, community, tagsstring, posterId) 
     typeof title !== "string" ||
     typeof description !== "string" ||
     typeof community !== "string" ||
-    typeof tagsstring !== "string"
+    typeof tagsstring !== "string" ||
+    typeof posterId !== "string"
   ) {
     throw " not a valid inputs";
   }
@@ -109,14 +110,14 @@ const addQuestion = async (title, description, community, tagsstring, posterId) 
 
   const questionsCollection = await questions();
   //To enter multiple tags users has to separate by spaces
-  let tags = tagsstring.split(" ");
+  let tg = tagsstring.split(" ");
   let newQuestion = {
     _id: uuid.v4(),
     title: title,
     description: description,
     communityId: community,
-    tags: tags,
-    posterId: "testphase",
+    tags: tg,
+    posterId: posterId,
     upvotes: [],
     downvotes: [],
     answers: [],
