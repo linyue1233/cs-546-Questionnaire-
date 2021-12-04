@@ -1,25 +1,23 @@
 // All client side scripts go herSe.
-(function ($) {
-    let isSubscribed = $('#isSubscribed').val();
-    let test = $('#test');
-    console.log(isSubscribed);
-    if(isSubscribed === "true"){
-        test.after(
-            `<input type="submit" id="unSubscribe" value="unSubscribe"></input>`
-        )
-    }else{
-        test.after(
-            `<input type="submit" id="userSubscribe" value="Subscribe"></input>`
-        )
+window.onload = function () {
+    let btn = $('#btnSubscribe')[0];
+    const text = Boolean($('#btnSubscribe').attr('data-subscribeStatus')) ? "unSubscribe" : "subscribe";
+    btn.innerHTML = text;
+}
+
+$('#btnSubscribe').click(function () {
+    const subscribeStatus = Boolean($('#btnSubscribe').attr('data-subscribeStatus'));
+    console.log(typeof subscribeStatus);
+    $.post(
+        "/communities/userSubscribe", {
+        communityId: location.pathname.match(/\/communities\/(\S+)$/)[1],
+        subscribeStatus
     }
-
-    $('#userSubscribe').on('click',function(event){
-        event.preventDefault();
-        $.post("url",{
-
-        }).then(res=>{
-            location.replace(window.location.href);
-        })
+    ).then(result => {
+        let btn = $('#btnSubscribe')[0];
+        $('#btnSubscribe').attr('data-subscribeStatus', result.subscribeResult)
+        const text = result.subscribeResult ? "unSubscribe" : "subscribe";
+        btn.innerHTML = text;
+        console.log(result.subscribeResult);
     })
-
-})(window.jQuery);
+})

@@ -34,12 +34,13 @@ router.get("/:id", async (req, res) => {
     }
 })
 
-router.post("userSubscribe",async (req, res=>{
-    if(!req.session.userId){
-        res.status(400).json({ error: "Please login first" });
-        return;
-    }
-    let userId = req.session.userId;
+router.post("/userSubscribe",async (req, res)=>{
+    // if(!req.session.userId){
+    //     res.status(400).json({ error: "Please login first" });
+    //     return;
+    // }
+    // let userId = req.session.userId;
+    let userId = "2b14beb4-446e-44e3-a04f-855d5bf309ae";
     let communityId = req.body.communityId;
     if( !userId === undefined || !communityId){
         res.status(400).json({ error: "Please reload the page" });
@@ -53,16 +54,16 @@ router.post("userSubscribe",async (req, res=>{
     try{
         if(currentStatus){
             let subscribeResult = await communities.userUnsubscribe(userId, communityId);
-            return subscribeResult;
+            res.json(subscribeResult);
         }else{
             let subscribeResult = await communities.userSubscribe(userId, communityId);
-            return subscribeResult;
+            res.json(subscribeResult);
         }
     }catch(e){
         res.status(400).json({ error: e});
         return; 
     }
-}));
+});
 
 module.exports = router;
 

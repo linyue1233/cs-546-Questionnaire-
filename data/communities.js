@@ -30,17 +30,14 @@ const userUnsubscribe = async (userId, communityId) => {
     const communitiesCollection = await communities();
     let community = await communitiesCollection.findOne({ _id: communityId });
     let allUsers = community.subscribedUsers;
-    for(let item of allUsers){
-        if(userId === item){
-            const removedUserInfo = await communitiesCollection.updateOne({ _id: communityId}),{$pull:{subscribedUsers:userId}};
-            if (removedUserInfo.modifiedCount == 0) {
-                throw 'User does not exist';
-            }else{
-                return {subscribeStatus: false};
-            }
-        }
+    const index = allUsers.findIndex(item => item === userId);
+    allUsers.splice(index, 1);
+    const removeUser = await communitiesCollection.updateOne({ _id: communityId }, { $set: { subscribedUsers: allUsers } });
+    if (removeUser.modifiedCount == 0) {
+        throw 'User does not exist';
+    } else {
+        return { subscribeStatus: false };
     }
-    throw `User does not exist`;
 };
 
 const userSubscribe = async (userId, communityId) => {
@@ -52,13 +49,13 @@ const userSubscribe = async (userId, communityId) => {
     }
     const communitiesCollection = await communities();
     const updateInfo = await communitiesCollection.updateOne(
-        { _id: communityId},
-        {$addToSet:{subscribedUsers:userId}}
+        { _id: communityId },
+        { $addToSet: { subscribedUsers: userId } }
     );
-    if(updateInfo.modifiedCount == 0){
+    if (updateInfo.modifiedCount == 0) {
         throw `User does not exist`;
-    }else{
-        return{subscribeStatus:true};
+    } else {
+        return { subscribeStatus: true };
     }
 
 };

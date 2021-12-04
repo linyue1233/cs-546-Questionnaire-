@@ -3,6 +3,14 @@
 
 <h2 id="test">community description:{{communityInfo.community.description}}</h2>
 
+{{!-- {{#if isSubscribed}}
+<button onclick="userSubscribe(true)">unSubscribe</button>
+{{else}}
+<button onclick="userSubscribe(false)">subscribe</button>
+{{/if}} --}}
+
+<button id="btnSubscribe" data-subscribeStatus="{{isSubscribed}}"></button>
+
 
 
 {{#if communityInfo.questions.length}}
@@ -17,4 +25,3 @@
 {{else}}
 <p>There are no questions in this community now. You can post first question.</p>
 {{/if}}
-<input type="text" value="{{isSubscribed}}" id="isSubscribed" disabled="disabled"></input>
