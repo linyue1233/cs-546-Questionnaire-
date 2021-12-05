@@ -119,6 +119,16 @@ if (req.session.userId) {
   
 });
 
+
+router.get("/signup", async (req, res) => {
+  if (!req.session.userId) {
+    res.status(200).render('users/create_user');
+    return;
+  } else {
+    res.redirect('/questions/all');
+  }
+})
+
 router.get("/:id", async (req, res) => {
   let userId = req.params.id;
   if (userId != req.session.userId) res.redirect("/site/login");
@@ -142,14 +152,6 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-router.get("/signup", async (req, res) => {
-  if (!req.session.userId) {
-    res.status(200).render('users/create_user');
-    return;
-  } else {
-    res.redirect('/questions/all');
-  }
-})
 
 // create a new user
 router.post("/", upload, async (req, res) => {

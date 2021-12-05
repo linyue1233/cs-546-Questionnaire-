@@ -4,6 +4,7 @@ const communities = mongoCollections.communities;
 const validator = require("../helpers/dataValidators/communityValidator");
 const uuid = require("uuid");
 let questionData = require("../data/questions");
+let userData = require("../data/users");
 
 const createCom = async (name, description, userId) => {
   if (!name || !description) throw "Not a valid input";
@@ -118,7 +119,7 @@ const userSubscribe = async (userId, communityId) => {
       { $addToSet: { subscribedUsers: userId } }
   );
   if (updateInfo.modifiedCount == 0) {
-      throw `User does not exist`;
+      throw `Failed to add`;
   } else {
       return { subscribeStatus: true };
   }
