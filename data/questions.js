@@ -34,7 +34,7 @@ const getAll = async (communityId, userId) => {
     throw `you must pass a parameter at least`;
   }
   const questionCollection = await questions();
-  if ((communityId !== undefined && communityId !== null) && (userId !== undefined && userId !== null)) {
+  if (communityId !== undefined && communityId !== null && userId !== undefined && userId !== null) {
     const questionCollections = await questionCollection.find({ communityId: communityId, posterId: userId }).toArray();
     return questionCollections;
   } else if (communityId !== undefined || communityId !== null) {
@@ -46,12 +46,19 @@ const getAll = async (communityId, userId) => {
   }
 };
 
+const getAllByUserId = async (userId) => {
+  if (!userId) throw "No user id found";
+  const questionsCollection = await questions();
+  const questionsCollections = await questionsCollection.find({ posterId: userId }).toArray();
+  return questionsCollections;
+};
+
 const getID = async (id) => {
   if (!id) throw "Error : No ID found";
   const questionsCollection = await questions();
 
   let question = await questionsCollection.findOne({ _id: id });
-  if (!question) throw 'Error : Question not found';
+  if (!question) throw "Error : Question not found";
   return question;
 };
 
@@ -86,7 +93,7 @@ const remove = async (id) => {
   return { deleted: true, id: id };
 };
 
-const addQuestion = async (title, description, community, tagsstring, posterId) => {
+const addQuestion = async (title, description, posterId, community, tagsstring) => {
   //Initial testing-posterid is not available
   if (!title || !description || !community || !tagsstring) {
     throw " not a valid inputs";
@@ -95,21 +102,26 @@ const addQuestion = async (title, description, community, tagsstring, posterId) 
     typeof title !== "string" ||
     typeof description !== "string" ||
     typeof community !== "string" ||
-    typeof tagsstring !== "string"
+    typeof tagsstring !== "string" ||
+    typeof posterId !== "string"
   ) {
     throw " not a valid inputs";
   }
+  if (title.trim().length === 0) throw " error:empty string";
+  if (description.trim().length === 0) throw " error:empty string";
+  if (community.trim().length === 0) throw " error:empty string";
+  if (tagsstring.trim().length === 0) throw " error:empty string";
 
   const questionsCollection = await questions();
   //To enter multiple tags users has to separate by spaces
-  let tags = tagsstring.split(" ");
+  let tg = tagsstring.split(" ");
   let newQuestion = {
     _id: uuid.v4(),
     title: title,
     description: description,
     communityId: community,
-    tags: tags,
-    posterId: "testphase",
+    tags: tg,
+    posterId: posterId,
     upvotes: [],
     downvotes: [],
     answers: [],
@@ -194,4 +206,5 @@ module.exports = {
   updateAnswer,
   getAllWithoutParams,
   search,
+  getAllByUserId,
 };

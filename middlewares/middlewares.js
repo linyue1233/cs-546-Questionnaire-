@@ -6,7 +6,15 @@ let changeMethodToPutForAnswerUpdate = (req, res, next) => {
   }
   next();
 };
+let changeMethodToPutForUserprofileUpdate = (req, res, next) => {
+  
+  if (req.method === "POST") {
+    req.method = "put";
+  }
+  next();
+};
 
 module.exports = {
   changeMethodToPutForAnswerUpdate,
+  changeMethodToPutForUserprofileUpdate
 };
