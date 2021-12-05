@@ -1,0 +1,21 @@
+<h1>Flagged Questions and Answeres</h1>
+
+<h2>Flagged Questions:</h2>
+ {{#each this.qflag}}
+      <h4>Name: <a href="/questions/{{this._id}}">{{this.title}}</a></h4>
+      <p>Numeber of times flagged:{{this.flag}}</p>
+      {{/each}}
+     {{#if error}}
+      <p> {{error}}</p>
+      {{/if}}
+
+
+<h2>Flagged Answeres:</h2>
+{{#each this.aflag}}
+      <h4>Name: {{this.title}}</h4>
+      <p>Numeber of times flagged:{{this.flag}}</p>
+      {{/each}}
+     {{#if error}}
+      <p> {{error}}</p>
+      {{/if}}
+    

@@ -1,6 +1,23 @@
 const mongoCollections = require("../config/mongoCollections");
 let questions = mongoCollections.questions;
 
+async function getanswerbyanserId(answerID) {
+  if (!answerID) throw ' must provide answerid';
+  if (typeof answerID !== 'string') throw ' answerid must be string';
+  if (answerID.trim().length === 0) throw ' error:empty string';
+
+    const questionCollection = await questions();
+    const res = await questionCollection.find({}).toArray();
+  for (let elem of res) {
+    for (let anselement of elem.answers) {
+      let k = anselement._id;
+      if (k === answerID) {
+        return anselement;
+      }
+    }
+  }
+  throw 'ans does not exist with that id';
+}
 const getAnswer = async (questionId, answerId) => {
   const questionCollection = await questions();
   let question = await questionCollection.findOne({ _id: questionId, "answers._id": answerId });
@@ -33,4 +50,5 @@ const getAnswerByUserId = async (userId) => {
 module.exports = {
   getAnswer,
   getAnswerByUserId,
+  getanswerbyanserId
 };

@@ -5,6 +5,8 @@ const communities = require("../data/communities");
 const users = require("../data/users");
 const questions = require("../data/questions");
 const validator = require("../helpers/routeValidators/communityValidator");
+const answers = require("../data/answers");
+
 router.get("/", async (req, res) => {
   try {
     let com = await community.getAllcommunities();
@@ -215,5 +217,61 @@ router.post("/userSubscribe", async (req, res) => {
     return;
   }
 });
+router.get('/:id/view/flagged', async (req,res) => {
+  if (!req.params.id) {
+    res.status(400).json({ error: "No communityId found" });
+    return;
+  }
+  try {
+    const communityInfo = await communities.getCommunityById(req.params.id);
+    if (!communityInfo) {
+      res.status(400).json({ error: "No community for the Id" });
+      return;
+    }
+   let Queflageobj= communityInfo.community.flaggedQuestions;
+   let queflag=[]
+
+    for (const key in Queflageobj) {
+      const questionInfo = await questions.getID(key);
+      let t =questionInfo.title
+      let ans={
+        _id:key,
+        title:t,
+        flag:Queflageobj[key]
+      }
+    
+      queflag.push(ans)
+      }
+      // 
+      let ansflageobj= communityInfo.community.flaggedAnsweres;
+      let ansflag=[]
+      //need to create
+   
+       for (const key in ansflageobj) {
+         const ansInfo = await answers.getanswerbyanserId(key)
+         let t =ansInfo.description
+         let ans={
+           _id:key,
+           title:t,
+           flag:ansflageobj[key]
+         }
+       
+         ansflag.push(ans)
+         }
+
+      
+
+
+      res.render("communities/viewflaggd", { qflag: queflag , aflag: ansflag});
+
+
+
+  }catch (e){
+
+  }
+
+
+
+})
 
 module.exports = router;
