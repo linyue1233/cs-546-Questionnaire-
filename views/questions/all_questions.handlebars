@@ -2,6 +2,11 @@
   {{#each questions}}
     <h4><a href="/questions/{{this._id}}">{{this.title}}</a></h4>
     <p>{{this.description}}</p>
+    <span>Community : 
+      {{#if this.communityId}}
+      <span><a href="/communities/{{this.communityId}}">{{this.communityName}}</span></a>
+      {{/if}}
+    </span><br>
     <span>Tags:
       {{#if this.tags}}
         {{#each this.tags}}
