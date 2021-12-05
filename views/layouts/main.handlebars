@@ -69,6 +69,10 @@
   <!-- Copyright -->  
   </footer>
 <!-- Footer -->
-    <script src="/public/js/scripts.js"></script>
+  {{#if scriptUrl}}
+  {{#each scriptUrl}}
+  <script src="/public/js/{{this}}"></script>
+  {{/each}}
+  {{/if}}
   </body>
 </html>

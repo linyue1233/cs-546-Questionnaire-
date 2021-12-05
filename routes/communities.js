@@ -150,6 +150,7 @@ router.get("/:id", async (req, res) => {
         isSubscribed: false,
         session: req.session,
         questions: reqQuestions,
+        scriptUrl: ['scripts.js']
       });
       return;
     } else {
@@ -162,6 +163,7 @@ router.get("/:id", async (req, res) => {
             isSubscribed: true,
             session: req.session,
             questions: reqQuestions,
+            scriptUrl: ['scripts.js']
           });
           return;
         }
@@ -171,6 +173,7 @@ router.get("/:id", async (req, res) => {
         isSubscribed: false,
         session: req.session,
         questions: reqQuestions,
+        scriptUrl: ['scripts.js']
       });
     }
 
@@ -179,6 +182,7 @@ router.get("/:id", async (req, res) => {
       isSubscribed: false,
       session: req.session,
       questions: reqQuestions,
+      scriptUrl: ['scripts.js']
     });
   } catch (e) {
     res.status(400).json({ error: e });
@@ -187,18 +191,18 @@ router.get("/:id", async (req, res) => {
 
 router.post("/userSubscribe", async (req, res) => {
   if (!req.session.userId) {
-    res.status(400).render("communities/view_community_details", { error: "Please login first" });
+    res.status(400).send("Please login first");
     return;
   }
   let userId = req.session.userId;
   // let userId = "2b14beb4-446e-44e3-a04f-855d5bf309ae";
   let communityId = req.body.communityId;
   if (!userId === undefined || !communityId) {
-    res.status(400).render("communities/view_community_details", { error: "Please login first" });
+    res.status(400).send("Please login first");
     return;
   }
   if (userId.trim() === "" || communityId.trim() === "") {
-    res.status(400).render("communities/view_community_details", { error: "Please login first" });
+    res.status(400).send("Please login first");
     return;
   }
   let currentStatus = JSON.parse(req.body.subscribeStatus);
