@@ -160,7 +160,6 @@ router.get("/:id", async (req, res) => {
 })
 
 router.post("/userSubscribe",async (req, res)=>{
-    console.log(req.session.userId);
     if(!req.session.userId){
         res.status(400).render("communities/view_community_details",{error: "Please login first" });
         return;

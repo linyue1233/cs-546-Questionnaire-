@@ -1,7 +1,6 @@
 // All client side scripts go herSe.
 window.onload = function () {
     let btn = $('#btnSubscribe')[0];
-    console.log(JSON.parse($('#btnSubscribe').attr('data-subscribeStatus')));
     const text = JSON.parse($('#btnSubscribe').attr('data-subscribeStatus')) ? "unSubscribe" : "subscribe";
     btn.innerHTML = text;
 }
