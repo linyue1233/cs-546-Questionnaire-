@@ -5,6 +5,7 @@ const answers = require('../data/answers');
 const data = require('../data');
 const questionData = data.questions;
 const communityData = data.communities;
+const userData = data.users;
 const validator = require('../helpers/routeValidators/questionValidator');
 
 router.get('/all', async (req, res) => {
@@ -104,11 +105,12 @@ router.post('/search', async (req, res) => {
 
 router.get('/:id', async (req, res) => {
   let id = req.params.id;
-  console.log(req.session);
   try {
     let questionAns = await questionData.getID(req.params.id);
+    let userDisplayName = await userData.getDisplayNameByUserId(questionAns.posterId);
     res.status(200).render('questions/individual-question', {
       questionInfo: questionAns,
+      userDisplayName:userDisplayName,
       session: req.session,
     });
   } catch (e) {
