@@ -2,13 +2,14 @@
 <h1>community title:{{communityInfo.community.name}}</h1>
 
 <h2 id="test">community description:{{communityInfo.community.description}}</h2>
-
+{{#if session.userId}}
 <button id="btnSubscribe" data-subscribeStatus="{{isSubscribed}}"></button>
+{{/if}}
 <br>
-
-{{#if communityInfo.questions.length}}
+<br>
+{{#if questions}}
 <ul>
-    {{#each communityInfo.questions}}
+    {{#each questions}}
     <li>
         <a href="/questions/{{this._id}}">{{this.title}}</a>
         <p>{{this.description}}</p>

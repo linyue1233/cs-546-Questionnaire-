@@ -51,7 +51,7 @@ router.get("/:id/edit", async (req, res) => {
   if (req.session.userId) {
     let userId = req.params.id;
     const User = await users.listUser(userId);
-    res.status(200).render("users/Update_userForm", User);
+    res.status(200).render("users/Update_userForm", { User: User, session: req.session });
   } else {
     res.redirect("/site/login");
   }

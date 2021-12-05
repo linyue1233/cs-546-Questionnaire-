@@ -53,6 +53,13 @@ const getAllByUserId = async (userId) => {
   return questionsCollections;
 };
 
+const getAllByCommunityId = async (communityId) => {
+  if (!communityId) throw "No user id found";
+  const questionsCollection = await questions();
+  const questionsCollections = await questionsCollection.find({ communityId: communityId }).toArray();
+  return questionsCollections;
+};
+
 const getID = async (id) => {
   if (!id) throw "Error : No ID found";
   const questionsCollection = await questions();
@@ -207,4 +214,5 @@ module.exports = {
   getAllWithoutParams,
   search,
   getAllByUserId,
+  getAllByCommunityId,
 };

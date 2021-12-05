@@ -3,6 +3,7 @@ const router = express.Router();
 const community = require("../data/communities");
 const communities = require("../data/communities");
 const users = require("../data/users");
+const questions = require("../data/questions");
 const validator = require("../helpers/routeValidators/communityValidator");
 router.get("/", async (req, res) => {
   try {
@@ -136,29 +137,49 @@ router.get("/:id", async (req, res) => {
       res.status(400).json({ error: "No community for the Id" });
       return;
     }
+    let reqQuestions = [];
+    let questionCollection = await questions.getAllByCommunityId(req.params.id);
+    for (let x of questionCollection) {
+      reqQuestions.push({ _id: x._id, title: x.title, description: x.description });
+    }
     let currentUser = req.session.userId;
     // check user if they subscribe the community
     if (currentUser === null) {
-      res.render("communities/view_community_details", { communityInfo: communityInfo, isSubscribed: false });
+      res.render("communities/view_community_details", {
+        communityInfo: communityInfo,
+        isSubscribed: false,
+        session: req.session,
+        questions: reqQuestions,
+      });
       return;
     } else {
       let allCommunityUser = communityInfo.community.subscribedUsers;
       for (let item of allCommunityUser) {
-        console.log(currentUser);
+        console.log(communityInfo);
         if (currentUser === item) {
-          console.log(currentUser);
           res.render("communities/view_community_details", {
             communityInfo: communityInfo,
             isSubscribed: true,
             session: req.session,
+            questions: reqQuestions,
           });
           return;
         }
       }
-      res.render("communities/view_community_details", { communityInfo: communityInfo, isSubscribed: false });
+      res.render("communities/view_community_details", {
+        communityInfo: communityInfo,
+        isSubscribed: false,
+        session: req.session,
+        questions: reqQuestions,
+      });
     }
 
-    res.render("communities/view_community_details", { communityInfo: communityInfo, isSubscribed: false });
+    res.render("communities/view_community_details", {
+      communityInfo: communityInfo,
+      isSubscribed: false,
+      session: req.session,
+      questions: reqQuestions,
+    });
   } catch (e) {
     res.status(400).json({ error: e });
   }
