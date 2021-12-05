@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const community = require("../data/communities");
 const communities = require("../data/communities");
 const users = require("../data/users");
 const validator = require("../helpers/routeValidators/communityValidator");
@@ -13,12 +14,12 @@ router.get("/", async (req, res) => {
 });
 
 // Needs cleanup
-
 router.get("/create/new", async (req, res) => {
   if (req.session.userId) {
     res.render("communities/new-community", {
       loginError: false,
       session: req.session,
+      no_com: true,
     });
   } else {
     res.redirect("/site/login");
@@ -143,13 +144,21 @@ router.get("/:id", async (req, res) => {
     } else {
       let allCommunityUser = communityInfo.community.subscribedUsers;
       for (let item of allCommunityUser) {
+        console.log(currentUser);
         if (currentUser === item) {
-          res.render("communities/view_community_details", { communityInfo: communityInfo, isSubscribed: true });
+          console.log(currentUser);
+          res.render("communities/view_community_details", {
+            communityInfo: communityInfo,
+            isSubscribed: true,
+            session: req.session,
+          });
           return;
         }
       }
       res.render("communities/view_community_details", { communityInfo: communityInfo, isSubscribed: false });
     }
+
+    res.render("communities/view_community_details", { communityInfo: communityInfo, isSubscribed: false });
   } catch (e) {
     res.status(400).json({ error: e });
   }
@@ -157,21 +166,21 @@ router.get("/:id", async (req, res) => {
 
 router.post("/userSubscribe", async (req, res) => {
   if (!req.session.userId) {
-    res.status(400).json({ error: "Please login first" });
+    res.status(400).render("communities/view_community_details", { error: "Please login first" });
     return;
   }
   let userId = req.session.userId;
   // let userId = "2b14beb4-446e-44e3-a04f-855d5bf309ae";
   let communityId = req.body.communityId;
   if (!userId === undefined || !communityId) {
-    res.status(400).json({ error: "Please reload the page" });
+    res.status(400).render("communities/view_community_details", { error: "Please login first" });
     return;
   }
   if (userId.trim() === "" || communityId.trim() === "") {
-    res.status(400).json({ error: "Please reload the page" });
+    res.status(400).render("communities/view_community_details", { error: "Please login first" });
     return;
   }
-  let currentStatus = req.body.subscribeStatus;
+  let currentStatus = JSON.parse(req.body.subscribeStatus);
   try {
     if (currentStatus) {
       let subscribeResult = await communities.userUnsubscribe(userId, communityId);
@@ -181,7 +190,7 @@ router.post("/userSubscribe", async (req, res) => {
       res.json(subscribeResult);
     }
   } catch (e) {
-    res.status(400).json({ error: e });
+    res.status(400).json(e);
     return;
   }
 });

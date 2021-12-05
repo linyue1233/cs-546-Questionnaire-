@@ -1,13 +1,12 @@
 // All client side scripts go herSe.
 window.onload = function () {
     let btn = $('#btnSubscribe')[0];
-    const text = Boolean($('#btnSubscribe').attr('data-subscribeStatus')) ? "unSubscribe" : "subscribe";
+    const text = JSON.parse($('#btnSubscribe').attr('data-subscribeStatus')) ? "unSubscribe" : "subscribe";
     btn.innerHTML = text;
 }
 
 $('#btnSubscribe').click(function () {
-    const subscribeStatus = Boolean($('#btnSubscribe').attr('data-subscribeStatus'));
-    console.log(typeof subscribeStatus);
+    const subscribeStatus = JSON.parse($('#btnSubscribe').attr('data-subscribeStatus'));
     $.post(
         "/communities/userSubscribe", {
         communityId: location.pathname.match(/\/communities\/(\S+)$/)[1],
@@ -15,9 +14,8 @@ $('#btnSubscribe').click(function () {
     }
     ).then(result => {
         let btn = $('#btnSubscribe')[0];
-        $('#btnSubscribe').attr('data-subscribeStatus', result.subscribeResult)
-        const text = result.subscribeResult ? "unSubscribe" : "subscribe";
+        $('#btnSubscribe').attr('data-subscribeStatus', result.subscribeStatus)
+        const text = result.subscribeStatus ? "unSubscribe" : "subscribe";
         btn.innerHTML = text;
-        console.log(result.subscribeResult);
     })
 })

@@ -108,6 +108,7 @@ const userUnsubscribe = async (userId, communityId) => {
   if (userId.trim() === "" || communityId.trim() === "") {
     thorw`Please provide parameters`;
   }
+  // delete user in communityCollection
   const communitiesCollection = await communities();
   let community = await communitiesCollection.findOne({ _id: communityId });
   let allUsers = community.subscribedUsers;
@@ -117,7 +118,17 @@ const userUnsubscribe = async (userId, communityId) => {
     { _id: communityId },
     { $set: { subscribedUsers: allUsers } }
   );
-  if (removeUser.modifiedCount == 0) {
+  // delete community in userCollection
+  const userCollection = await users();
+  let givenUser = await userCollection.findOne({ _id: userId });
+  let allCommunities = givenUser.subscribedCommunities;
+  const communityIndex = allCommunities.findIndex((item) => item === communityId);
+  allCommunities.splice(communityIndex, 1);
+  const removeUserCollection = await userCollection.updateOne(
+    { _id: userId },
+    { $set: { subscribedCommunities: allCommunities } }
+  );
+  if (removeUser.modifiedCount == 0 || removeUserCollection.modifiedCount == 0) {
     throw "User does not exist";
   } else {
     return { subscribeStatus: false };
@@ -131,17 +142,25 @@ const userSubscribe = async (userId, communityId) => {
   if (userId.trim() === "" || communityId.trim() === "") {
     thorw`Please provide parameters`;
   }
+  // add user in communityCollection
   const communitiesCollection = await communities();
   const updateInfo = await communitiesCollection.updateOne(
     { _id: communityId },
     { $addToSet: { subscribedUsers: userId } }
   );
-  if (updateInfo.modifiedCount == 0) {
-    throw `User does not exist`;
+  // add community in userCollection
+  const usersCollection = await users();
+  const userUpdateInfo = await usersCollection.updateOne(
+    { _id: userId },
+    { $addToSet: { subscribedCommunities: communityId } }
+  );
+  if (updateInfo.modifiedCount == 0 || userUpdateInfo.modifiedCount == 0) {
+    throw `Failed to add`;
   } else {
     return { subscribeStatus: true };
   }
 };
+
 const getAllcommunities = async () => {
   const communityCollections = await communities();
   const allCommunities = await communityCollections.find({}).toArray();
