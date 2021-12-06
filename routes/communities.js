@@ -243,7 +243,7 @@ router.get('/:id/view/flagged', async (req,res) => {
       queflag.push(ans)
       }
       // 
-      let ansflageobj= communityInfo.community.flaggedAnsweres;
+      let ansflageobj= communityInfo.community.flaggedAnswers;
       let ansflag=[]
       //need to create
    
@@ -267,7 +267,7 @@ router.get('/:id/view/flagged', async (req,res) => {
 
 
   }catch (e){
-
+    console.log(e);
   }
 
 
