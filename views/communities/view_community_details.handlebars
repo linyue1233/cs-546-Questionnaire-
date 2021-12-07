@@ -5,6 +5,9 @@
 <button id="btnSubscribe" data-subscribeStatus="{{isSubscribed}}" class="btn btn-secondary btn-sm"></button>
 <br>
 <br>
+{{#if isAdmin}}
+<button id="btnAdmin" data-adminStatus=""></button>
+{{/if}}
 {{#if questions}}
 <ul>
     {{#each questions}}
