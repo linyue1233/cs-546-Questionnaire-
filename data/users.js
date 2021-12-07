@@ -94,7 +94,7 @@ const userSignUp = async (firstName, lastName, displayName, password, emailAddre
   // if user's does not upload avatar, give him a default imageOrientation
   // produce createTime when signUp
   if (avatarPath === undefined) {
-    avatarPath = "public/images/userprofile/defaultAvatar.jpg";
+    avatarPath = "defaultAvatar.jpg";
   }
   if (
     firstName === undefined ||

@@ -157,8 +157,6 @@ router.get("/:id", async (req, res) => {
     } else {
       let allCommunityUser = communityInfo.community.subscribedUsers;
       for (let item of allCommunityUser) {
-        console.log(currentUser);
-        console.log(communityInfo.community.administrator);
         if (currentUser === item && currentUser === communityInfo.community.administrator) {
           res.render("communities/view_community_details", {
             communityInfo: communityInfo,

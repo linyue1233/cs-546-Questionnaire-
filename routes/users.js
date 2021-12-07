@@ -188,7 +188,7 @@ router.post("/", upload, async (req, res) => {
   }
   let profileImage;
   if (!req.file) {
-    profileImage = "public/images/userprofile/defaultAvatar.jpg";
+    profileImage = "defaultAvatar.jpg";
   } else {
     profileImage = req.file.filename;
   }
