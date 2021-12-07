@@ -10,7 +10,7 @@
         <!-- List of questions with details -->
         {{#each searchResults}}
         <div>
-            <h4>{{this.title}}</h4>
+            <h4><a href="/questions/{{this._id}}">{{this.title}}</a></h4>
             <p>{{this.description}}</p>
         </div>
         {{/each}}

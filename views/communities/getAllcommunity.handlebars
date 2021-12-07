@@ -1,11 +1,17 @@
-
-    
-<h1> All COMMUNITIES</h1>
-      {{#each this.com}}
-      <h2>Name: <a href="/communities/{{this._id}}">{{this.name}}</a></h2>
-      <p>Description:{{this.description}}</p>
-      {{/each}}
-     {{#if error}}
-      <p> {{error}}</p>
-      {{/if}}
+<h2>All COMMUNITIES</h2><br>
+<div class="d-inline">
+{{#each this.com}}
+<div class="card m-2" id="com_card">
+  <div class="card-header h3">
+    <a href="/communities/{{this._id}}" class="h3">{{this.name}}</a>
+  </div>
+  <div class="card-body">
+    <p class="card-text">Description: {{this.description}}</p>
+  </div>
+</div>
+{{/each}}
+</div>
+{{#if error}}
+  <p> {{error}}</p>
+{{/if}}
     

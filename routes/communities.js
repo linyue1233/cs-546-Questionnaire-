@@ -8,9 +8,9 @@ const validator = require("../helpers/routeValidators/communityValidator");
 router.get("/", async (req, res) => {
   try {
     let com = await community.getAllcommunities();
-    res.render("communities/getAllcommunity", { com: com });
+    res.render("communities/getAllcommunity", { com: com, session: req.session });
   } catch (e) {
-    res.render("communities/getAllcommunity", e);
+    res.render("communities/getAllcommunity", { error: e, session: req.session });
   }
 });
 
@@ -150,7 +150,7 @@ router.get("/:id", async (req, res) => {
         isSubscribed: false,
         session: req.session,
         questions: reqQuestions,
-        scriptUrl: ['scripts.js']
+        scriptUrl: ["scripts.js"],
       });
       return;
     } else {
@@ -163,7 +163,7 @@ router.get("/:id", async (req, res) => {
             isSubscribed: true,
             session: req.session,
             questions: reqQuestions,
-            scriptUrl: ['scripts.js']
+            scriptUrl: ["scripts.js"],
           });
           return;
         }
@@ -173,7 +173,7 @@ router.get("/:id", async (req, res) => {
         isSubscribed: false,
         session: req.session,
         questions: reqQuestions,
-        scriptUrl: ['scripts.js']
+        scriptUrl: ["scripts.js"],
       });
     }
 
@@ -182,7 +182,7 @@ router.get("/:id", async (req, res) => {
       isSubscribed: false,
       session: req.session,
       questions: reqQuestions,
-      scriptUrl: ['scripts.js']
+      scriptUrl: ["scripts.js"],
     });
   } catch (e) {
     res.status(400).json({ error: e });

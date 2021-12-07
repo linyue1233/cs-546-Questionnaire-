@@ -1,7 +1,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <title>{{title}}</title>
+    <title>Questionnaire</title>
     <link rel="stylesheet" href="/public/css/site.css" />
     <script src="https://cdn.ckeditor.com/ckeditor5/31.0.0/classic/ckeditor.js"></script>
     <link
@@ -18,28 +18,30 @@
       <input class="form-control mr-sm-2 w-75 search" type="search" placeholder="Search" name="keyword" aria-label="Search">
       <input class="btn btn-secondary" type="submit" value="Search">
     </form>
-      
+    <div class="btn-group" role="group" aria-label="">
+      <a href="/"><button type="button" class="btn btn-light">Home</button></a>&nbsp;
       <div class="dropdown">
-  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-    Menu
-  </button>
-  <div class="dropdown-menu dropdown-menu-right" id="menu" aria-labelledby="dropdownMenuButton">
-    <a class="dropdown-item" href="/">Home</a>
-    {{#unless no_com}}
-    <a class="dropdown-item" href="/communities/create/new">Create Community</a>
-    {{/unless}}
-    {{#unless no_ques}}
-    <a class="dropdown-item" href="/questions/create/new">Ask a Question</a>
-    {{/unless}}
+    <button class="btn btn-light dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      Menu
+    </button>
+    <div class="dropdown-menu dropdown-menu-right" id="menu" aria-labelledby="dropdownMenuButton">
+      <a class="dropdown-item" href="/communities/">All Communities</a>
+      {{#unless no_com}}
+      <a class="dropdown-item" href="/communities/create/new">Create Community</a>
+      {{/unless}}
+      {{#unless no_ques}}
+      <a class="dropdown-item" href="/questions/create/new">Ask a Question</a>
+      {{/unless}}
+    </div>
+  </div>&nbsp;
     {{#if session.userId}}
-    <a class="dropdown-item" href="/users/{{session.userId}}">My Account</a>
-    <a class="dropdown-item" href="/site/logout">Logout</a>
-     {{else}}
-    <a class="dropdown-item" href="/users/signup">Register</a>
-    <a class="dropdown-item" href="/site/login">Login</a>
-    {{/if}}
-  </div>
-</div>
+        <a href="/users/{{session.userId}}"><button type="button" class="btn btn-light">My Account</button></a>&nbsp;
+        <a href="/site/logout"><button type="button" class="btn btn-light">Logout</button></a>
+      {{else}}
+        <a href="/users/signup"><button type="button" class="btn btn-light">Register</button></a>&nbsp;
+        <a href="/site/login"><button type="button" class="btn btn-light">Login</button></a>
+      </div>
+      {{/if}}
     </nav>
     <br />
     <div class="ml-5 mr-5 con">

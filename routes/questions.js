@@ -113,6 +113,7 @@ router.get("/:id", async (req, res) => {
       session: req.session,
     });
   } catch (e) {
+    console.log(e);
     res.status(404).json({ error: "can not find question with this id" });
   }
 });

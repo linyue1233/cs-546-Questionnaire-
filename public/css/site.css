@@ -86,6 +86,10 @@
   left: -100;
 }
 
-#dropdownMenuButton {
-  width: 100px;
+#com_card {
+  display: inline-table;
+}
+
+#com_card div a {
+  font-weight: 300;
 }
