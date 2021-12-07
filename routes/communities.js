@@ -5,6 +5,7 @@ const communities = require("../data/communities");
 const users = require("../data/users");
 const questions = require("../data/questions");
 const validator = require("../helpers/routeValidators/communityValidator");
+
 router.get("/", async (req, res) => {
   try {
     let com = await community.getAllcommunities();
@@ -156,14 +157,16 @@ router.get("/:id", async (req, res) => {
     } else {
       let allCommunityUser = communityInfo.community.subscribedUsers;
       for (let item of allCommunityUser) {
-        console.log(communityInfo);
-        if (currentUser === item) {
+        console.log(currentUser);
+        console.log(communityInfo.community.administrator);
+        if (currentUser === item && currentUser === communityInfo.community.administrator) {
           res.render("communities/view_community_details", {
             communityInfo: communityInfo,
             isSubscribed: true,
             session: req.session,
             questions: reqQuestions,
             scriptUrl: ["scripts.js"],
+            isAdmin: true,
           });
           return;
         }

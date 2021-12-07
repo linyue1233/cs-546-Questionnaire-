@@ -2,6 +2,7 @@
 const mongoCollections = require("../config/mongoCollections");
 const validator = require("../helpers/dataValidators/questionValidator");
 let questions = mongoCollections.questions;
+let users = mongoCollections.users;
 const uuid = require("uuid");
 
 const getAllWithoutParams = async () => {
@@ -11,17 +12,23 @@ const getAllWithoutParams = async () => {
   return allQuestions;
 };
 
-const createAns = async (qId, ans) => {
+const createAns = async (userId, qId, ans) => {
   if (!ans || !qId) throw "Invalid parameters";
   const questionCollection = await questions();
-
+  const answerToInsert = {
+    _id: uuid.v4(),
+    posterId: userId,
+    description: ans,
+    upvotes: [],
+    downvotes: [],
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  }
   const answer = await questionCollection.updateOne(
     { _id: qId },
     {
       $push: {
-        answers: {
-          description: ans,
-        },
+        answers: answerToInsert,
       },
     }
   );
@@ -202,6 +209,26 @@ const search = async (body) => {
   return allMatches;
 };
 
+const registerUpvote = async (questionId, userId) => {
+  const questionsCollection = await questions();
+  const existingQuestion = await questionsCollection.findOne({ _id: questionId });
+  let newUpvotes = existingQuestion.upvotes;
+  let newDownvotes = existingQuestion.downvotes;
+  if (existingQuestion.upvotes.includes(userId)) {
+    // upvote already done - toggle and remove userId from upvotes array.
+    newUpvotes = newUpvotes.filter((item) => userId !== item);
+  }
+  if (existingQuestion.downvotes.includes(userId)) {
+    // upvote to be done while present in downvote array - toggle and remove userId from downvotes array and add it to upvotes array
+    newDownvotes = newDownvotes.filter((item) => userId !== item);
+    newUpvotes = newUpvotes.push(userId);
+  }
+  if (!existingQuestion.upvotes.includes(userId) && !existingQuestion.downvotes.includes(userId)) {
+    // user not present in both upvote and downvote array - add to upvote directly.
+    newUpvotes = newUpvotes.push(userId);
+  }
+}
+
 module.exports = {
   remove,
   editQuestion,
@@ -214,6 +241,7 @@ module.exports = {
   updateAnswer,
   getAllWithoutParams,
   search,
+  registerUpvote,
   getAllByUserId,
   getAllByCommunityId,
 };

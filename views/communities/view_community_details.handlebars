@@ -5,6 +5,9 @@
 <button id="btnSubscribe" data-subscribeStatus="{{isSubscribed}}" class="btn btn-secondary btn-sm"></button>
 <br>
 <br>
+{{#if isAdmin}}
+<a href="/communities/{{communityInfo.community._id}}/view/flagged"><button id="btnAdmin" class="btn btn-secondary btn-sm">View Flagged</button></a>
+{{/if}}
 {{#if questions}}
 <ul>
     {{#each questions}}
