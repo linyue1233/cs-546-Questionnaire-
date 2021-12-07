@@ -33,7 +33,7 @@ router.post("/login", async (req, res) => {
       req.session.userEmail = userLogin.userEmail;
       req.session.userDispName = userLogin.userDispName;
       req.session.userId = userLogin.userId;
-      res.redirect("/");
+      res.redirect("/questions/all");
       return;
     }
     // code is not supposed to reach here, but if it does, reload login page with error.

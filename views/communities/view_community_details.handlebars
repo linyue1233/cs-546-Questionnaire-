@@ -6,7 +6,7 @@
 <br>
 <br>
 {{#if isAdmin}}
-<button id="btnAdmin" data-adminStatus=""></button>
+<a href="/communities/{{communityInfo.community._id}}/view/flagged"><button id="btnAdmin" class="btn btn-secondary btn-sm">View Flagged</button></a>
 {{/if}}
 {{#if questions}}
 <ul>
