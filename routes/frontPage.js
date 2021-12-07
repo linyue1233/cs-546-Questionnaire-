@@ -14,7 +14,9 @@ router.get("/", async (req, res) => {
       session: req.session,
       questions: questionList,
     });
-  } catch (e) {}
+  } catch (e) {
+    res.status(500).render("errors/internal_server_error", { session: req.session });
+  }
 });
 
 module.exports = router;
