@@ -9,7 +9,7 @@ async function main() {
   quescoll.createIndex({ title: "text", description: "text" });
 
   await quescoll.update(
-    { _id: "9c3b71ed-e063-4182-9d40-39fb7624b47e" },
+    { _id: "b1b894d1-ed22-4122-87a4-c93cbc56abd8" },
     {
       $addToSet: {
         answers: {

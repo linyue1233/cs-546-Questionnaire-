@@ -1,13 +1,32 @@
 {{#if user}}
 <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-  <a href="/communities/create/new"><button class="btn btn-info btn-sm" type="button">Create Community</button></a>&nbsp;
-  <a href="/questions/create/new"><button class="btn btn-info btn-sm" type="button">Add question</button></a>&nbsp;
-  <button class="btn btn-info btn-sm" type="button">Change Password</button>
+  <a href="/users/{{user._id}}/edit"><button class="btn btn-info btn-sm" type="button">Edit</button></a>
 </div>
+<img src="/public/images/userprofile/{{user.profileImage}}" id="profile_image">
 <h2>{{user.displayName}}</h2>
-<div>{{user.firstName}} {{user.lastName}}</div>
-<div>Email : {{user.emailAddress}}</div>
-<div>Communities : {{user.subscribedCommunities}}</div>
+<div>{{user.firstName}} {{user.lastName}}</div><br>
+<div>Email : {{user.emailAddress}}</div><br>
+
+<div>Subscribed Communities</div>
+{{#each subscribedCommunities}}
+<div><a href="/communities/{{this._id}}">{{this.name}}</a></div>
+{{/each}}
+<br>
+<div>Created Communities</div>
+{{#each adminCommunities}}
+<div><a href="/communities/{{this._id}}">{{this.name}}</a></div>
+{{/each}}
+<br>
+<div>Answered Questions</div>
+{{#each answeredQuestions}}
+<div><a href="/questions/{{this._id}}">{{this.title}}</a></div>
+{{/each}}
+<br>
+<div>Posted Questions</div>
+{{#each postedQuestions}}
+<div><a href="/questions/{{this._id}}">{{this.title}}</a></div>
+{{/each}}
+<br><br>
 {{/if}}
 {{#if error}}
 <p>{{ error }}</p>

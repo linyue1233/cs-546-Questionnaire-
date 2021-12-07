@@ -18,6 +18,14 @@
       <input class="form-control mr-sm-2 w-50 search" type="search" placeholder="Search" name="keyword" aria-label="Search">
       <input class="btn btn-secondary" type="submit" value="Search">
     </form>
+      <div class="btn-group" role="group" aria-label="">
+        {{#unless no_com}}
+        <a href="/communities/create/new"><button type="button" class="btn btn-secondary">Create Community</button></a>&nbsp;
+        {{/unless}}
+        {{#unless no_ques}}
+        <a href="/questions/create/new"><button type="button" class="btn btn-secondary">Ask a Question</button></a>
+        {{/unless}}
+      </div>
     {{#if session.userId}}
       <div class="btn-group" role="group" aria-label="">
         <a href="/users/{{session.userId}}"><button type="button" class="btn btn-secondary">My Account</button></a>&nbsp;
@@ -25,7 +33,7 @@
       </div>
       {{else}}
       <div class="btn-group" role="group" aria-label="">
-        <a href="#"><button type="button" class="btn btn-secondary">Register</button></a>&nbsp;
+        <a href="/users/signup"><button type="button" class="btn btn-secondary">Register</button></a>&nbsp;
         <a href="/site/login"><button type="button" class="btn btn-secondary">Login</button></a>
       </div>
       {{/if}}
@@ -61,8 +69,11 @@
   <!-- Copyright -->  
   </footer>
 <!-- Footer -->
-    <script src="/public/js/scripts.js"></script>
 
-<script src="/public/js/voteHandler.js"></script>
+  {{#if scriptUrl}}
+  {{#each scriptUrl}}
+  <script src="/public/js/{{this}}"></script>
+  {{/each}}
+  {{/if}}
   </body>
 </html>

@@ -74,3 +74,17 @@
 .con {
   min-height: 80.9%;
 }
+
+#profile_image {
+  height: 100px;
+  width: 100px;
+  border-radius: 50%;
+}
+
+.user_profile_table {
+  width: 100%;
+}
+
+.user_profile_table td div {
+  margin-left: 50px;
+}

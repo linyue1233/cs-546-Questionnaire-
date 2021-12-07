@@ -2,28 +2,27 @@
 
 <article class="edit-user">
     <h1>Update User Profile.</h1>
-  <form action="/users/{{_id}}/" method="POST" role="form" enctype="multipart/form-data" class="new-question-form">
+  <form action="/users/{{User._id}}/" method="POST" role="form" enctype="multipart/form-data" class="new-question-form">
        
     <br>
     <label>
        firstName: <br>
-      <input type="text" name="firstName" placeholder="{{firstName}}" value="{{firstName}}" class="full-width-input"/>
+      <input type="text" name="firstName" placeholder="{{User.firstName}}" value="{{User.firstName}}" class="full-width-input"/>
     </label>
    <br>
    <label>
        lastName: <br>
-      <input type="text" name="lastName" placeholder="{{lastName}}" value="{{lastName}}" class="full-width-input"/>
+      <input type="text" name="lastName" placeholder="{{User.lastName}}" value="{{User.lastName}}" class="full-width-input"/>
     </label>
    <br>
 
     <label>
-       Profile Picture: <br>
-      <input type="file" name="profileImage"  value="{{profileImage}}" class="full-width-input"/>
+       Profile Picture: <input type="file" name="profileImage"  value="{{User.profileImage}}" class="full-width-input"/>
     </label>
-   <br>
+   <br><br>
   
     </label> 
-        <button> submitform</button>
+        <button class="btn btn-secondary btn-sm"> submit</button>
      
     </label>
    
