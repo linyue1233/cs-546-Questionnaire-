@@ -22,8 +22,8 @@ const createAns = async (userId, qId, ans) => {
     upvotes: [],
     downvotes: [],
     createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
-  }
+    updatedAt: new Date().toISOString(),
+  };
   const answer = await questionCollection.updateOne(
     { _id: qId },
     {
@@ -90,6 +90,7 @@ const editQuestion = async (id, title, description, tags, communityId) => {
     description: description,
     tags: tags,
     communityId: communityId,
+    updatedAt: new Date(),
   };
   const updatedInfo = await questionsCollection.updateOne({ _id: id }, { $set: updateQuestion });
   if (updatedInfo.modifiedCount == 0) throw "Could not update the question";
@@ -227,7 +228,7 @@ const registerUpvote = async (questionId, userId) => {
     // user not present in both upvote and downvote array - add to upvote directly.
     newUpvotes = newUpvotes.push(userId);
   }
-}
+};
 
 module.exports = {
   remove,
