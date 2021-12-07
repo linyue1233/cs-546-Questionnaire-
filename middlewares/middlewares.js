@@ -14,7 +14,15 @@ let changeMethodToPutForUserprofileUpdate = (req, res, next) => {
   next();
 };
 
+let changeMethodToPutForCommunityEdit = (req,res,next) => {
+  if(req.method === "GET"){
+    req.method = "put";
+  }
+  next();
+}
+
 module.exports = {
   changeMethodToPutForAnswerUpdate,
-  changeMethodToPutForUserprofileUpdate
+  changeMethodToPutForUserprofileUpdate,
+  changeMethodToPutForCommunityEdit
 };
