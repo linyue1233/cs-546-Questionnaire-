@@ -1,16 +1,50 @@
 <div>
-    <span><h1>{{questionInfo.title}}</h1><h3>(Posted By: {{userDisplayName}})</h3></span>
-    <p>{{questionInfo.description}}</p>
-    
-    <br>
-    <h2>Tags :{{questionInfo.tags}}</h2>
+    {{!-- Show only if current user if the poster of the question --}}
+    <div class="card">
+        <div class="card-body">
+        {{#if currentUserPostedQuestion}}
+        <span><h1>{{questionInfo.title}}</h1>
+        <p>{{questionInfo.description}}</p>
+
+        <div class="votingsystem">
+            <i class="far fa-thumbs-up upvote" data-id="/questions/{{questionInfo._id}}/upvote"></i>
+            <span class="label label-primary votecounter">{{ questionInfo.votes }}</span>
+            <i class="far fa-thumbs-down downvote" data-id="/questions/{{questionInfo._id}}/downvote"></i>
+        </div>      
+		<a>{{ post.title }}</a>
+	</li>
+        <div class="posterInfo">
+            <p>Posted By: <a href="/users/{{questionPoster._id}}/profile">{{questionPoster.displayName}}</a></p></span>
+            <p>Posted On: {{questionInfo.friendlyCreatedAt}}</p>
+            <p>Last Updated On: {{ questionInfo.friendlyUpdatedAt}}</p>
+            <p>Tags :{{questionInfo.tags}}</p>
+        </div>
+        
+        <br>
+        <button class="btn btn-light"><a href="/questions/{{questionInfo._id}}/edit">Edit</a></button>
+        <button class="btn btn-light"><a href="/questions/{{questionInfo._id}}/delete">Delete</a></button>
+        {{/if}}
+        
+        {{#unless currentUserPostedQuestion}}
+        <span><h1>{{questionInfo.title}}</h1>
+        <p>Posted By: <a href="/users/{{questionPoster._id}}/profile">{{questionPoster.posterName}}</a></p></span>
+        <p>Posted On: {{questionInfo.friendlyCreatedAt}}</p>
+        <p>Last Updated On: {{ questionInfo.friendlyUpdatedAt}}</p>
+        <p>{{questionInfo.description}}</p>
+        <br>
+        <h2>Tags :{{questionInfo.tags}}</h2>
+        {{/unless}}
+        </div>    
+    </div>
+
+<hr>
 
     {{#if questionInfo.answers.length}}
     <h3>Answers</h3>
     <ul>
         {{#each questionInfo.answers}}    
         <li>
-            <p>{{this.description}}</p>
+            <p>{{{this.description}}}</p>
             <h5>Posted By: {{this.posterId}}</h5>
             <p><a href='/questions/{{../questionInfo._id}}/answers/{{this._id}}/edit'>Edit Answer</a></p>
         </li>
@@ -18,3 +52,22 @@
     </ul>
     {{/if}}
 </div>
+<hr>
+<h3>Post your answer here</h3>
+    {{!-- build a rich text box to submit answer --}}
+    {{!-- action need to modify --}}
+    <form id="textSubmit" action="/questions/{{questionInfo._id}}/answers/create" method="post">
+        <textarea name="content" id="editor">
+        </textarea>
+        <p><input type="submit" value="Submit"></p>
+    </form>
+</div>
+
+
+<script>
+    ClassicEditor
+        .create(document.querySelector('#editor'))
+        .catch(error => {
+            console.error(error);
+        });
+</script>
