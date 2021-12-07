@@ -6,7 +6,8 @@ const uuid = require("uuid");
 
 const getAllWithoutParams = async () => {
   const questionCollection = await questions();
-  const allQuestions = await questionCollection.find({}).limit(30).toArray();
+  const allQuestions = await questionCollection.find({}).toArray();
+  allQuestions.reverse();
   return allQuestions;
 };
 
@@ -192,12 +193,12 @@ const search = async (body) => {
   // TODO: add validation wherever necessary
   const questionsCollection = await questions();
   let tokenizedKeywords = body.keyword.split(" ");
-  const allMatches = await questionsCollection.find({ $text: { $search: body.keyword } }).toArray();
-  const allArrayMatches = await questionsCollection.find({ tags: tokenizedKeywords }).toArray();
-  console.log(tokenizedKeywords, allArrayMatches);
-  if (allArrayMatches.length > 0) {
+  let allMatches = await questionsCollection.find({ $text: { $search: body.keyword } }).toArray();
+  for (let x of tokenizedKeywords) {
+    let allArrayMatches = await questionsCollection.find({ tags: x }).toArray();
     allMatches = allMatches.concat(allArrayMatches);
   }
+  console.log(tokenizedKeywords, allMatches);
   return allMatches;
 };
 

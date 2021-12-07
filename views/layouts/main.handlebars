@@ -15,28 +15,31 @@
     <nav class="navbar navbar-light bg-light shadow-sm rounded sticky-top">
       <a class="navbar-brand" href="/"><i class="fas fa-comments"></i> Questionnaire</a>
       <form class="form-inline my-2 my-lg-0 w-50" method="post" action="/questions/search">
-      <input class="form-control mr-sm-2 w-50 search" type="search" placeholder="Search" name="keyword" aria-label="Search">
+      <input class="form-control mr-sm-2 w-75 search" type="search" placeholder="Search" name="keyword" aria-label="Search">
       <input class="btn btn-secondary" type="submit" value="Search">
     </form>
-      <div class="btn-group" role="group" aria-label="">
-        {{#unless no_com}}
-        <a href="/communities/create/new"><button type="button" class="btn btn-secondary">Create Community</button></a>&nbsp;
-        {{/unless}}
-        {{#unless no_ques}}
-        <a href="/questions/create/new"><button type="button" class="btn btn-secondary">Ask a Question</button></a>
-        {{/unless}}
-      </div>
+      
+      <div class="dropdown">
+  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    Menu
+  </button>
+  <div class="dropdown-menu dropdown-menu-right" id="menu" aria-labelledby="dropdownMenuButton">
+    <a class="dropdown-item" href="/">Home</a>
+    {{#unless no_com}}
+    <a class="dropdown-item" href="/communities/create/new">Create Community</a>
+    {{/unless}}
+    {{#unless no_ques}}
+    <a class="dropdown-item" href="/questions/create/new">Ask a Question</a>
+    {{/unless}}
     {{#if session.userId}}
-      <div class="btn-group" role="group" aria-label="">
-        <a href="/users/{{session.userId}}"><button type="button" class="btn btn-secondary">My Account</button></a>&nbsp;
-        <a href="/site/logout"><button type="button" class="btn btn-secondary">Logout</button></a>
-      </div>
-      {{else}}
-      <div class="btn-group" role="group" aria-label="">
-        <a href="/users/signup"><button type="button" class="btn btn-secondary">Register</button></a>&nbsp;
-        <a href="/site/login"><button type="button" class="btn btn-secondary">Login</button></a>
-      </div>
-      {{/if}}
+    <a class="dropdown-item" href="/users/{{session.userId}}">My Account</a>
+    <a class="dropdown-item" href="/site/logout">Logout</a>
+     {{else}}
+    <a class="dropdown-item" href="/users/signup">Register</a>
+    <a class="dropdown-item" href="/site/login">Login</a>
+    {{/if}}
+  </div>
+</div>
     </nav>
     <br />
     <div class="ml-5 mr-5 con">

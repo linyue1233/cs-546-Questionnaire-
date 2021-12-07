@@ -25,12 +25,12 @@
         <input type="file" id="profileImage" name="profileImage" value="choose file">
         </label>
         <br>
-        <button type="submit">sumbit</button>
+        <button type="submit" class="btn btn-secondary">submit</button>
     </form>
 
     {{#if error}}
     <p> {{this.error}}</p>
     {{/if}}
 
-    <a href="/">Already have an account? Click here to log-in</a>
+    <a href="/site/login">Already have an account? Click here to log-in</a>
 </div>
