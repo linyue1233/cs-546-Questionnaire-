@@ -81,7 +81,12 @@ router.post("/search", async (req, res) => {
     // ideally, do this:
     // res.status(200).render("questions/search_results", { totalResults: 0, searchResult });
     // FOR NOW, returning JSON
-    res.status(200).json({ totalResults: 0, results: searchResult });
+    res.render("search/search_results", {
+      result: false,
+      session: req.session,
+      searchTerm: body.keyword,
+      searchTotal: "No Results",
+    });
     return;
   }
   console.log(searchResult);
@@ -90,6 +95,7 @@ router.post("/search", async (req, res) => {
   // ideally, do this:
   // res.status(200).render("questions/search_results", { totalResults: searchResult.length, searchResult });
   res.status(200).render("search/search_results", {
+    result: true,
     searchTerm: body.keyword,
     searchTotal: searchResult.length,
     searchResults: searchResult,
@@ -115,6 +121,7 @@ router.get("/:id", async (req, res) => {
       session: req.session,
     });
   } catch (e) {
+    console.log(e);
     res.status(404).json({ error: "can not find question with this id" });
   }
 });

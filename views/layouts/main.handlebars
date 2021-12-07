@@ -1,7 +1,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <title>{{title}}</title>
+    <title>Questionnaire</title>
     <link rel="stylesheet" href="/public/css/site.css" />
     <script src="https://cdn.ckeditor.com/ckeditor5/31.0.0/classic/ckeditor.js"></script>
     <link
@@ -15,26 +15,31 @@
     <nav class="navbar navbar-light bg-light shadow-sm rounded sticky-top">
       <a class="navbar-brand" href="/"><i class="fas fa-comments"></i> Questionnaire</a>
       <form class="form-inline my-2 my-lg-0 w-50" method="post" action="/questions/search">
-      <input class="form-control mr-sm-2 w-50 search" type="search" placeholder="Search" name="keyword" aria-label="Search">
+      <input class="form-control mr-sm-2 w-75 search" type="search" placeholder="Search" name="keyword" aria-label="Search">
       <input class="btn btn-secondary" type="submit" value="Search">
     </form>
-      <div class="btn-group" role="group" aria-label="">
-        {{#unless no_com}}
-        <a href="/communities/create/new"><button type="button" class="btn btn-secondary">Create Community</button></a>&nbsp;
-        {{/unless}}
-        {{#unless no_ques}}
-        <a href="/questions/create/new"><button type="button" class="btn btn-secondary">Ask a Question</button></a>
-        {{/unless}}
-      </div>
+    <div class="btn-group" role="group" aria-label="">
+      <a href="/"><button type="button" class="btn btn-light">Home</button></a>&nbsp;
+      <div class="dropdown">
+    <button class="btn btn-light dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      Menu
+    </button>
+    <div class="dropdown-menu dropdown-menu-right" id="menu" aria-labelledby="dropdownMenuButton">
+      <a class="dropdown-item" href="/communities/">All Communities</a>
+      {{#unless no_com}}
+      <a class="dropdown-item" href="/communities/create/new">Create Community</a>
+      {{/unless}}
+      {{#unless no_ques}}
+      <a class="dropdown-item" href="/questions/create/new">Ask a Question</a>
+      {{/unless}}
+    </div>
+  </div>&nbsp;
     {{#if session.userId}}
-      <div class="btn-group" role="group" aria-label="">
-        <a href="/users/{{session.userId}}"><button type="button" class="btn btn-secondary">My Account</button></a>&nbsp;
-        <a href="/site/logout"><button type="button" class="btn btn-secondary">Logout</button></a>
-      </div>
+        <a href="/users/{{session.userId}}"><button type="button" class="btn btn-light">My Account</button></a>&nbsp;
+        <a href="/site/logout"><button type="button" class="btn btn-light">Logout</button></a>
       {{else}}
-      <div class="btn-group" role="group" aria-label="">
-        <a href="/users/signup"><button type="button" class="btn btn-secondary">Register</button></a>&nbsp;
-        <a href="/site/login"><button type="button" class="btn btn-secondary">Login</button></a>
+        <a href="/users/signup"><button type="button" class="btn btn-light">Register</button></a>&nbsp;
+        <a href="/site/login"><button type="button" class="btn btn-light">Login</button></a>
       </div>
       {{/if}}
     </nav>
