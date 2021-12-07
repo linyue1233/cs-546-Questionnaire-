@@ -5,6 +5,7 @@ const communities = require("../data/communities");
 const users = require("../data/users");
 const questions = require("../data/questions");
 const validator = require("../helpers/routeValidators/communityValidator");
+
 router.get("/", async (req, res) => {
   try {
     let com = await community.getAllcommunities();
