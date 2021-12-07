@@ -24,7 +24,7 @@ app.use(
   "/questions/:questionId/answers/:answerId",
   middlewares.changeMethodToPutForAnswerUpdate
 );
-
+app.use("/users/:id", middlewares.changeMethodToPutForUserprofileUpdate);
 app.use("/questions/search", (req, res, next) => {
   if (req.method == "POST") {
     if (req.body.keyword.trim().length == 0) res.redirect("/");
