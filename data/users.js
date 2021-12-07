@@ -159,7 +159,10 @@ const userSignUp = async (firstName, lastName, displayName, password, emailAddre
   return { userInserted: true };
 };
 
-
+const getUserById =  async(id) => {
+  const userCollection = await users();
+  return await userCollection.findOne({ _id: id });
+}
 
 module.exports = {
   deleteUser,
@@ -168,4 +171,5 @@ module.exports = {
   getDisplayNameByUserId,
   userSignUp,
   updateUser,
+  getUserById
 }

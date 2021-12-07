@@ -6,6 +6,7 @@ const data = require('../data');
 const questionData = data.questions;
 const communityData = data.communities;
 const validator = require('../helpers/routeValidators/questionValidator');
+const userData = data.users;
 
 router.get('/all', async (req, res) => {
   const allQuestions = await questions.getAllWithoutParams();
@@ -104,11 +105,19 @@ router.post('/search', async (req, res) => {
 
 router.get('/:id', async (req, res) => {
   let id = req.params.id;
-  console.log(req.session);
+  console.log(req.session); 
   try {
     let questionAns = await questionData.getID(req.params.id);
+    let thisQuestionPoster = questionAns.posterId;
+    let userDetails = await userData.getUserById(thisQuestionPoster);
+    console.log(userDetails)
+    questionAns.friendlyCreatedAt = questionAns.createdAt.toDateString();
+    questionAns.friendlyUpdatedAt = questionAns.updatedAt.toDateString();
+    questionAns.votes = questionAns.upvotes.length - questionAns.downvotes.length;
     res.status(200).render('questions/individual-question', {
       questionInfo: questionAns,
+      questionPoster: userDetails,
+      currentUserPostedQuestion: req.session.userId === thisQuestionPoster ? true : false,
       session: req.session,
     });
   } catch (e) {
@@ -223,7 +232,7 @@ router.post('/', async (req, res) => {
   }
 });
 
-router.delete('/:questionId/answers/:answerId/edit', async (req, res) => {
+router.delete('/:questionId/answers/:answerId', async (req, res) => {
   let questionId = req.params.questionId;
   let answerId = req.params.answerId;
   const que = await questions.deleteAnswer(answerId);
@@ -245,6 +254,7 @@ router.get('/:questionId/answers', async (req, res) => {
     res.status(400).json({ error: e });
   }
 });
+
 router.get('/:questionId/answers/:answerId/edit', async (req, res) => {
   let questionId = req.params.questionId;
   let answerId = req.params.answerId;
@@ -279,13 +289,13 @@ router.put('/:questionId/answers/:answerId', async (req, res) => {
       answerId,
       updatePayload
     );
-    res.status(200).render('questions/individual-question.handlebars', {
+    res.status(200).render('questions/individual-question', {
       questionInfo: updatedQuestionWithAnswer,
     });
     return;
   } catch (e) {
     console.log(e);
-    res.status(500).render('errors/internal_server_error.handlebars');
+    res.status(500).render('errors/internal_server_error');
     return;
   }
 });
@@ -322,15 +332,27 @@ router.get('/:questionId/answers/:answerId', async (req, res) => {
 
 //create an answer
 router.post('/:id/answers/create', async (req, res) => {
-  const body = req.body;
-  error = '';
-  if (!body) error = 'No data found for updation';
+  const body = req.body.content;
+  const questionId = req.params.id;
+  const userId = req.session.userId;
+  console.log(body);
+  if (!body) error = 'No content present in input';
   try {
-    await questions.createAns(req.params.id, body);
-    res.redirect('/questions/req.params.id');
+    const insertAns = await questions.createAns(userId, questionId, body);
+    if (insertAns) {
+      res.redirect('/questions/' + req.params.id);
+      return;
+    }
   } catch (e) {
+    console.log(e)
     res.status(404).json({ error: e });
   }
 });
+
+router.post("/:id/upvote", async (req, res) => {
+  let questionId = req.params.id;
+  let userId = req.session.userId;
+  const upvotePersist = await questions.registerUpvote(questionId, userId);
+})
 
 module.exports = router;
