@@ -64,24 +64,31 @@ router.get("/:id/edit", async (req, res) => {
     let communityId = req.params.id;
     let validate = validator.validateCommunityId(communityId);
     if (!validate.isValid) {
-      res.status(400).render("communities/view_all_communities", { error: "No community present with id." });
+      res
+        .status(400)
+        .render("errors/internal_server_error", { message: "No community present with id.", session: req.session });
       return;
     }
     let existingCommunity = await communities.getCommunityById(communityId);
+    if (req.session.userId != existingCommunity.community.administrator) {
+      res.redirect(`/communities/${communityId}`);
+    }
     let subscribedUsers = [];
     // existingCommunity.subscribedUsers;
-    for (const userId of existingCommunity.subscribedUsers) {
+    for (const userId of existingCommunity.community.subscribedUsers) {
       let userDispName = await users.getDisplayNameByUserId(userId);
       console.log(userDispName);
       if (userDispName) subscribedUsers.push({ userId: userId, displayName: userDispName });
     }
     res.status(200).render("communities/edit_community", {
-      community: existingCommunity,
+      community: existingCommunity.community,
       subscribedUsers: subscribedUsers,
+      session: req.session,
     });
     return;
   } catch (e) {
-    res.status(400).render("communities/view_existing_community", { error: "Something went wrong." });
+    console.log(e);
+    res.status(500).render("errors/internal_server_error", { message: "Something went wrong.", session: req.session });
     return;
   }
 });
@@ -174,7 +181,7 @@ router.get("/:id", async (req, res) => {
               isSubscribed: true,
               session: req.session,
               questions: reqQuestions,
-              scriptUrl: ["scripts.js"]
+              scriptUrl: ["scripts.js"],
             });
             return;
           }
@@ -188,8 +195,6 @@ router.get("/:id", async (req, res) => {
         scriptUrl: ["scripts.js"],
       });
     }
-
-
   } catch (e) {
     res.status(400).json({ error: e });
   }
