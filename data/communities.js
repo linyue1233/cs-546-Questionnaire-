@@ -13,6 +13,10 @@ const createCom = async (name, description, userId) => {
 
   const communityCollections = await communities();
   const userCollection = await users();
+  const existingCommunityForName = await communityCollections.findOne({ name: name });
+  if (existingCommunityForName) {
+    throw `A community already exists with the same name. Please choose a different name.`;
+  }
   let newCom = {
     _id: uuid.v4(),
     name: name,

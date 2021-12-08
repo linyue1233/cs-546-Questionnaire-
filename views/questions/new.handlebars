@@ -3,37 +3,55 @@
 <article class="new-question">
   <h1>Ask a Question</h1>
   <form action="/questions" name="new_question" method="POST" onsubmit="return validateCommunity()" class="new-question-form">
-        <label >  Community: <br>
-        <select class="full-width-input" name="community">
+  <div class="form-group">
+        <label for="community">  Community </label>
+        <br>
+        <select class="full-width-input form-control" id= "community" name="community">
       <option value="">Select community...</option>
       {{#each this.com}}
         <option value="{{this._id}}">{{this.name}}</option>
       {{/each}}
-      
     </select>
-   
-    </label>
+    </div>
+    <div class="form-group">
+      <div class="btn btn-light form-group" id="toggle-qcreate-comm">Quick Create Community</div>
+    </div>
+    <div class="card" id="comm-qcreate" hidden>
+      <div class="card-body">
+        {{!-- <form action="/communities/create/new" method="POST"> --}}
+          <div class="form-group">
+            <label for="communityName">Name of the community</label>
+            <input type="text" class="form-control" id="qc-name"  name="communityName" placeholder="Enter name of the community here">
+            </div>
+            <div class="form-group">
+            <label for="communityName">A brief description about the community</label>
+            <input type="text" class="form-control" id="qc-desc" name="communityDesc" placeholder="Enter a brief description about the community here">
+          </div>
+          <div class="form-group">
+            <input class = "btn btn-primary float-right" id="create-comm-btn" type="submit" value="Quick Create">
+          </div>
+          <br>
+            
+      <div class="alert alert-warning" id="showQcErr" hidden role="alert">
+              You should check in on some of those entered fields.
+            </div>
+        {{!-- </form> --}}
+      </div>
+    </div>
     <br>
-    <label>
-       Title: <br>
-      <input type="text" name="title" placeholder="Enter Title" value="{{title}}" class="full-width-input" required/>
-    </label>
+    <label for="title">Title</label>
+      <input type="text" id="title" name="title" placeholder="Enter Title" value="{{title}}" class="full-width-input form-control"/>
+    
    <br>
-    <label>
-        Description: <br>
-      <textarea id="Question-Description"  rows="6"  name="description" placeholder="Enter Description" class="full-width-input" required>{{description}}</textarea>
-
-    </label>
+    <label for="description">Description</label>
+      <textarea id="description"  rows="6"  name="description" placeholder="Enter Description" class="full-width-input form-control" >{{description}}</textarea>
   <br>
-    <label>
-       Tags: <br>
-      <input type="text" name="tags" placeholder="Tags seprated by spaces" value="{{tags}}" class="full-width-input" required/>
-    </label>
+    <label for="tags">Tags</label>
+      <input type="text" name="tags" id="tags" placeholder="Tags seprated by spaces" value="{{tags}}" class="full-width-input form-control"/>
     <br>
     <br>
     </label> 
-        <button type="submit" class="btn btn-secondary btn-sm">Submit</button>
-     
+        <button type="submit" class="btn btn-primary float-right">Submit</button>
     </label>
    
 
