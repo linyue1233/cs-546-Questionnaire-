@@ -88,3 +88,16 @@
 .user_profile_table td div {
   margin-left: 50px;
 }
+
+#menu {
+  right: 0;
+  left: -100;
+}
+
+#com_card {
+  display: inline-table;
+}
+
+#com_card div a {
+  font-weight: 300;
+}

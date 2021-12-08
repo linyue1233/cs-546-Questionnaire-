@@ -9,9 +9,9 @@ const validator = require("../helpers/routeValidators/communityValidator");
 router.get("/", async (req, res) => {
   try {
     let com = await community.getAllcommunities();
-    res.render("communities/getAllcommunity", { com: com });
+    res.render("communities/getAllcommunity", { com: com, session: req.session });
   } catch (e) {
-    res.render("communities/getAllcommunity", e);
+    res.render("communities/getAllcommunity", { error: e, session: req.session });
   }
 });
 
@@ -151,22 +151,33 @@ router.get("/:id", async (req, res) => {
         isSubscribed: false,
         session: req.session,
         questions: reqQuestions,
-        scriptUrl: ['scripts.js']
+        scriptUrl: ["scripts.js"],
       });
       return;
     } else {
       let allCommunityUser = communityInfo.community.subscribedUsers;
       for (let item of allCommunityUser) {
-        console.log(communityInfo);
         if (currentUser === item) {
-          res.render("communities/view_community_details", {
-            communityInfo: communityInfo,
-            isSubscribed: true,
-            session: req.session,
-            questions: reqQuestions,
-            scriptUrl: ['scripts.js']
-          });
-          return;
+          if (currentUser === communityInfo.community.administrator) {
+            res.render("communities/view_community_details", {
+              communityInfo: communityInfo,
+              isSubscribed: true,
+              session: req.session,
+              questions: reqQuestions,
+              scriptUrl: ["scripts.js"],
+              isAdmin: true,
+            });
+            return;
+          } else {
+            res.render("communities/view_community_details", {
+              communityInfo: communityInfo,
+              isSubscribed: true,
+              session: req.session,
+              questions: reqQuestions,
+              scriptUrl: ["scripts.js"]
+            });
+            return;
+          }
         }
       }
       res.render("communities/view_community_details", {
@@ -174,17 +185,11 @@ router.get("/:id", async (req, res) => {
         isSubscribed: false,
         session: req.session,
         questions: reqQuestions,
-        scriptUrl: ['scripts.js']
+        scriptUrl: ["scripts.js"],
       });
     }
 
-    res.render("communities/view_community_details", {
-      communityInfo: communityInfo,
-      isSubscribed: false,
-      session: req.session,
-      questions: reqQuestions,
-      scriptUrl: ['scripts.js']
-    });
+
   } catch (e) {
     res.status(400).json({ error: e });
   }

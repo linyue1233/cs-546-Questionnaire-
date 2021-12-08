@@ -5,6 +5,7 @@
     <div>
         <h3>Total Results: {{searchTotal}}</h3>
     </div>
+    {{#if result}}
     <div>
         <!-- List of questions with details -->
         {{#each searchResults}}
@@ -14,4 +15,6 @@
         </div>
         {{/each}}
     </div>
+    {{/if}}
+    <a href="/"><button class="btn btn-secondary btn-sm">Home</button></a>
 </header>

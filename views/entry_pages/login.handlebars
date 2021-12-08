@@ -1,11 +1,16 @@
 <section class="vh-100">
-  <div class="container-fluid h-custom">
-    <div class="row d-flex justify-content-center align-items-center h-100">
+  <div class="container-fluid">
+    <div class="row d-flex justify-content-center align-items-center">
       <div class="col-md-9 col-lg-6 col-xl-5">
         <img src="https://mdbootstrap.com/img/Photos/new-templates/bootstrap-login-form/draw2.png" class="img-fluid"
           alt="Sample image">
       </div>
       <div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
+        {{#if error}}
+        <div class="alert alert-danger">
+          <strong>Error!</strong> {{error}}
+        </div>
+        {{/if}}
         <form method="post" action="/site/login">
           
           <!-- Email input -->
@@ -20,8 +25,7 @@
               placeholder="Enter password" />
           </div>
 
-          <div class="d-flex justify-content-between align-items-center">
-            <!-- Checkbox -->
+          <!-- <div class="d-flex justify-content-between align-items-center">
             <div class="form-check mb-0">
               <input class="form-check-input me-2" type="checkbox" value="" id="form2Example3" />
               <label class="form-check-label" for="form2Example3">
@@ -29,12 +33,11 @@
               </label>
             </div>
             <a href="#!" class="text-body">Forgot password?</a>
-          </div>
+          </div> -->
 
           <div class="text-center text-lg-start mt-4 pt-2">
-            <button type="submit" class="btn btn-primary btn-lg"
-              style="padding-left: 2.5rem; padding-right: 2.5rem;">Login</button>
-            <p class="small fw-bold mt-2 pt-1 mb-0">Don't have an account? <a href="#!"
+            <button type="submit" class="btn btn-primary btn-lg">Login</button>
+            <p class="small fw-bold mt-2 pt-1 mb-0">Don't have an account? <a href="/users/signup"
                 class="link-danger">Register</a></p>
           </div>
         </form>

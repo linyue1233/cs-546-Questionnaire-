@@ -20,31 +20,68 @@ router.get("/all", async (req, res) => {
 });
 
 router.get("/:id/edit", async (req, res) => {
-  if (!req.params.id) res.status(400).json({ error: "No id found" });
-  try {
-    const question = await questions.getID(req.params.id);
-    if (!questions) res.status(400).json({ error: "No question with that id" });
-    res.render("questions/edit-question", {
-      question: question,
-      session: req.session,
-    });
-  } catch (e) {
-    res.status(400).json({ error: e });
+  if (req.session.userId) {
+    if (!req.params.id) res.status(400).json({ error: "No id found" });
+    try {
+      const question = await questions.getID(req.params.id);
+      if (question.posterId != req.session.userId) {
+        res.status(400).render("questions/edit-question", {
+          error: "Unauthorized access",
+          session: req.session,
+        });
+      } else {
+        const com = await communityData.getAllcommunities();
+        if (!question)
+          res.status(400).render("questions/edit-question", {
+            error: "No Question with that ID",
+            session: req.session,
+          });
+        const comName = await communityData.getCommunityById(question.communityId);
+        question.communityName = comName.community.name;
+        for (let x of com) {
+          if (x._id === question.communityId) {
+            x.selected = true;
+          }
+        }
+        res.render("questions/edit-question", {
+          question: question,
+          session: req.session,
+          com: com,
+        });
+      }
+    } catch (e) {
+      res.status(500).render("questions/edit-question", {
+        error: "No Question with that ID",
+        session: req.session,
+      });
+    }
+  } else {
+    res.redirect(`/questions/${req.params.id}`);
   }
 });
 
 router.put("/:id", async (req, res) => {
   let body = req.body;
-  errors = "";
-  if (!body) errors = "No data for updation found";
-  if (!body.title || !body.description || !body.tags || !body.communityId) error = "Incomplete Data received";
-  if (!req.params.id) errors = "No ID found";
-
+  try {
+    if (!body) throw "";
+    if (!body.title || !body.description || !body.tags || !body.communityId) throw "";
+    if (!req.params.id) throw "";
+  } catch (e) {
+    res.status(500).render("questions/edit-question", {
+      success: "Error! Incomplete or Invalid data. Try Again",
+      session: req.session,
+      id: req.params.id,
+    });
+  }
   try {
     const question = await questions.getID(req.params.id);
     if (!question) throw "No question with that id";
+    if (question.posterId != req.session.userId) throw "Unauthorized Access";
   } catch (e) {
-    res.status(400).json({ error: e });
+    res.status(500).render("questions/edit-question", {
+      error: e,
+      session: req.session,
+    });
     return;
   }
   try {
@@ -53,9 +90,15 @@ router.put("/:id", async (req, res) => {
       tagsArray[i] = tagsArray[i].trim();
     }
     await questions.editQuestion(req.params.id, body.title, body.description, tagsArray, body.communityId);
-    res.status(200).json({ Message: "Updation Complete" });
+    res.status(200).render("questions/edit-question", {
+      success: "Question edited successfully",
+      session: req.session,
+      id: req.params.id,
+    });
   } catch (e) {
-    res.status(500).json({ error: e });
+    res.status(500).render("errors/internal_server_error", {
+      session: req.session,
+    });
   }
 });
 
@@ -81,7 +124,12 @@ router.post("/search", async (req, res) => {
     // ideally, do this:
     // res.status(200).render("questions/search_results", { totalResults: 0, searchResult });
     // FOR NOW, returning JSON
-    res.status(200).json({ totalResults: 0, results: searchResult });
+    res.render("search/search_results", {
+      result: false,
+      session: req.session,
+      searchTerm: body.keyword,
+      searchTotal: "No Results",
+    });
     return;
   }
   console.log(searchResult);
@@ -90,6 +138,7 @@ router.post("/search", async (req, res) => {
   // ideally, do this:
   // res.status(200).render("questions/search_results", { totalResults: searchResult.length, searchResult });
   res.status(200).render("search/search_results", {
+    result: true,
     searchTerm: body.keyword,
     searchTotal: searchResult.length,
     searchResults: searchResult,
@@ -99,16 +148,16 @@ router.post("/search", async (req, res) => {
 
 router.get("/:id", async (req, res) => {
   let id = req.params.id;
-  console.log(req.session); 
+  console.log(req.session);
   try {
     let questionAns = await questionData.getID(req.params.id);
     let thisQuestionPoster = questionAns.posterId;
     let userDetails = await userData.getUserById(thisQuestionPoster);
-    console.log(userDetails)
+    console.log(userDetails);
     questionAns.friendlyCreatedAt = questionAns.createdAt.toDateString();
     questionAns.friendlyUpdatedAt = questionAns.updatedAt.toDateString();
     questionAns.votes = questionAns.upvotes.length - questionAns.downvotes.length;
-    res.status(200).render('questions/individual-question', {
+    res.status(200).render("questions/individual-question", {
       questionInfo: questionAns,
       questionPoster: userDetails,
       currentUserPostedQuestion: req.session.userId === thisQuestionPoster ? true : false,
@@ -116,7 +165,8 @@ router.get("/:id", async (req, res) => {
       scriptUrl: ['voteHandler.js']
     });
   } catch (e) {
-    res.status(404).json({ error: "can not find question with this id" });
+    console.log(e);
+    res.status(404).render("errors/internal_server_error", { message: e });
   }
 });
 
@@ -138,17 +188,46 @@ router.get("/", async (req, res) => {
   }
 });
 
+router.get("/:id/delete", async (req, res) => {
+  res.status(500).render("errors/internal_server_error", {
+    session: req.session,
+  });
+});
+
 router.delete("/:id/delete", async (req, res) => {
   let id = req.params.id;
   // TODO: apply validation wherever necessary
-  const question = await questions.remove(id);
-  if (!question.deleted) {
-    // ideally, do this:
-    // res.status(200).render("questions/search_results", { totalResults: 0, searchResult });
-    res.status(500).json({ error: "Something went wrong! " });
-    return;
+  if (req.session.userId) {
+    try {
+      let question = await questions.getID(id);
+      if (!question) throw "No question with that id";
+      if (question.posterId != req.session.userId) {
+        res.status(400).render("questions/delete", {
+          message: "Unauthorized access",
+          session: req.session,
+        });
+      } else {
+        question = await questions.remove(id);
+        if (!question.deleted) {
+          // ideally, do this:
+          // res.status(200).render("questions/search_results", { totalResults: 0, searchResult });
+          res.status(500).render("errors/internal_server_error", {
+            session: req.session,
+          });
+        }
+        res.status(200).render("questions/delete", {
+          message: "Deletion successful",
+          session: req.session,
+        });
+      }
+    } catch (e) {
+      res.status(500).render("errors/internal_server_error", {
+        session: req.session,
+      });
+    }
+  } else {
+    res.redirect(`/questions/${id}`);
   }
-  res.status(200).json({ deleted: question.deleted, id: question.id });
 });
 
 router.get("/create/new", async (req, res) => {
@@ -218,7 +297,7 @@ router.post("/", async (req, res) => {
   }
 });
 
-router.delete('/:questionId/answers/:answerId', async (req, res) => {
+router.delete("/:questionId/answers/:answerId", async (req, res) => {
   let questionId = req.params.questionId;
   let answerId = req.params.answerId;
   const que = await questions.deleteAnswer(answerId);
@@ -267,19 +346,14 @@ router.put("/:questionId/answers/:answerId", async (req, res) => {
     return;
   }
   try {
-
-    const updatedQuestionWithAnswer = await questions.updateAnswer(
-      questionId,
-      answerId,
-      updatePayload
-    );
-    res.status(200).render('questions/individual-question', {
+    const updatedQuestionWithAnswer = await questions.updateAnswer(questionId, answerId, updatePayload);
+    res.status(200).render("questions/individual-question", {
       questionInfo: updatedQuestionWithAnswer,
     });
     return;
   } catch (e) {
     console.log(e);
-    res.status(500).render('errors/internal_server_error');
+    res.status(500).render("errors/internal_server_error");
     return;
   }
 });
@@ -315,20 +389,20 @@ router.get("/:questionId/answers/:answerId", async (req, res) => {
 });
 
 //create an answer
-router.post('/:id/answers/create', async (req, res) => {
+router.post("/:id/answers/create", async (req, res) => {
   const body = req.body.content;
   const questionId = req.params.id;
   const userId = req.session.userId;
   console.log(body);
-  if (!body) error = 'No content present in input';
+  if (!body) error = "No content present in input";
   try {
     const insertAns = await questions.createAns(userId, questionId, body);
     if (insertAns) {
-      res.redirect('/questions/' + req.params.id);
+      res.redirect("/questions/" + req.params.id);
       return;
     }
   } catch (e) {
-    console.log(e)
+    console.log(e);
     res.status(404).json({ error: e });
   }
 });

@@ -22,6 +22,7 @@ router.post("/login", async (req, res) => {
   if (!validateUsername.isValid || !validatePassword.isValid) {
     res.status(400).render("entry_pages/login", {
       error: "Invalid email address or password combination.",
+      session: req.session,
     });
     return;
   }
@@ -33,17 +34,19 @@ router.post("/login", async (req, res) => {
       req.session.userEmail = userLogin.userEmail;
       req.session.userDispName = userLogin.userDispName;
       req.session.userId = userLogin.userId;
-      res.redirect("/");
+      res.redirect("/questions/all");
       return;
     }
     // code is not supposed to reach here, but if it does, reload login page with error.
     res.status(400).render("entry_pages/login", {
       error: "Invalid email address or password combination.",
+      session: req.session,
     });
     return;
   } catch (e) {
     res.status(400).render("entry_pages/login", {
       error: "Invalid email address or password combination.",
+      session: req.session,
     });
     return;
   }
