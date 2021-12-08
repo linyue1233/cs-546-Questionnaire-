@@ -93,6 +93,10 @@ router.get("/:id/edit", async (req, res) => {
   }
 });
 
+router.post("/communities/quickCreate", async (req, res) => {
+  let content = req.body;
+});
+
 router.put("/:id", async (req, res) => {
   try {
     let communityId = req.params.id;
@@ -229,6 +233,22 @@ router.post("/userSubscribe", async (req, res) => {
     res.status(400).json(e);
     return;
   }
+});
+
+router.post("/quickCreate", async (req, res) => {
+  let body = req.body;
+  let validate = validator.validateQuickCreateBody(body);
+  if (!validate.isValid) {
+    res.status(400).json({ success: false, error: "Can't quick create community. Invalid input" });
+    return;
+  }
+  const createCommunity = await communities.createCom(body.name, body.description, req.session.userId);
+  if (createCommunity) {
+    res.status(200).json({ success: true });
+    return;
+  }
+  res.status(400).json({ success: false, error: "Can't quick create community" });
+  return;
 });
 
 module.exports = router;

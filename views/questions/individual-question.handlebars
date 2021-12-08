@@ -50,7 +50,7 @@
         {{#each questionInfo.answers}}    
         <li>
             <p>{{{this.description}}}</p>
-            <h5>Posted By: {{this.posterId}}</h5>
+            <h5>Posted By <a href="/users/{{this._id}}">{{this.displayName}}</a></h5>
             <p><a href='/questions/{{../questionInfo._id}}/answers/{{this._id}}/edit'>Edit Answer</a></p>
         </li>
         {{/each}}
@@ -61,10 +61,11 @@
 <h3>Post your answer here</h3>
     {{!-- build a rich text box to submit answer --}}
     {{!-- action need to modify --}}
-    <form id="textSubmit" action="/questions/{{questionInfo._id}}/answers/create" method="post">
+    <form id="textSubmit" action="/questions/{{questionInfo._id}}/answers/create/" method="post">
         <textarea name="content" id="editor">
         </textarea>
-        <p><input type="submit" value="Submit"></p>
+        <br>
+        <p><input class= "float-right btn btn-primary" type="submit" value="Add Answer"></p>
     </form>
 </div>
 

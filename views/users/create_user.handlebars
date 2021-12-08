@@ -1,31 +1,45 @@
 <div>
     <h1 class="user-login">User Signup</h1>
     <form id="signup-form" action="/users" method="post" role="form" enctype="multipart/form-data">
-        <label>*firstName: 
-        <input type="text" id="firstName" name="firstName" placeholder="Enter firstName" required>
+    <div class="form-group">
+        <label>First Name 
+        <input type="text" id="firstName" name="firstName" placeholder="Enter your first name">
         </label>
         <br>
-        <label>*lastName: 
-        <input type="text" id="lastName" name="lastName" placeholder="Enter lastName" required>
+        </div>
+        <div class="form-group">
+        <label>Last Name
+        <input type="text" id="lastName" name="lastName" placeholder="Enter your last name">
         </label>
         <br>
-        <label>*password: 
-        <input id="password" name="password" type="password" placeholder="Enter password" required>
+        </div>
+        <div class="form-group">
+        <label>Password
+        <input id="password" name="password" type="password" placeholder="Enter your desired password">
         </label>
         <br>
-        <label>*emailAddress: 
-        <input type="text" id="emailAddress" name="emailAddress" placeholder="Enter emailAddress" required>
+        </div>
+        <div class="form-group">
+        <label>Email Address
+        <input type="text" id="emailAddress" name="emailAddress" placeholder="Enter your email address">
         </label>
         <br>
-        <label>*displayName: 
-        <input type="text" id="displayName" name="displayName" placeholder="Enter displayName" required>
+        </div>
+        <div class="form-group">
+        <label>Display Name
+        <input type="text" id="displayName" name="displayName" placeholder="Enter your desired displayName">
         </label>
         <br>
-        <label>ProfileImage: (We will allocate a default avatar, if you don't upload)
-        <input type="file" id="profileImage" name="profileImage" value="choose file">
+        </div>
+        <div class="form-group">
+        <label>Profile Image: (We will allocate a default avatar, if you choose not to upload)
+            <div class="custom-file">
+                <input type="file" id="profileImage" name="profileImage" value="Choose File">
+            </div>
         </label>
+        </div>    
         <br>
-        <button type="submit" class="btn btn-secondary">submit</button>
+        <button type="submit" class="btn btn-secondary">Create Account</button>
     </form>
 
     {{#if error}}
