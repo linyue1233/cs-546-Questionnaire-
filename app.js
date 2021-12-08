@@ -22,9 +22,6 @@ app.use("/public", express.static(path.resolve(__dirname + "/public")));
 
 app.use("/questions/:questionId/answers/:answerId", middlewares.changeMethodToPutForAnswerUpdate);
 app.use("/users/:id", middlewares.changeMethodToPutForUserprofileUpdate);
-app.use("/questions/:id", middlewares.questionEditMiddleware);
-app.use("/questions/:id/delete", middlewares.questionDeleteMiddleware);
-app.use("/communities/:id/edit/edit", middlewares.changeMethodToPutForCommunityEdit);
 app.use("/questions/search", (req, res, next) => {
   if (req.method == "POST") {
     if (req.body.keyword.trim().length == 0 || req.body.keyword.match(/^[^a-zA-Z0-9]+$/) != null) res.redirect("/");
@@ -33,6 +30,9 @@ app.use("/questions/search", (req, res, next) => {
     next();
   }
 });
+app.use("/questions/:id", middlewares.questionEditMiddleware);
+app.use("/questions/:id/delete", middlewares.questionDeleteMiddleware);
+app.use("/communities/:id/edit/edit", middlewares.changeMethodToPutForCommunityEdit);
 
 app.use("/communities/:id", middlewares.changeMethodToPutForAnswerUpdate);
 

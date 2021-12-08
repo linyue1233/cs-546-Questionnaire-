@@ -10,14 +10,15 @@
       integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
       crossorigin="anonymous"
     />
+    <script src="/public/js/validation.js"></script>
   </head>
   <body>
     <nav class="navbar navbar-light bg-light shadow-sm rounded sticky-top">
       <a class="navbar-brand" href="/"><i class="fas fa-comments"></i> Questionnaire</a>
-      <form class="form-inline my-2 my-lg-0 w-50" method="post" action="/questions/search">
-      <input class="form-control mr-sm-2 w-75 search" type="search" placeholder="Search" name="keyword" aria-label="Search">
-      <input class="btn btn-secondary" type="submit" value="Search">
-    </form>
+      <form class="form-inline my-2 my-lg-0 w-50" name="search_form" method="post" onsubmit="return validateSearchForm()" action="/questions/search">
+        <input class="form-control mr-sm-2 w-75 search" type="search" placeholder="Search" name="keyword" aria-label="Search" required>
+        <input class="btn btn-secondary" type="submit" value="Search">
+      </form>
     <div class="btn-group" role="group" aria-label="">
       <a href="/"><button type="button" class="btn btn-light">Home</button></a>&nbsp;
       <div class="dropdown">
@@ -74,7 +75,6 @@
   <!-- Copyright -->  
   </footer>
 <!-- Footer -->
-
   {{#if scriptUrl}}
   {{#each scriptUrl}}
   <script src="/public/js/{{this}}"></script>

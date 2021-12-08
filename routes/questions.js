@@ -60,6 +60,44 @@ router.get("/:id/edit", async (req, res) => {
   }
 });
 
+router.post("/search", async (req, res) => {
+  let body = req.body;
+  let validate = validator.validateSearchBody(body);
+  if (!validate.isValid) {
+    res.status(400).json({ hasErrors: true, error: validate.message });
+    return;
+  }
+  // TODO: apply validation wherever necessary
+  /* Assuming the body comes like this:
+  { keyword: <string> } */
+  const searchResult = await questions.search(body);
+  if (searchResult.length === 0) {
+    // Sending 200 here as it is search. There can be valid cases where the search result might turn up no results.
+    // ideally, do this:
+    // res.status(200).render("questions/search_results", { totalResults: 0, searchResult });
+    // FOR NOW, returning JSON
+    res.render("search/search_results", {
+      result: false,
+      session: req.session,
+      searchTerm: body.keyword,
+      searchTotal: "No Results",
+    });
+    return;
+  }
+  console.log(searchResult);
+  // FOR NOW, returning JSON
+  // res.status(200).json({ totalResults: searchResult.length, results: searchResult });
+  // ideally, do this:
+  // res.status(200).render("questions/search_results", { totalResults: searchResult.length, searchResult });
+  res.status(200).render("search/search_results", {
+    result: true,
+    searchTerm: body.keyword,
+    searchTotal: searchResult.length,
+    searchResults: searchResult,
+    session: req.session,
+  });
+});
+
 router.put("/:id", async (req, res) => {
   let body = req.body;
   try {
@@ -106,44 +144,6 @@ router.get("/search", async (req, res) => {
   console.log("GET: /search");
   // res.json({ search: "success" });
   res.render("search/search", {});
-});
-
-router.post("/search", async (req, res) => {
-  let body = req.body;
-  let validate = validator.validateSearchBody(body);
-  if (!validate.isValid) {
-    res.status(400).json({ hasErrors: true, error: validate.message });
-    return;
-  }
-  // TODO: apply validation wherever necessary
-  /* Assuming the body comes like this:
-  { keyword: <string> } */
-  const searchResult = await questions.search(body);
-  if (searchResult.length === 0) {
-    // Sending 200 here as it is search. There can be valid cases where the search result might turn up no results.
-    // ideally, do this:
-    // res.status(200).render("questions/search_results", { totalResults: 0, searchResult });
-    // FOR NOW, returning JSON
-    res.render("search/search_results", {
-      result: false,
-      session: req.session,
-      searchTerm: body.keyword,
-      searchTotal: "No Results",
-    });
-    return;
-  }
-  console.log(searchResult);
-  // FOR NOW, returning JSON
-  // res.status(200).json({ totalResults: searchResult.length, results: searchResult });
-  // ideally, do this:
-  // res.status(200).render("questions/search_results", { totalResults: searchResult.length, searchResult });
-  res.status(200).render("search/search_results", {
-    result: true,
-    searchTerm: body.keyword,
-    searchTotal: searchResult.length,
-    searchResults: searchResult,
-    session: req.session,
-  });
 });
 
 router.get("/:id", async (req, res) => {

@@ -2,7 +2,7 @@
 
 <article class="new-question">
   <h1>Ask a Question</h1>
-  <form action="/questions" method="POST" class="new-question-form">
+  <form action="/questions" name="new_question" method="POST" onsubmit="return validateCommunity()" class="new-question-form">
         <label >  Community: <br>
         <select class="full-width-input" name="community">
       <option value="">Select community...</option>
@@ -16,18 +16,18 @@
     <br>
     <label>
        Title: <br>
-      <input type="text" name="title" placeholder="Enter Title" value="{{title}}" class="full-width-input"/>
+      <input type="text" name="title" placeholder="Enter Title" value="{{title}}" class="full-width-input" required/>
     </label>
    <br>
     <label>
         Description: <br>
-      <textarea id="Question-Description"  rows="6"  name="description" placeholder="Enter Description" class="full-width-input" >{{description}}</textarea>
+      <textarea id="Question-Description"  rows="6"  name="description" placeholder="Enter Description" class="full-width-input" required>{{description}}</textarea>
 
     </label>
   <br>
     <label>
        Tags: <br>
-      <input type="text" name="tags" placeholder="Tags seprated by spaces" value="{{tags}}" class="full-width-input"/>
+      <input type="text" name="tags" placeholder="Tags seprated by spaces" value="{{tags}}" class="full-width-input" required/>
     </label>
     <br>
     <br>

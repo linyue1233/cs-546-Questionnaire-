@@ -13,7 +13,7 @@ let changeMethodToPutForUserprofileUpdate = (req, res, next) => {
   next();
 };
 let questionEditMiddleware = (req, res, next) => {
-  if (req.method === "POST") {
+  if (req.method === "POST" && req.params.id != "search") {
     req.method = "put";
   }
   next();
