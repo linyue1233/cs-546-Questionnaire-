@@ -31,6 +31,11 @@
         <p>Posted On: {{questionInfo.friendlyCreatedAt}}</p>
         <p>Last Updated On: {{ questionInfo.friendlyUpdatedAt}}</p>
         <p>{{questionInfo.description}}</p>
+        <div class="votingsystem">
+            <i class="far fa-thumbs-up upvote" data-id="/questions/{{questionInfo._id}}/upvote"></i>
+            <span class="label label-primary votecounter">{{ questionInfo.votes }}</span>
+            <i class="far fa-thumbs-down downvote" data-id="/questions/{{questionInfo._id}}/downvote"></i>
+        </div>
         <br>
         <h2>Tags :{{questionInfo.tags}}</h2>
         {{/unless}}

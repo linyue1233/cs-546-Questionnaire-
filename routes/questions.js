@@ -113,6 +113,7 @@ router.get("/:id", async (req, res) => {
       questionPoster: userDetails,
       currentUserPostedQuestion: req.session.userId === thisQuestionPoster ? true : false,
       session: req.session,
+      scriptUrl: ['voteHandler.js']
     });
   } catch (e) {
     res.status(404).json({ error: "can not find question with this id" });
@@ -335,8 +336,10 @@ router.post('/:id/answers/create', async (req, res) => {
 router.post("/:id/upvote", async (req, res) => {
   let questionId = req.params.id;
   let userId = req.session.userId;
+  console.log(questionId)
   const upvotePersist = await questions.registerUpvote(questionId, userId);
   // TODO further additions
+  res.status(200).json({ upvotes: upvotePersist });
 })
 
 module.exports = router;
