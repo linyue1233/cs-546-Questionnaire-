@@ -36,7 +36,7 @@ router.delete("/:id", async (req, res) => {
       // Maybe throw a success prompt, but delete the user and log them out
       // for now, redirecting to questions
       // TODO: revisit with logout code
-      res.redirect("/questions/all");
+      res.redirect("/");
       return;
     }
     res.status(400).render("users/get_specific_user", { error: "Something went wrong." });
@@ -111,7 +111,7 @@ router.get("/signup", async (req, res) => {
     res.status(200).render("users/create_user");
     return;
   } else {
-    res.redirect("/questions/all");
+    res.redirect("/");
   }
 });
 
@@ -120,7 +120,7 @@ router.get("/signup", async (req, res) => {
     res.status(200).render("users/create_user");
     return;
   } else {
-    res.redirect("/questions/all");
+    res.redirect("/");
   }
 });
 

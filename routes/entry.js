@@ -6,7 +6,7 @@ const validator = require("../helpers/routeValidators/userValidator");
 router.get("/login", async (req, res) => {
   // if existing session is valid, redirect to questions/all
   if (req.session.userId) {
-    res.redirect("/questions/all");
+    res.redirect("/");
     return;
   }
   // show login form
@@ -34,7 +34,7 @@ router.post("/login", async (req, res) => {
       req.session.userEmail = userLogin.userEmail;
       req.session.userDispName = userLogin.userDispName;
       req.session.userId = userLogin.userId;
-      res.redirect("/questions/all");
+      res.redirect(`/users/${userLogin.userId}`);
       return;
     }
     // code is not supposed to reach here, but if it does, reload login page with error.
