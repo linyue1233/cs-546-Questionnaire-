@@ -258,14 +258,12 @@ router.delete("/:id/delete", async (req, res) => {
 router.get("/create/new", async (req, res) => {
   if (req.session.userId) {
     let com = await communityData.getAllcommunities();
-    res
-      .status(200)
-      .render("Questions/new", {
-        com: com,
-        session: req.session,
-        no_ques: true,
-        scriptUrl: ["quickCreateCommunity.js"],
-      });
+    res.status(200).render("Questions/new", {
+      com: com,
+      session: req.session,
+      no_ques: true,
+      scriptUrl: ["quickCreateCommunity.js"],
+    });
   } else {
     res.redirect("/site/login");
   }
@@ -443,6 +441,10 @@ router.get("/:questionId/answers/:answerId", async (req, res) => {
 });
 
 router.post("/:id/upvote", async (req, res) => {
+  if (!req.session.userId) {
+    res.status(400).json({ success: false, message: "User not logged in." });
+    return;
+  }
   let questionId = req.params.id;
   let userId = req.session.userId;
   console.log(questionId);

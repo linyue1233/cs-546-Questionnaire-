@@ -8,10 +8,16 @@ upvoteElement.click((event) => {
     url: upvoteElement.attr("data-id"),
   };
   console.log(requestConfig);
-  $.ajax(requestConfig).then((response) => {
-    // if (response.success) {
-    //          console.log(response)
-    $(".votecounter").text(response.length);
-    // }
-  });
+  $.ajax(requestConfig).then(
+    (response) => {
+      // if (response.success) {
+      //          console.log(response)
+      $(".votecounter").text(response.upvotes.length);
+      // }
+    },
+    (reason) => {
+      window.location.href = "/site/login?errorCode=upvoteLogin";
+      return;
+    }
+  );
 });

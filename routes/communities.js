@@ -93,10 +93,6 @@ router.get("/:id/edit", async (req, res) => {
   }
 });
 
-router.post("/communities/quickCreate", async (req, res) => {
-  let content = req.body;
-});
-
 router.put("/:id", async (req, res) => {
   try {
     let communityId = req.params.id;
