@@ -3,9 +3,9 @@
 {{else}}
 <form method="post" action="/communities/create/new">
     <label for="name">Name : </label><br>
-    <input type="text" name="name" id="name"><br>
+    <input type="text" name="name" id="name" required><br>
     <label for="description">Description : </label><br>
-    <input type="text" name="description" id="description"><br><br>
+    <input type="text" name="description" id="description" required><br><br>
     <input type="submit" value="Create" class="btn btn-secondary btn-sm">
 </form>
 {{/if}}

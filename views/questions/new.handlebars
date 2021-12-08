@@ -2,7 +2,7 @@
 
 <article class="new-question">
   <h1>Ask a Question</h1>
-  <form action="/questions" method="POST" class="new-question-form">
+  <form action="/questions" name="new_question" method="POST" onsubmit="return validateCommunity()" class="new-question-form">
   <div class="form-group">
         <label for="community">  Community </label>
         <br>
@@ -37,10 +37,7 @@
             </div>
         {{!-- </form> --}}
       </div>
-          
     </div>
-
-    
     <br>
     <label for="title">Title</label>
       <input type="text" id="title" name="title" placeholder="Enter Title" value="{{title}}" class="full-width-input form-control"/>
@@ -51,7 +48,6 @@
   <br>
     <label for="tags">Tags</label>
       <input type="text" name="tags" id="tags" placeholder="Tags seprated by spaces" value="{{tags}}" class="full-width-input form-control"/>
-    
     <br>
     <br>
     </label> 
