@@ -5,6 +5,7 @@ const questions = require("../data/questions");
 const answers = require("../data/answers");
 const communities = require("../data/communities");
 const validator = require("../helpers/routeValidators/userValidator");
+const xss = require('xss');
 
 const path = require("path");
 const multer = require("multer");
@@ -165,7 +166,6 @@ router.get("/:id", async (req, res) => {
 
 // create a new user
 router.post("/", upload, async (req, res) => {
-  console.log(1111);
   if (
     !req.body.firstName ||
     !req.body.lastName ||
@@ -173,13 +173,16 @@ router.post("/", upload, async (req, res) => {
     !req.body.emailAddress ||
     !req.body.displayName
   ) {
-    console.log(req.body.firstName);
-    console.log(req.body.displayName);
     res.render("users/create_user", { error: "Please provide all information." });
     return;
   }
-  console.log(req.body);
-  let { firstName, lastName, password, emailAddress, displayName } = req.body;
+  // add xss
+  let firstName = xss(req.body.firstName);
+  let lastName = xss(req.body.lastName);
+  let password = xss(req.body.password);
+  let emailAddress = xss(req.body.emailAddress);
+  let displayName = xss(req.body.displayName);
+  // let { firstName, lastName, password, emailAddress, displayName } = req.body;
   let passwordValid = validator.validatePassword(password);
   let emailValid = validator.validateEmailAddress(emailAddress);
   if (!passwordValid.isValid || !emailValid.isValid) {
@@ -192,7 +195,6 @@ router.post("/", upload, async (req, res) => {
   } else {
     profileImage = req.file.filename;
   }
-  console.log(profileImage);
   if (
     firstName.length === 0 ||
     firstName.trim().length === 0 ||
