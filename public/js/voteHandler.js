@@ -9,9 +9,9 @@ upvoteElement.click((event) => {
   }  
   console.log(requestConfig);
   $.ajax(requestConfig).then((response) => {
-      if (response.success) {
-          $('.votecounter').val(response.totalVotes);
-          upvoteElement.removeClass('far').addClass('fas').attr('disabled', true)
-      }
+      // if (response.success) {
+          console.log(response)
+          $('.votecounter').text(response.length);
+      // }
   })
 })

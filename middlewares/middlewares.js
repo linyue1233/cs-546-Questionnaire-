@@ -13,7 +13,7 @@ let changeMethodToPutForUserprofileUpdate = (req, res, next) => {
   next();
 };
 let questionEditMiddleware = (req, res, next) => {
-  if (req.method === "POST" && req.params.id != "search") {
+  if (req.body._method === "PUT") {
     req.method = "put";
   }
   next();
@@ -25,7 +25,7 @@ let questionDeleteMiddleware = (req, res, next) => {
   next();
 };
 let changeMethodToPutForCommunityEdit = (req, res, next) => {
-  if (req.method === "GET") {
+  if (req.body._method === "PUT") {
     req.method = "put";
   }
   next();

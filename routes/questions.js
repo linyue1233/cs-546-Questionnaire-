@@ -10,13 +10,14 @@ const userData = data.users;
 const validator = require("../helpers/routeValidators/questionValidator");
 
 router.get("/all", async (req, res) => {
-  const allQuestions = await questions.getAllWithoutParams();
-  console.log(allQuestions);
-  res.render("questions/all_questions", {
-    questions: allQuestions,
-    session: req.session,
-  });
-  return;
+  // const allQuestions = await questions.getAllWithoutParams();
+  // console.log(allQuestions);
+  // res.render("questions/all_questions", {
+  //   questions: allQuestions,
+  //   session: req.session,
+  // });
+  // return;
+  res.redirect("/");
 });
 
 router.get("/:id/edit", async (req, res) => {
@@ -162,6 +163,7 @@ router.get("/:id", async (req, res) => {
       questionPoster: userDetails,
       currentUserPostedQuestion: req.session.userId === thisQuestionPoster ? true : false,
       session: req.session,
+      scriptUrl: ["voteHandler.js"],
     });
   } catch (e) {
     console.log(e);
@@ -409,8 +411,10 @@ router.post("/:id/answers/create", async (req, res) => {
 router.post("/:id/upvote", async (req, res) => {
   let questionId = req.params.id;
   let userId = req.session.userId;
+  console.log(questionId);
   const upvotePersist = await questions.registerUpvote(questionId, userId);
   // TODO further additions
+  res.status(200).json({ upvotes: upvotePersist });
 });
 
 module.exports = router;

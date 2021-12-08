@@ -15,3 +15,12 @@ function validateCommunity() {
   }
   return true;
 }
+
+function validateAdmin() {
+  let community = document.forms["com_edit_form"]["administrator"].value;
+  if (community == "") {
+    alert("Please select an administrator");
+    return false;
+  }
+  return true;
+}
