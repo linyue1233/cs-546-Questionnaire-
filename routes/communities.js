@@ -157,16 +157,27 @@ router.get("/:id", async (req, res) => {
     } else {
       let allCommunityUser = communityInfo.community.subscribedUsers;
       for (let item of allCommunityUser) {
-        if (currentUser === item && currentUser === communityInfo.community.administrator) {
-          res.render("communities/view_community_details", {
-            communityInfo: communityInfo,
-            isSubscribed: true,
-            session: req.session,
-            questions: reqQuestions,
-            scriptUrl: ["scripts.js"],
-            isAdmin: true,
-          });
-          return;
+        if (currentUser === item) {
+          if (currentUser === communityInfo.community.administrator) {
+            res.render("communities/view_community_details", {
+              communityInfo: communityInfo,
+              isSubscribed: true,
+              session: req.session,
+              questions: reqQuestions,
+              scriptUrl: ["scripts.js"],
+              isAdmin: true,
+            });
+            return;
+          } else {
+            res.render("communities/view_community_details", {
+              communityInfo: communityInfo,
+              isSubscribed: true,
+              session: req.session,
+              questions: reqQuestions,
+              scriptUrl: ["scripts.js"]
+            });
+            return;
+          }
         }
       }
       res.render("communities/view_community_details", {
