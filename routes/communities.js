@@ -157,7 +157,9 @@ router.get("/:id", async (req, res) => {
     } else {
       let allCommunityUser = communityInfo.community.subscribedUsers;
       for (let item of allCommunityUser) {
-        if (currentUser === item || currentUser === communityInfo.community.administrator) {
+        console.log(currentUser);
+        console.log(communityInfo.community.administrator);
+        if (currentUser === item && currentUser === communityInfo.community.administrator) {
           res.render("communities/view_community_details", {
             communityInfo: communityInfo,
             isSubscribed: true,
@@ -177,14 +179,6 @@ router.get("/:id", async (req, res) => {
         scriptUrl: ["scripts.js"],
       });
     }
-
-    res.render("communities/view_community_details", {
-      communityInfo: communityInfo,
-      isSubscribed: false,
-      session: req.session,
-      questions: reqQuestions,
-      scriptUrl: ["scripts.js"],
-    });
   } catch (e) {
     res.status(400).json({ error: e });
   }
