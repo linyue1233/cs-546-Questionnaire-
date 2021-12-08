@@ -1,13 +1,24 @@
 <div>
-  <h2>Edit Answer</h2>
-  <h5>Current Answer:</h5>
-  <p>{{{ currentAnswer.description }}}</p>
+  <h2>Edit Your Answer</h2>
+  <div class="card">
+    <div class="card-body">
+      <h5>Current Answer</h5>
+      <p>{{{ currentAnswer.description }}}</p>
+    </div>
+  </div>
 </div>
+<br>
 <form method="POST" action="{{ url }}">
-    <label for="description">Description</label>
-    <textarea name="description" id="description" rows="3" cols="20">{{ body.description }}</textarea>
+    <div class="input-group">
+    <div class="input-group-prepend">
+      {{!-- <label for="description">Description</label> --}}
+      <span class="input-group-text">Answer</span>
+    </div>
+    <textarea name="description" id="description" class="form-control" aria-label="Answer"></textarea>
+    </div>
     <input hidden name="_method" value="PUT">
-    <input type="submit" id="edit_answer_submit">
+    <br>
+    <input class="btn btn-primary float-right" type="submit" id="edit_answer_submit">
 </form>
  {{#if hasErrors}}
   <ul class="error-list">

@@ -169,7 +169,7 @@ const deleteAnswer = async (answerId) => {
 
   //deleteing the answer  from answers-sub document
   let fu = await questionsCollection.updateOne(
-    { reviews: { $elemMatch: { _id: answerId } } },
+    { answers: { $elemMatch: { _id: answerId } } },
     { $pull: { answers: { _id: answerId } } }
   );
 

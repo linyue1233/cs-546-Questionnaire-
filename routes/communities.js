@@ -5,6 +5,7 @@ const communities = require("../data/communities");
 const users = require("../data/users");
 const questions = require("../data/questions");
 const validator = require("../helpers/routeValidators/communityValidator");
+const answers = require("../data/answers");
 
 router.get("/", async (req, res) => {
   try {
@@ -229,6 +230,171 @@ router.post("/userSubscribe", async (req, res) => {
     res.status(400).json(e);
     return;
   }
+});
+router.get('/:id/view/flagged', async (req, res) => {
+  try {
+    let communityId = req.params.id;
+    if (!req.session.userId) {
+      res.redirect(`/communities/${communityId}`);
+      return;
+    }
+
+    if (!req.params.id) {
+      res.status(400).json({ error: 'No communityId found' });
+      return;
+    }
+    const communityInfo = await communities.getCommunityById(req.params.id);
+    if (!communityInfo) {
+      res.status(400).json({ error: 'No community for the Id' });
+      return;
+    }
+    let adminId = communityInfo.community.administrator;
+    if (adminId !== req.session.userId) {
+      res.redirect(`/communities/${communityId}`);
+      return;
+    }
+    let Queflageobj = communityInfo.community.flaggedQuestions;
+    let queflag = [];
+    for (const elem of Queflageobj) {
+      const questionInfo = await questions.getID(elem._id);
+      let t = questionInfo.title;
+      let ans = {
+        _id: elem._id,
+        communitiyID: req.params.id,
+        title: t,
+        flag: elem.flag,
+      };
+
+      queflag.push(ans);
+    }
+    
+    let ansflageobj = communityInfo.community.flaggedAnswers;
+    let ansflag = [];
+  
+    for (const elem of ansflageobj) {
+      const ansInfo = await answers.getanswerbyanserId(elem._id);
+      let t = ansInfo.description;
+      let ans = {
+        _id: elem._id,
+        communitiyID: req.params.id,
+        title: t,
+        flag: elem.flag,
+      };
+
+      ansflag.push(ans);
+    }
+
+    res.render('communities/viewflaggd', {
+      qflag: queflag,
+      aflag: ansflag,
+      communitiyID: req.params.id,
+    });
+  } catch (e) {
+    res.render('communities/viewflaggd', {
+      error: e,
+      communitiyID: req.params.id,
+    });
+  }
+});
+router.get('/:communitiyID/:questionId/delete/flaggedque', async (req, res) => {
+  try {
+    let cid = req.params.communitiyID;
+    let qid = req.params.questionId;
+    if (!req.session.userId) {
+      res.redirect(`/communities/${cid}`);
+      return;
+    }
+    if (!cid) {
+      res.status(400).json({ error: 'No communityId found' });
+      return;
+    }
+    const communityInfo = await communities.getCommunityById(cid);
+    if (!communityInfo) {
+      res.status(400).json({ error: 'No community for the Id' });
+      return;
+    }
+    let adminId = communityInfo.community.administrator;
+    if (adminId !== req.session.userId) {
+      res.redirect(`/communities/${cid}`);
+      return;
+    }
+
+    const answers = await questions.getAllAnsweres(qid);
+    const com = await communities.getCommunityById(cid);
+    const flaga = com.community.flaggedAnswers;
+
+    let Ansarray = [];
+    answers.forEach((element) => {
+      Ansarray.push(element._id);
+    });
+    for (const element of flaga) {
+      if (Ansarray.includes(element._id)) {
+        let flaggedAns = await communities.deleteAnsewerfromflaggedAnsweres(
+          cid,
+          element._id
+        );
+      }
+    }
+    const question = await questions.remove(qid);
+
+    let community = await communities.deleteQuestionfromcommunity(cid, qid);
+
+    let flaggedQue = await communities.deleteQuestionfromflaggedQuestions(
+      cid,
+      qid
+    );
+
+    res.render('communities/viewdeletedflaggd', {
+      c: req.params.communitiyID,
+      message: 'You have successfully deleted the Flagged Question',
+    });
+  } catch (e) {
+    res.render('communities/viewdeletedflaggd', {
+      c: req.params.communitiyID,
+      error: e,
+    });
+  }
+});
+router.get('/:communitiyID/:answerId/delete/flaggedqans', async (req, res) => {
+  try {
+    let cid = req.params.communitiyID;
+    let aid = req.params.answerId;
+    const answer = await questions.deleteAnswer(aid);
+
+    let flaggedAns = await communities.deleteAnsewerfromflaggedAnsweres(
+      cid,
+      aid
+    );
+
+    res.render('communities/viewdeletedflaggd', {
+      c: req.params.communitiyID,
+      message: 'You have successfully deleted the Flagged Answer',
+    });
+  } catch (e) {
+    res.render('communities/viewdeletedflaggd', {
+      c: req.params.communitiyID,
+      error: e,
+    });
+  }
+});
+
+
+
+
+router.post("/quickCreate", async (req, res) => {
+  let body = req.body;
+  let validate = validator.validateQuickCreateBody(body);
+  if (!validate.isValid) {
+    res.status(400).json({ success: false, error: "Can't quick create community. Invalid input" });
+    return;
+  }
+  const createCommunity = await communities.createCom(body.name, body.description, req.session.userId);
+  if (createCommunity) {
+    res.status(200).json({ success: true });
+    return;
+  }
+  res.status(400).json({ success: false, error: "Can't quick create community" });
+  return;
 });
 
 module.exports = router;

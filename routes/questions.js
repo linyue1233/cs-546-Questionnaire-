@@ -154,7 +154,31 @@ router.get("/:id", async (req, res) => {
     let questionAns = await questionData.getID(req.params.id);
     let thisQuestionPoster = questionAns.posterId;
     let userDetails = await userData.getUserById(thisQuestionPoster);
-    console.log(userDetails);
+    console.log(questionAns);
+    // building answer object
+    let answers = [];
+    if (questionAns.answers) {
+      for (const answer of questionAns.answers) {
+        let answerPosterDetails = null;
+        if (answer.posterId) {
+          answerPosterDetails = await userData.getUserById(answer.posterId);
+          console.log(answerPosterDetails);
+        }
+        answers.push({
+          _id: answer._id,
+          posterId: answer.posterId,
+          displayName: answerPosterDetails ? answerPosterDetails.displayName : "Unavailable User",
+          description: answer.description,
+          upvotes: answer.upvotes,
+          downvotes: answer.downvotes,
+          createdAt: answer.createdAt,
+          updatedAt: answer.updatedAt,
+        });
+      }
+    }
+
+    questionAns.answers = answers;
+    console.log("here", questionAns);
     questionAns.friendlyCreatedAt = questionAns.createdAt.toDateString();
     questionAns.friendlyUpdatedAt = questionAns.updatedAt.toDateString();
     questionAns.votes = questionAns.upvotes.length - questionAns.downvotes.length;
@@ -234,7 +258,12 @@ router.delete("/:id/delete", async (req, res) => {
 router.get("/create/new", async (req, res) => {
   if (req.session.userId) {
     let com = await communityData.getAllcommunities();
-    res.status(200).render("Questions/new", { com: com, session: req.session, no_ques: true });
+    res.status(200).render("Questions/new", {
+      com: com,
+      session: req.session,
+      no_ques: true,
+      scriptUrl: ["quickCreateCommunity.js"],
+    });
   } else {
     res.redirect("/site/login");
   }
@@ -318,6 +347,7 @@ router.get("/:questionId/answers", async (req, res) => {
     res.status(400).json({ error: e });
   }
 });
+
 router.get("/:questionId/answers/:answerId/edit", async (req, res) => {
   let questionId = req.params.questionId;
   let answerId = req.params.answerId;
@@ -325,6 +355,27 @@ router.get("/:questionId/answers/:answerId/edit", async (req, res) => {
   let currentAnswer = await answers.getAnswer(questionId, answerId);
   // console.log(currentAnswer);
   res.render("answers/edit_answer", { url, currentAnswer });
+});
+
+//create an answer
+router.post("/:id/answers/create/$", async (req, res) => {
+  const body = req.body.content;
+  console.log(body);
+  const questionId = req.params.id;
+  const userId = req.session.userId;
+  console.log(body);
+  if (!body) error = "No content present in input";
+  try {
+    const insertAns = await questions.createAns(userId, questionId, body);
+    console.log(insertAns);
+    if (insertAns) {
+      res.redirect("/questions/" + req.params.id);
+      return;
+    }
+  } catch (e) {
+    console.log(e);
+    res.status(404).json({ error: e });
+  }
 });
 
 router.put("/:questionId/answers/:answerId", async (req, res) => {
@@ -389,26 +440,11 @@ router.get("/:questionId/answers/:answerId", async (req, res) => {
   res.status(404).json({ error: "Error: No answer found" });
 });
 
-//create an answer
-router.post("/:id/answers/create", async (req, res) => {
-  const body = req.body.content;
-  const questionId = req.params.id;
-  const userId = req.session.userId;
-  console.log(body);
-  if (!body) error = "No content present in input";
-  try {
-    const insertAns = await questions.createAns(userId, questionId, body);
-    if (insertAns) {
-      res.redirect("/questions/" + req.params.id);
-      return;
-    }
-  } catch (e) {
-    console.log(e);
-    res.status(404).json({ error: e });
-  }
-});
-
 router.post("/:id/upvote", async (req, res) => {
+  if (!req.session.userId) {
+    res.status(400).json({ success: false, message: "User not logged in." });
+    return;
+  }
   let questionId = req.params.id;
   let userId = req.session.userId;
   console.log(questionId);

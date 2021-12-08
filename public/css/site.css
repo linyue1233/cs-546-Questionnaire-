@@ -10,12 +10,17 @@
   left: 0;
 }
 
+.link-rm-dec:hover {
+  text-decoration: none;
+  color: blue;
+}
+
 .votingsystem {
   margin: 10 10 10 10;
 }
 
 .posterInfo {
-  float:right;
+  float: right;
 }
 
 .btn-no-dec {
