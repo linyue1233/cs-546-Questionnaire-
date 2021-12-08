@@ -1,21 +1,43 @@
-<h1>Flagged Questions and Answeres</h1>
 
 <h2>Flagged Questions:</h2>
- {{#each this.qflag}}
-      <h4>Name: <a href="/questions/{{this._id}}">{{this.title}}</a></h4>
-      <p>Numeber of times flagged:{{this.flag}}</p>
-      {{/each}}
-     {{#if error}}
-      <p> {{error}}</p>
-      {{/if}}
+{{#if this.qflag.length}}
+  {{#each this.qflag}}
 
+    <h4>Title: <a href='/questions/{{this._id}}'>{{this.title}}</a></h4>
+    <form
+      action='/communities/{{this.communitiyID}}/{{this._id}}/delete/flaggedque'
+    >
+      <span>Numeber of times flagged:{{this.flag}}</span>
+      <button type='submit'>Delete</button>
+    </form>
+  {{/each}}
+{{else}}
+  <p> There are no flagged Questions</p>
+{{/if}}
+{{#if error}}
+  <p> {{error}}</p>
+{{/if}}
 
 <h2>Flagged Answeres:</h2>
-{{#each this.aflag}}
-      <h4>Name: {{this.title}}</h4>
-      <p>Numeber of times flagged:{{this.flag}}</p>
-      {{/each}}
-     {{#if error}}
-      <p> {{error}}</p>
-      {{/if}}
-    
+{{#if this.aflag.length}}
+  {{#each this.aflag}}
+    <h4>Description: {{this.title}}</h4>
+
+    <form
+      action='/communities/{{this.communitiyID}}/{{this._id}}/delete/flaggedqans'
+    >
+      <span>Numeber of times flagged:{{this.flag}}</span>
+      <button type='submit'>Delete</button>
+    </form>
+  {{/each}}
+{{else}}
+  <p> There are no flagged Answeres</p>
+{{/if}}
+{{#if error}}
+  <p> {{error}}</p>
+{{/if}}
+
+<br />
+<br />
+<br />
+<h4><a href='/communities/{{this.communitiyID}}'>Back to community page</a></h4>

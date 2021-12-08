@@ -180,6 +180,51 @@ const addQuestiontocommunity = async (communityId, questionId) => {
   return true;
 };
 
+const deleteQuestionfromcommunity = async (communityId, questionId) => {
+  
+  validator.validateCommunityId(communityId);
+  const communityCollection = await communities();
+  let existingCommunity = await communityCollection.updateOne(
+    { _id: communityId },
+    { $pull: { questions: questionId } }
+  );
+  if (existingCommunity === null) {
+    throw `There's no community present with that id.`;
+  }
+  return true;
+};
+
+const deleteQuestionfromflaggedQuestions = async (communityId, questionId) => {
+  
+  validator.validateCommunityId(communityId);
+  const communityCollection = await communities();
+  let existingCommunity = await communityCollection.updateOne(
+    { _id: communityId },
+    { $pull: { flaggedQuestions: { _id: questionId } } }
+  );
+  if (existingCommunity === null) {
+    throw `There's no community present with that id.`;
+  }
+  return true;
+};
+
+const deleteAnsewerfromflaggedAnsweres = async (communityId, answerID) => {
+  
+  validator.validateCommunityId(communityId);
+  const communityCollection = await communities();
+  let existingCommunity = await communityCollection.updateOne(
+    { _id: communityId },
+    { $pull: { flaggedAnswers: { _id: answerID } } }
+  );
+  if (existingCommunity === null) {
+    throw `There's no community present with that id.`;
+  }
+  return true;
+};
+
+
+
+
 module.exports = {
   editCommunity,
   getCommunityById,
@@ -188,4 +233,7 @@ module.exports = {
   userSubscribe,
   getAllcommunities,
   addQuestiontocommunity,
+  deleteQuestionfromcommunity,
+  deleteAnsewerfromflaggedAnsweres,
+  deleteQuestionfromflaggedQuestions
 };
