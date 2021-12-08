@@ -189,13 +189,7 @@ router.get("/:id", async (req, res) => {
       });
     }
 
-    res.render("communities/view_community_details", {
-      communityInfo: communityInfo,
-      isSubscribed: false,
-      session: req.session,
-      questions: reqQuestions,
-      scriptUrl: ["scripts.js"],
-    });
+
   } catch (e) {
     res.status(400).json({ error: e });
   }
