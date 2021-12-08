@@ -10,9 +10,9 @@ const answers = require("../data/answers");
 router.get("/", async (req, res) => {
   try {
     let com = await community.getAllcommunities();
-    res.render("communities/getAllcommunity", { com: com });
+    res.render("communities/getAllcommunity", { com: com, session: req.session });
   } catch (e) {
-    res.render("communities/getAllcommunity", e);
+    res.render("communities/getAllcommunity", { error: e, session: req.session });
   }
 });
 
@@ -152,20 +152,33 @@ router.get("/:id", async (req, res) => {
         isSubscribed: false,
         session: req.session,
         questions: reqQuestions,
+        scriptUrl: ["scripts.js"],
       });
       return;
     } else {
       let allCommunityUser = communityInfo.community.subscribedUsers;
       for (let item of allCommunityUser) {
-        console.log(communityInfo);
         if (currentUser === item) {
-          res.render("communities/view_community_details", {
-            communityInfo: communityInfo,
-            isSubscribed: true,
-            session: req.session,
-            questions: reqQuestions,
-          });
-          return;
+          if (currentUser === communityInfo.community.administrator) {
+            res.render("communities/view_community_details", {
+              communityInfo: communityInfo,
+              isSubscribed: true,
+              session: req.session,
+              questions: reqQuestions,
+              scriptUrl: ["scripts.js"],
+              isAdmin: true,
+            });
+            return;
+          } else {
+            res.render("communities/view_community_details", {
+              communityInfo: communityInfo,
+              isSubscribed: true,
+              session: req.session,
+              questions: reqQuestions,
+              scriptUrl: ["scripts.js"]
+            });
+            return;
+          }
         }
       }
       res.render("communities/view_community_details", {
@@ -173,6 +186,7 @@ router.get("/:id", async (req, res) => {
         isSubscribed: false,
         session: req.session,
         questions: reqQuestions,
+        scriptUrl: ["scripts.js"],
       });
     }
   } catch (e) {
@@ -182,18 +196,18 @@ router.get("/:id", async (req, res) => {
 
 router.post("/userSubscribe", async (req, res) => {
   if (!req.session.userId) {
-    res.status(400).render("communities/view_community_details", { error: "Please login first" });
+    res.status(400).send("Please login first");
     return;
   }
   let userId = req.session.userId;
   // let userId = "2b14beb4-446e-44e3-a04f-855d5bf309ae";
   let communityId = req.body.communityId;
   if (!userId === undefined || !communityId) {
-    res.status(400).render("communities/view_community_details", { error: "Please login first" });
+    res.status(400).send("Please login first");
     return;
   }
   if (userId.trim() === "" || communityId.trim() === "") {
-    res.status(400).render("communities/view_community_details", { error: "Please login first" });
+    res.status(400).send("Please login first");
     return;
   }
   let currentStatus = JSON.parse(req.body.subscribeStatus);

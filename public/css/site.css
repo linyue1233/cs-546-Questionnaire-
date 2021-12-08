@@ -10,6 +10,14 @@
   left: 0;
 }
 
+.votingsystem {
+  margin: 10 10 10 10;
+}
+
+.posterInfo {
+  float:right;
+}
+
 .btn-no-dec {
   text-decoration: none;
   color: white;
@@ -79,4 +87,17 @@
 
 .user_profile_table td div {
   margin-left: 50px;
+}
+
+#menu {
+  right: 0;
+  left: -100;
+}
+
+#com_card {
+  display: inline-table;
+}
+
+#com_card div a {
+  font-weight: 300;
 }

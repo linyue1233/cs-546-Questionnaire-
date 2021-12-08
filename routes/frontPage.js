@@ -7,7 +7,6 @@ router.get("/", async (req, res) => {
   try {
     const questionList = await question.getAllWithoutParams();
     for (let x of questionList) {
-      console.log(x);
       let reqCommunity = await communities.getCommunityById(x.communityId);
       x.communityName = reqCommunity.community.name;
     }
@@ -15,7 +14,9 @@ router.get("/", async (req, res) => {
       session: req.session,
       questions: questionList,
     });
-  } catch (e) {}
+  } catch (e) {
+    res.status(500).render("errors/internal_server_error", { session: req.session });
+  }
 });
 
 module.exports = router;

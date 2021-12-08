@@ -6,6 +6,7 @@ window.onload = function () {
 }
 
 $('#btnSubscribe').click(function () {
+    $('#error-message').hide();
     const subscribeStatus = JSON.parse($('#btnSubscribe').attr('data-subscribeStatus'));
     $.post(
         "/communities/userSubscribe", {
@@ -17,5 +18,7 @@ $('#btnSubscribe').click(function () {
         $('#btnSubscribe').attr('data-subscribeStatus', result.subscribeStatus)
         const text = result.subscribeStatus ? "unSubscribe" : "subscribe";
         btn.innerHTML = text;
+    }).fail(result=>{
+        alert(result.responseText);
     })
 })

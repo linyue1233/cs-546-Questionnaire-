@@ -54,42 +54,32 @@ const deleteUser = async (userId) => {
     displayName: "deletedUser_" + uuid.v1().slice(0, 8),
     updatedAt: new Date().toUTCString(),
   };
-  const updateUser = await userCollection.updateOne(
-    { _id: userId },
-    { $set: deletedUser }
-  );
+  const updateUser = await userCollection.updateOne({ _id: userId }, { $set: deletedUser });
   if (updateUser.modifiedCount === 0) {
     throw `Something went wrong during deletion.`;
   }
   return { deleted: true, _id: userId };
 };
-const updateUser= async(userId,firstName,lastName,profileImage)=> {
+const updateUser = async (userId, firstName, lastName, profileImage) => {
   const userCollection = await users();
 
-  if(!userId) throw "UserId must be present";
-  if(!firstName) throw "firstName must be present";
-  if(!lastName) throw "lastname must be present";
-  if(!profileImage) throw "profileImage must be present";
-
+  if (!userId) throw "UserId must be present";
+  if (!firstName) throw "firstName must be present";
+  if (!lastName) throw "lastname must be present";
+  if (!profileImage) throw "profileImage must be present";
 
   let userUpdateInfo = {
     firstName: firstName,
     lastName: lastName,
-    profileImage:profileImage
-
+    profileImage: profileImage,
   };
 
-  const updateInfo = await userCollection.updateOne(
-    { _id: userId },
-    { $set: userUpdateInfo }
-  );
-  if (!updateInfo.matchedCount && !updateInfo.modifiedCount)
-    throw 'Update failed';
+  const updateInfo = await userCollection.updateOne({ _id: userId }, { $set: userUpdateInfo });
+  if (!updateInfo.matchedCount && !updateInfo.modifiedCount) throw "Update failed";
 
-    const updateduser = await userCollection.findOne({ _id: userId });
-  return updateduser
-  
-}
+  const updateduser = await userCollection.findOne({ _id: userId });
+  return updateduser;
+};
 
 const getDisplayNameByUserId = async (userId) => {
   validator.validateId(userId);
@@ -104,17 +94,23 @@ const userSignUp = async (firstName, lastName, displayName, password, emailAddre
   // if user's does not upload avatar, give him a default imageOrientation
   // produce createTime when signUp
   if (avatarPath === undefined) {
-    avatarPath = "public/images/userprofile/defaultAvatar.jpg";
+    avatarPath = "defaultAvatar.jpg";
   }
-  if (firstName === undefined || lastName === undefined || emailAddress === undefined || password === undefined || displayName === undefined) {
+  if (
+    firstName === undefined ||
+    lastName === undefined ||
+    emailAddress === undefined ||
+    password === undefined ||
+    displayName === undefined
+  ) {
     throw `Please provide all information.`;
   }
   const userCollection = await users();
   const usersList = await userCollection.find({}).toArray();
 
-  try{
+  try {
     validator.validateEmailAddress(emailAddress);
-  }catch(e){
+  } catch (e) {
     throw e;
   }
   // validate email, displayName, password
@@ -150,7 +146,7 @@ const userSignUp = async (firstName, lastName, displayName, password, emailAddre
     displayName: displayName,
     createdAt: new Date().toUTCString(),
     updatedAt: new Date().toUTCString(),
-  }
+  };
 
   const addRes = await userCollection.insertOne(addUser);
   if (addRes.insertedCount === 0) {
@@ -159,7 +155,10 @@ const userSignUp = async (firstName, lastName, displayName, password, emailAddre
   return { userInserted: true };
 };
 
-
+const getUserById = async (id) => {
+  const userCollection = await users();
+  return await userCollection.findOne({ _id: id });
+};
 
 module.exports = {
   deleteUser,
@@ -168,4 +167,5 @@ module.exports = {
   getDisplayNameByUserId,
   userSignUp,
   updateUser,
-}
+  getUserById,
+};
