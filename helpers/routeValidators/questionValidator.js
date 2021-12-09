@@ -36,7 +36,16 @@ const validateUpdateBody = (body) => {
   return { isValid: true };
 };
 
+const validateId = (id) => {
+  if (!id) return { isValid: false, message: "Invalid id field in request." };
+  if (typeof id !== "string") return { isValid: false, message: "Invalid id type in request." };
+  if (id.length === 0 || id.trim().length === 0)
+    return { isValid: false, message: "Invalid id field in request - id is empty." };
+  return { isValid: true };
+};
+
 module.exports = {
   validateSearchBody,
   validateUpdateBody,
+  validateId,
 };

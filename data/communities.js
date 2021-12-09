@@ -109,7 +109,7 @@ const userUnsubscribe = async (userId, communityId) => {
     throw `Please provide parameters`;
   }
   if (userId.trim() === "" || communityId.trim() === "") {
-    thorw`Please provide parameters`;
+    throw `Please provide parameters`;
   }
   // delete user in communityCollection
   const communitiesCollection = await communities();
@@ -143,7 +143,7 @@ const userSubscribe = async (userId, communityId) => {
     throw `Please provide parameters`;
   }
   if (userId.trim() === "" || communityId.trim() === "") {
-    thorw`Please provide parameters`;
+    throw `Please provide parameters`;
   }
   // add user in communityCollection
   const communitiesCollection = await communities();
@@ -184,7 +184,6 @@ const addQuestiontocommunity = async (communityId, questionId) => {
 };
 
 const deleteQuestionfromcommunity = async (communityId, questionId) => {
-  
   validator.validateCommunityId(communityId);
   const communityCollection = await communities();
   let existingCommunity = await communityCollection.updateOne(
@@ -198,7 +197,6 @@ const deleteQuestionfromcommunity = async (communityId, questionId) => {
 };
 
 const deleteQuestionfromflaggedQuestions = async (communityId, questionId) => {
-  
   validator.validateCommunityId(communityId);
   const communityCollection = await communities();
   let existingCommunity = await communityCollection.updateOne(
@@ -212,7 +210,6 @@ const deleteQuestionfromflaggedQuestions = async (communityId, questionId) => {
 };
 
 const deleteAnsewerfromflaggedAnsweres = async (communityId, answerID) => {
-  
   validator.validateCommunityId(communityId);
   const communityCollection = await communities();
   let existingCommunity = await communityCollection.updateOne(
@@ -225,9 +222,6 @@ const deleteAnsewerfromflaggedAnsweres = async (communityId, answerID) => {
   return true;
 };
 
-
-
-
 module.exports = {
   editCommunity,
   getCommunityById,
@@ -238,5 +232,5 @@ module.exports = {
   addQuestiontocommunity,
   deleteQuestionfromcommunity,
   deleteAnsewerfromflaggedAnsweres,
-  deleteQuestionfromflaggedQuestions
+  deleteQuestionfromflaggedQuestions,
 };

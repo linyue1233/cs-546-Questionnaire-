@@ -21,7 +21,9 @@ router.get("/all", async (req, res) => {
 });
 
 router.get("/:id/edit", async (req, res) => {
-  if (xss(req.session.userId)) {
+  req.params.id = xss(req.params.id);
+  req.session.userId = xss(req.session.userId);
+  if (req.session.userId) {
     if (xss(!req.params.id)) res.status(400).json({ error: "No id found" });
     try {
       const question = await questions.getID(xss(req.params.id));
@@ -188,6 +190,7 @@ router.get("/:id", async (req, res) => {
     res.status(200).render("questions/individual-question", {
       questionInfo: questionAns,
       questionPoster: userDetails,
+      userLoggedIn: req.session.userId ? true : false,
       thisUserUpvoted: questionAns.upvotes.includes(req.session.userId),
       thisUserDownvoted: questionAns.downvotes.includes(req.session.userId),
       currentUserPostedQuestion: xss(req.session.userId) === thisQuestionPoster ? true : false,
@@ -462,6 +465,26 @@ router.post("/:id/downvote", async (req, res) => {
   let count = questionDetails.upvotes.length - questionDetails.downvotes.length;
   // TODO further additions
   res.status(200).json({ count });
+});
+
+router.post("/:id/report", async (req, res) => {
+  try {
+    let questionId = xss(req.params.id);
+    let validate = validator.validateId(questionId);
+    if (!validate.isValid) {
+      res.redirect("/");
+      return;
+    }
+    let reportQuestion = await questions.reportQuestion(questionId);
+    if (reportQuestion) {
+      res.status(200).json({ message: "Successfully reported the question." });
+      return;
+    }
+  } catch (e) {
+    console.log(e);
+    res.status(400).json({ message: e });
+    return;
+  }
 });
 
 module.exports = router;
