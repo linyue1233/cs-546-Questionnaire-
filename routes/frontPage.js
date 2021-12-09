@@ -9,6 +9,10 @@ router.get("/", async (req, res) => {
     for (let x of questionList) {
       let reqCommunity = await communities.getCommunityById(x.communityId);
       x.communityName = reqCommunity.community.name;
+      if (x.upvotes && x.downvotes) {
+        let voteCount = x.upvotes.length - x.downvotes.length;
+        x.voteCount = voteCount;
+      }
     }
     res.render("questions/all_questions", {
       session: req.session,
