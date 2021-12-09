@@ -77,7 +77,7 @@
 }
 
 .con {
-  min-height: 80.9%;
+  min-height: 33rem;
 }
 
 #profile_image {
@@ -92,11 +92,6 @@
 
 .user_profile_table td div {
   margin-left: 50px;
-}
-
-#menu {
-  right: 0;
-  left: -100;
 }
 
 #com_card {
