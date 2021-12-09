@@ -5,7 +5,7 @@ const answers = require("../data/answers");
 const data = require("../data");
 const questionData = data.questions;
 const communityData = data.communities;
-const xss = require('xss');
+const xss = require("xss");
 const userData = data.users;
 const validator = require("../helpers/routeValidators/questionValidator");
 
@@ -62,7 +62,8 @@ router.get("/:id/edit", async (req, res) => {
 });
 
 router.post("/search", async (req, res) => {
-  let body = xss(req.body);
+  // console.log(req.body);
+  let body = req.body;
   let validate = validator.validateSearchBody(body);
   if (!validate.isValid) {
     res.status(400).json({ hasErrors: true, error: validate.message });
@@ -74,9 +75,6 @@ router.post("/search", async (req, res) => {
   const searchResult = await questions.search(body);
   if (searchResult.length === 0) {
     // Sending 200 here as it is search. There can be valid cases where the search result might turn up no results.
-    // ideally, do this:
-    // res.status(200).render("questions/search_results", { totalResults: 0, searchResult });
-    // FOR NOW, returning JSON
     res.render("search/search_results", {
       result: false,
       session: req.session,
@@ -127,7 +125,13 @@ router.put("/:id", async (req, res) => {
     for (let i = 0; i < tagsArray.length; i++) {
       tagsArray[i] = tagsArray[i].trim();
     }
-    await questions.editQuestion(xss(req.params.id), xss(body.title), xss(body.description), tagsArray, xss(body.communityId));
+    await questions.editQuestion(
+      xss(req.params.id),
+      xss(body.title),
+      xss(body.description),
+      tagsArray,
+      xss(body.communityId)
+    );
     res.status(200).render("questions/edit-question", {
       success: "Question edited successfully",
       session: req.session,
@@ -173,9 +177,9 @@ router.get("/:id", async (req, res) => {
     }
 
     // sort answer by vote
-    sortedAnswer = answers.sort(function(a,b){
+    sortedAnswer = answers.sort(function (a, b) {
       return b.upvotes.length - a.upvotes.length;
-    })
+    });
     questionAns.answers = sortedAnswer;
     questionAns.friendlyCreatedAt = questionAns.createdAt.toDateString();
     questionAns.friendlyUpdatedAt = questionAns.updatedAt.toDateString();
