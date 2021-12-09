@@ -5,7 +5,7 @@ const questions = require("../data/questions");
 const answers = require("../data/answers");
 const communities = require("../data/communities");
 const validator = require("../helpers/routeValidators/userValidator");
-const xss = require('xss');
+const xss = require("xss");
 
 const path = require("path");
 const multer = require("multer");
@@ -37,7 +37,7 @@ router.delete("/:id", async (req, res) => {
       // Maybe throw a success prompt, but delete the user and log them out
       // for now, redirecting to questions
       // TODO: revisit with logout code
-      res.redirect("/questions/all");
+      res.redirect("/");
       return;
     }
     res.status(400).render("users/get_specific_user", { error: "Something went wrong." });
@@ -112,7 +112,7 @@ router.get("/signup", async (req, res) => {
     res.status(200).render("users/create_user");
     return;
   } else {
-    res.redirect("/questions/all");
+    res.redirect("/");
   }
 });
 
@@ -121,7 +121,7 @@ router.get("/signup", async (req, res) => {
     res.status(200).render("users/create_user");
     return;
   } else {
-    res.redirect("/questions/all");
+    res.redirect("/");
   }
 });
 
@@ -160,7 +160,7 @@ router.get("/:id", async (req, res) => {
     });
     return;
   } catch (e) {
-    res.status(400).render("users/get_specific_user", { error: e, session: xss(req.session) });
+    res.status(500).render("errors/internal_server_error", { session: xss(req.session) });
   }
 });
 
@@ -184,16 +184,18 @@ router.post("/", upload, async (req, res) => {
   let displayName = xss(req.body.displayName);
   // let { firstName, lastName, password, emailAddress, displayName } = req.body;
 
-  if(firstName.length === 0 || firstName.length >= 20 || !(/^[a-zA-Z]+$/g).test(firstName)){
+  if (firstName.length === 0 || firstName.length >= 20 || !/^[a-zA-Z]+$/g.test(firstName)) {
     res.render("users/create_user", { error: "Your firstName is invalid." });
     return;
   }
-  if(lastName.length === 0 || lastName.length >= 20 || !(/^[a-zA-Z]+$/g).test(lastName)){
+  if (lastName.length === 0 || lastName.length >= 20 || !/^[a-zA-Z]+$/g.test(lastName)) {
     res.render("users/create_user", { error: "Your lastName is invalid." });
     return;
   }
-  if(password.length <6 || (/^[ ]+$/g).test(password)){
-    res.render("users/create_user", { error: "Please provide 6 characters at least and password can not have white space." });
+  if (password.length < 6 || /^[ ]+$/g.test(password)) {
+    res.render("users/create_user", {
+      error: "Please provide 6 characters at least and password can not have white space.",
+    });
     return;
   }
   let passwordValid = validator.validatePassword(password);
@@ -202,7 +204,7 @@ router.post("/", upload, async (req, res) => {
     res.render("users/create_user", { error: "Please provide valid password." });
     return;
   }
-  if(!emailValid.isValid){
+  if (!emailValid.isValid) {
     res.render("users/create_user", { error: "Please provide valid email." });
     return;
   }
@@ -211,10 +213,10 @@ router.post("/", upload, async (req, res) => {
     profileImage = "defaultAvatar.jpg";
   } else {
     // check file suffix
-    if (!/\.(jpg|jpeg|png|GIF|JPG|PNG)$/.test(req.file.filename)){
+    if (!/\.(jpg|jpeg|png|GIF|JPG|PNG)$/.test(req.file.filename)) {
       res.render("users/create_user", { error: "Please provide valid image." });
       return;
-    }else{
+    } else {
       profileImage = xss(req.file.filename);
     }
   }

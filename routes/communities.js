@@ -6,7 +6,7 @@ const users = require("../data/users");
 const questions = require("../data/questions");
 const validator = require("../helpers/routeValidators/communityValidator");
 const answers = require("../data/answers");
-const xss = require('xss');
+const xss = require("xss");
 
 router.get("/", async (req, res) => {
   try {
@@ -37,12 +37,13 @@ router.post("/create/new", async (req, res) => {
     res.render("communities/new-community", {
       message: "Fill all the fields to create a community",
       error: true,
+      session: req.session,
     });
   } else {
     try {
       let name = xss(req.body.name);
       let description = xss(req.body.description);
-      const done = communities.createCom(name, description, req.session.userId);
+      const done = await communities.createCom(name, description, req.session.userId);
       if (done) {
         res.render("communities/success", {
           message: name + " Community successfully created",
@@ -55,6 +56,7 @@ router.post("/create/new", async (req, res) => {
       res.render("communities/new-community", {
         message: e,
         error: true,
+        session: req.session,
       });
     }
   }
@@ -65,9 +67,10 @@ router.get("/:id/edit", async (req, res) => {
     let communityId = xss(req.params.id);
     let validate = validator.validateCommunityId(communityId);
     if (!validate.isValid) {
-      res
-        .status(400)
-        .render("errors/internal_server_error", { message: "No community present with id.", session: xss(req.session) });
+      res.status(400).render("errors/internal_server_error", {
+        message: "No community present with id.",
+        session: xss(req.session),
+      });
       return;
     }
     let existingCommunity = await communities.getCommunityById(communityId);
@@ -87,7 +90,9 @@ router.get("/:id/edit", async (req, res) => {
     });
     return;
   } catch (e) {
-    res.status(500).render("errors/internal_server_error", { message: "Something went wrong.", session: xss(req.session) });
+    res
+      .status(500)
+      .render("errors/internal_server_error", { message: "Something went wrong.", session: xss(req.session) });
     return;
   }
 });
@@ -104,7 +109,8 @@ router.put("/:id", async (req, res) => {
       return;
     }
     let validateFlag =
-      validator.validateCommunityEditPayload(xss(req.body)).isValid || validator.validateCommunityId(communityId).isValid;
+      validator.validateCommunityEditPayload(xss(req.body)).isValid ||
+      validator.validateCommunityId(communityId).isValid;
     if (!validateFlag) {
       // TODO: Log errors locally
       res.status(400).render("communities/edit_community", { error: "Invalid edit operation for community." });
@@ -228,7 +234,7 @@ router.post("/userSubscribe", async (req, res) => {
     return;
   }
 });
-router.get('/:id/view/flagged', async (req, res) => {
+router.get("/:id/view/flagged", async (req, res) => {
   try {
     let communityId = xss(req.params.id);
     if (!xss(req.session.userId)) {
@@ -237,12 +243,12 @@ router.get('/:id/view/flagged', async (req, res) => {
     }
 
     if (!xss(req.params.id)) {
-      res.status(400).json({ error: 'No communityId found' });
+      res.status(400).json({ error: "No communityId found" });
       return;
     }
     const communityInfo = await communities.getCommunityById(xss(req.params.id));
     if (!communityInfo) {
-      res.status(400).json({ error: 'No community for the Id' });
+      res.status(400).json({ error: "No community for the Id" });
       return;
     }
     let adminId = communityInfo.community.administrator;
@@ -264,10 +270,10 @@ router.get('/:id/view/flagged', async (req, res) => {
 
       queflag.push(ans);
     }
-    
+
     let ansflageobj = communityInfo.community.flaggedAnswers;
     let ansflag = [];
-  
+
     for (const elem of ansflageobj) {
       const ansInfo = await answers.getanswerbyanserId(elem._id);
       let t = ansInfo.description;
@@ -281,19 +287,21 @@ router.get('/:id/view/flagged', async (req, res) => {
       ansflag.push(ans);
     }
 
-    res.render('communities/viewflaggd', {
+    res.render("communities/viewflaggd", {
       qflag: queflag,
       aflag: ansflag,
       communitiyID: req.params.id,
+      session: req.session,
     });
   } catch (e) {
-    res.render('communities/viewflaggd', {
+    res.render("communities/viewflaggd", {
       error: e,
       communitiyID: req.params.id,
+      session: req.session,
     });
   }
 });
-router.get('/:communitiyID/:questionId/delete/flaggedque', async (req, res) => {
+router.get("/:communitiyID/:questionId/delete/flaggedque", async (req, res) => {
   try {
     let cid = xss(req.params.communitiyID);
     let qid = xss(req.params.questionId);
@@ -302,12 +310,12 @@ router.get('/:communitiyID/:questionId/delete/flaggedque', async (req, res) => {
       return;
     }
     if (!cid) {
-      res.status(400).json({ error: 'No communityId found' });
+      res.status(400).json({ error: "No communityId found" });
       return;
     }
     const communityInfo = await communities.getCommunityById(cid);
     if (!communityInfo) {
-      res.status(400).json({ error: 'No community for the Id' });
+      res.status(400).json({ error: "No community for the Id" });
       return;
     }
     let adminId = communityInfo.community.administrator;
@@ -326,57 +334,48 @@ router.get('/:communitiyID/:questionId/delete/flaggedque', async (req, res) => {
     });
     for (const element of flaga) {
       if (Ansarray.includes(element._id)) {
-        let flaggedAns = await communities.deleteAnsewerfromflaggedAnsweres(
-          cid,
-          element._id
-        );
+        let flaggedAns = await communities.deleteAnsewerfromflaggedAnsweres(cid, element._id);
       }
     }
     const question = await questions.remove(qid);
 
     let community = await communities.deleteQuestionfromcommunity(cid, qid);
 
-    let flaggedQue = await communities.deleteQuestionfromflaggedQuestions(
-      cid,
-      qid
-    );
+    let flaggedQue = await communities.deleteQuestionfromflaggedQuestions(cid, qid);
 
-    res.render('communities/viewdeletedflaggd', {
+    res.render("communities/viewdeletedflaggd", {
       c: req.params.communitiyID,
-      message: 'You have successfully deleted the Flagged Question',
+      message: "You have successfully deleted the Flagged Question",
+      session: req.session,
     });
   } catch (e) {
-    res.render('communities/viewdeletedflaggd', {
+    res.render("communities/viewdeletedflaggd", {
       c: req.params.communitiyID,
       error: e,
+      session: req.session,
     });
   }
 });
-router.get('/:communitiyID/:answerId/delete/flaggedqans', async (req, res) => {
+router.get("/:communitiyID/:answerId/delete/flaggedqans", async (req, res) => {
   try {
     let cid = xss(req.params.communitiyID);
     let aid = xss(req.params.answerId);
     const answer = await questions.deleteAnswer(aid);
 
-    let flaggedAns = await communities.deleteAnsewerfromflaggedAnsweres(
-      cid,
-      aid
-    );
+    let flaggedAns = await communities.deleteAnsewerfromflaggedAnsweres(cid, aid);
 
-    res.render('communities/viewdeletedflaggd', {
+    res.render("communities/viewdeletedflaggd", {
       c: xss(req.params.communitiyID),
-      message: 'You have successfully deleted the Flagged Answer',
+      message: "You have successfully deleted the Flagged Answer",
     });
   } catch (e) {
-    res.render('communities/viewdeletedflaggd', {
+    res.render("communities/viewdeletedflaggd", {
       c: xss(req.params.communitiyID),
       error: e,
+      session: req.session,
     });
   }
 });
-
-
-
 
 router.post("/quickCreate", async (req, res) => {
   let body = xss(req.body);

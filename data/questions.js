@@ -217,19 +217,19 @@ const registerUpvote = async (questionId, userId) => {
   if (existingQuestion.upvotes.includes(userId)) {
     // upvote already done - toggle and remove userId from upvotes array.
     newUpvotes = newUpvotes.filter((item) => userId !== item);
-    await questionsCollection.updateOne({ _id: questionId }, { $pull: { upvotes: userId }});
+    await questionsCollection.updateOne({ _id: questionId }, { $pull: { upvotes: userId } });
   }
   if (existingQuestion.downvotes.includes(userId)) {
     // upvote to be done while present in downvote array - toggle and remove userId from downvotes array and add it to upvotes array
     newDownvotes = newDownvotes.filter((item) => userId !== item);
-    await questionsCollection.updateOne({ _id: questionId }, { $addToSet: { upvotes: userId }});
+    await questionsCollection.updateOne({ _id: questionId }, { $addToSet: { upvotes: userId } });
   }
   if (!existingQuestion.upvotes.includes(userId) && !existingQuestion.downvotes.includes(userId)) {
     // user not present in both upvote and downvote array - add to upvote directly.
-    await questionsCollection.updateOne({ _id: questionId }, { $addToSet: { upvotes: userId }});
+    await questionsCollection.updateOne({ _id: questionId }, { $addToSet: { upvotes: userId } });
   }
   return (await questionsCollection.findOne({ _id: questionId })).upvotes;
-}
+};
 
 module.exports = {
   remove,
