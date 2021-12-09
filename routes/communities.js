@@ -36,12 +36,13 @@ router.post("/create/new", async (req, res) => {
     res.render("communities/new-community", {
       message: "Fill all the fields to create a community",
       error: true,
+      session: req.session,
     });
   } else {
     try {
       let name = req.body.name;
       let description = req.body.description;
-      const done = communities.createCom(name, description, req.session.userId);
+      const done = await communities.createCom(name, description, req.session.userId);
       if (done) {
         res.render("communities/success", {
           message: name + " Community successfully created",
@@ -55,6 +56,7 @@ router.post("/create/new", async (req, res) => {
       res.render("communities/new-community", {
         message: e,
         error: true,
+        session: req.session,
       });
     }
   }

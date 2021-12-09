@@ -7,12 +7,12 @@
     <br>
     <label>
        firstName: <br>
-      <input type="text" name="firstName" placeholder="{{User.firstName}}" value="{{User.firstName}}" class="full-width-input"/>
+      <input type="text" id="firstName" name="firstName"  value="{{User.firstName}}" class="full-width-input"/>
     </label>
    <br>
    <label>
        lastName: <br>
-      <input type="text" name="lastName" placeholder="{{User.lastName}}" value="{{User.lastName}}" class="full-width-input"/>
+      <input type="text" id="lastName" name="lastName"  value="{{User.lastName}}" class="full-width-input"/>
     </label>
    <br>
 
@@ -22,7 +22,7 @@
    <br><br>
   
     </label> 
-        <button class="btn btn-secondary btn-sm"> submit</button>
+        <button id="bu" class="btn btn-secondary btn-sm"> submit</button>
      
     </label>
    
@@ -36,6 +36,7 @@
 <p>{{ error }}</p>
 {{/if}}
 </article>
+<script src="/public/js/updateuserprofile.js"></script>
 
 
 

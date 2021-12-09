@@ -5,7 +5,7 @@ const questions = require("../data/questions");
 const answers = require("../data/answers");
 const communities = require("../data/communities");
 const validator = require("../helpers/routeValidators/userValidator");
-const xss = require('xss');
+const xss = require("xss");
 
 const path = require("path");
 const multer = require("multer");
@@ -160,7 +160,7 @@ router.get("/:id", async (req, res) => {
     });
     return;
   } catch (e) {
-    res.status(400).render("users/get_specific_user", { error: e, session: req.session });
+    res.status(500).render("errors/internal_server_error", { session: req.session });
   }
 });
 
