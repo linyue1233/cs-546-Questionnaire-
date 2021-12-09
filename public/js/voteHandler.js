@@ -47,8 +47,13 @@ $(".add-ans").click((event) => {
   let answerContent = $(".ck-content").text();
   if (answerContent.length === 0 || answerContent.trim().length === 0) {
     event.preventDefault();
-    document.getElementById("ans-err").text = "Add some text before submitting your answer.";
-    $("#ans-err").toggleClass("show");
+    $("#textSubmit")
+      .prepend(`<div class="alert alert-warning alert-dismissible fade show" role="alert">Someone once said
+    <strong>'No answer is also an answer'</strong>! But here, it is recommended that you add some content first :)
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>`);
   }
 });
 
