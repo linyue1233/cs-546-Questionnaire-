@@ -173,7 +173,7 @@ router.post("/", upload, async (req, res) => {
     !xss(req.body.emailAddress) ||
     !xss(req.body.displayName)
   ) {
-    res.render("users/create_user", { error: "Please provide all information." });
+    res.render("users/create_user", { error: "Please provide all information.", body: req.body });
     return;
   }
   // add xss
@@ -200,6 +200,10 @@ router.post("/", upload, async (req, res) => {
   }
   let passwordValid = validator.validatePassword(password);
   let emailValid = validator.validateEmailAddress(emailAddress);
+  if (!passwordValid.isValid || !emailValid.isValid) {
+    res.render("users/create_user", { error: "Please provide valid information.", body: req.body });
+    return;
+  }
   if (!passwordValid.isValid) {
     res.render("users/create_user", { error: "Please provide valid password." });
     return;
@@ -247,7 +251,7 @@ router.post("/", upload, async (req, res) => {
     }
     res.status(400).render("users/create_user", { error: "Something went wrong." });
   } catch (e) {
-    res.status(400).render("users/create_user", { error: e });
+    res.status(400).render("users/create_user", { error: e, body: req.body });
     return;
   }
 });

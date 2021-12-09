@@ -1,8 +1,8 @@
 {{!-- shows a page where the user can see the community details--}}
 <div class="jumbotron">
 <h1>{{communityInfo.community.name}}</h1>
-
-<h2 id="test">{{communityInfo.community.description}}</h2>
+<hr class="my-4">
+<p id="test">{{communityInfo.community.description}}</p>
 <button id="btnSubscribe" data-subscribeStatus="{{isSubscribed}}" class="btn btn-secondary btn-sm"></button>&nbsp;&nbsp;&nbsp;
 {{#if isAdmin}}
 <a href="/communities/{{communityInfo.community._id}}/view/flagged"><button id="btnShowFlag" class="btn btn-secondary btn-sm">View Flagged</button></a>

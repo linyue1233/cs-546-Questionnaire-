@@ -180,9 +180,12 @@ router.get("/:id", async (req, res) => {
     questionAns.friendlyCreatedAt = questionAns.createdAt.toDateString();
     questionAns.friendlyUpdatedAt = questionAns.updatedAt.toDateString();
     questionAns.votes = questionAns.upvotes.length - questionAns.downvotes.length;
+    console.log(questionAns.upvotes.includes(req.session.userId), questionAns.downvotes.includes(req.session.userId));
     res.status(200).render("questions/individual-question", {
       questionInfo: questionAns,
       questionPoster: userDetails,
+      thisUserUpvoted: questionAns.upvotes.includes(req.session.userId),
+      thisUserDownvoted: questionAns.downvotes.includes(req.session.userId),
       currentUserPostedQuestion: xss(req.session.userId) === thisQuestionPoster ? true : false,
       session: req.session,
       scriptUrl: ["voteHandler.js"],
@@ -391,9 +394,7 @@ router.put("/:questionId/answers/:answerId", async (req, res) => {
   }
   try {
     const updatedQuestionWithAnswer = await questions.updateAnswer(questionId, answerId, updatePayload);
-    res.status(200).render("questions/individual-question", {
-      questionInfo: updatedQuestionWithAnswer,
-    });
+    res.redirect("/questions/" + req.params.questionId);
     return;
   } catch (e) {
     res.status(500).render("errors/internal_server_error");
@@ -439,8 +440,24 @@ router.post("/:id/upvote", async (req, res) => {
   let questionId = xss(req.params.id);
   let userId = xss(req.session.userId);
   const upvotePersist = await questions.registerUpvote(questionId, userId);
+  const questionDetails = await questions.getID(questionId);
+  let count = questionDetails.upvotes.length - questionDetails.downvotes.length;
   // TODO further additions
-  res.status(200).json({ upvotes: upvotePersist });
+  res.status(200).json({ count });
+});
+
+router.post("/:id/downvote", async (req, res) => {
+  if (!req.session.userId) {
+    res.status(400).json({ success: false, message: "User not logged in." });
+    return;
+  }
+  let questionId = req.params.id;
+  let userId = req.session.userId;
+  const downvotePersist = await questions.registerDownvote(questionId, userId);
+  const questionDetails = await questions.getID(questionId);
+  let count = questionDetails.upvotes.length - questionDetails.downvotes.length;
+  // TODO further additions
+  res.status(200).json({ count });
 });
 
 module.exports = router;

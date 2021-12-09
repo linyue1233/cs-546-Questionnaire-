@@ -202,11 +202,14 @@ const search = async (body) => {
   const questionsCollection = await questions();
   let tokenizedKeywords = body.keyword.split(" ");
   let allMatches = await questionsCollection.find({ $text: { $search: body.keyword } }).toArray();
+
   for (let x of tokenizedKeywords) {
     let allArrayMatches = await questionsCollection.find({ tags: x }).toArray();
+    // console.log("each" + JSON.stringify(allArrayMatches));
     allMatches = allMatches.concat(allArrayMatches);
   }
   return allMatches;
+
 };
 
 const registerUpvote = async (questionId, userId) => {
@@ -222,6 +225,7 @@ const registerUpvote = async (questionId, userId) => {
   if (existingQuestion.downvotes.includes(userId)) {
     // upvote to be done while present in downvote array - toggle and remove userId from downvotes array and add it to upvotes array
     newDownvotes = newDownvotes.filter((item) => userId !== item);
+    await questionsCollection.updateOne({ _id: questionId }, { $pull: { downvotes: userId } });
     await questionsCollection.updateOne({ _id: questionId }, { $addToSet: { upvotes: userId } });
   }
   if (!existingQuestion.upvotes.includes(userId) && !existingQuestion.downvotes.includes(userId)) {
@@ -229,6 +233,29 @@ const registerUpvote = async (questionId, userId) => {
     await questionsCollection.updateOne({ _id: questionId }, { $addToSet: { upvotes: userId } });
   }
   return (await questionsCollection.findOne({ _id: questionId })).upvotes;
+};
+
+const registerDownvote = async (questionId, userId) => {
+  const questionsCollection = await questions();
+  const existingQuestion = await questionsCollection.findOne({ _id: questionId });
+  let newUpvotes = existingQuestion.upvotes;
+  let newDownvotes = existingQuestion.downvotes;
+  if (existingQuestion.downvotes.includes(userId)) {
+    // upvote already done - toggle and remove userId from upvotes array.
+    newUpvotes = newUpvotes.filter((item) => userId !== item);
+    await questionsCollection.updateOne({ _id: questionId }, { $pull: { downvotes: userId } });
+  }
+  if (existingQuestion.upvotes.includes(userId)) {
+    // upvote to be done while present in downvote array - toggle and remove userId from downvotes array and add it to upvotes array
+    newDownvotes = newDownvotes.filter((item) => userId !== item);
+    await questionsCollection.updateOne({ _id: questionId }, { $pull: { upvotes: userId } });
+    await questionsCollection.updateOne({ _id: questionId }, { $addToSet: { downvotes: userId } });
+  }
+  if (!existingQuestion.upvotes.includes(userId) && !existingQuestion.downvotes.includes(userId)) {
+    // user not present in both upvote and downvote array - add to upvote directly.
+    await questionsCollection.updateOne({ _id: questionId }, { $addToSet: { downvotes: userId } });
+  }
+  return (await questionsCollection.findOne({ _id: questionId })).downvotes;
 };
 
 module.exports = {
@@ -246,4 +273,5 @@ module.exports = {
   registerUpvote,
   getAllByUserId,
   getAllByCommunityId,
+  registerDownvote,
 };
