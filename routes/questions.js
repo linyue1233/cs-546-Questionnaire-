@@ -172,7 +172,11 @@ router.get("/:id", async (req, res) => {
       }
     }
 
-    questionAns.answers = answers;
+    // sort answer by vote
+    sortedAnswer = answers.sort(function(a,b){
+      return b.upvotes.length - a.upvotes.length;
+    })
+    questionAns.answers = sortedAnswer;
     questionAns.friendlyCreatedAt = questionAns.createdAt.toDateString();
     questionAns.friendlyUpdatedAt = questionAns.updatedAt.toDateString();
     questionAns.votes = questionAns.upvotes.length - questionAns.downvotes.length;
