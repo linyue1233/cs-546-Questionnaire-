@@ -1,10 +1,10 @@
-<h2>Edit Question</h2>
+<h1>Edit Question</h1>
 {{#unless error}}
 {{#unless success}}
 <form class="w-50 mx-auto" method="post" action="/questions/{{question._id}}">
   <div class="form-group">
     <label for="title">Title</label>
-    <input type="text" name="title" class="form-control" id="" aria-describedby="title" value="{{question.title}}" required>
+    <input type="text" name="title" class="form-control" id="title" aria-describedby="title" value="{{question.title}}" required>
   </div>
   <div class="form-group">
     <label for="description">Description</label>
@@ -12,12 +12,12 @@
   </div>
   <div class="form-group">
     <label for="tags">Tags</label>
-    <input type="text" name="tags" class="form-control" id="" aria-describedby="tags" value="{{question.tags}}" required>
+    <input type="text" name="tags" class="form-control" id="tags" aria-describedby="tags" value="{{question.tags}}" required>
     <small id="tagHelp" class="form-text text-muted">Enter more than one tags seprated by commas</small>
   </div>
   <div class="form-group">
     <label for="community">Community</label>
-    <select class="form-control" name="communityId" id="">
+    <select class="form-control" name="communityId" id="community">
       {{#each com}}
         {{#if this.selected}}
         <option value="{{this._id}}" selected>{{this.name}}</option>

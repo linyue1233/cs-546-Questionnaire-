@@ -90,12 +90,12 @@
     {{!-- build a rich text box to submit answer --}}
     {{!-- action need to modify --}}
     <form id="textSubmit" action="/questions/{{questionInfo._id}}/answers/create/" class="input-group d-inline-block" method="post">
-        <textarea name="content" id="editor">
+        <textarea name="content" id="editor" required>
         </textarea>
         <br>
         <p><input class= "float-right btn btn-primary add-ans" type="submit" value="Add Answer"></p>
     </form>
-    <div class="alert alert-warning alert-dismissible fade show hide" id="ans-err" role="alert">
+    <div class="alert alert-warning alert-dismissible fade hide" id="ans-err" role="alert">
         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
             <span aria-hidden="true">&times;</span>
         </button>
