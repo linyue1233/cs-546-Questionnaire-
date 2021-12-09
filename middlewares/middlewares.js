@@ -36,8 +36,8 @@ let changeMethodToPutForCommunityEdit = (req, res, next) => {
 
 module.exports = {
   changeMethodToPutForAnswerUpdate,
-  // changeMethodToPutForUserprofileUpdate,
-  // questionEditMiddleware,
-  // questionDeleteMiddleware,
-  // changeMethodToPutForCommunityEdit,
+  changeMethodToPutForUserprofileUpdate,
+  questionEditMiddleware,
+  questionDeleteMiddleware,
+  changeMethodToPutForCommunityEdit,
 };
