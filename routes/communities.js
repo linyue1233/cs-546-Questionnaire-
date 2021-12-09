@@ -231,7 +231,7 @@ router.post("/userSubscribe", async (req, res) => {
     return;
   }
 });
-router.get('/:id/view/flagged', async (req, res) => {
+router.get("/:id/view/flagged", async (req, res) => {
   try {
     let communityId = req.params.id;
     if (!req.session.userId) {
@@ -240,12 +240,12 @@ router.get('/:id/view/flagged', async (req, res) => {
     }
 
     if (!req.params.id) {
-      res.status(400).json({ error: 'No communityId found' });
+      res.status(400).json({ error: "No communityId found" });
       return;
     }
     const communityInfo = await communities.getCommunityById(req.params.id);
     if (!communityInfo) {
-      res.status(400).json({ error: 'No community for the Id' });
+      res.status(400).json({ error: "No community for the Id" });
       return;
     }
     let adminId = communityInfo.community.administrator;
@@ -267,10 +267,10 @@ router.get('/:id/view/flagged', async (req, res) => {
 
       queflag.push(ans);
     }
-    
+
     let ansflageobj = communityInfo.community.flaggedAnswers;
     let ansflag = [];
-  
+
     for (const elem of ansflageobj) {
       const ansInfo = await answers.getanswerbyanserId(elem._id);
       let t = ansInfo.description;
@@ -284,19 +284,21 @@ router.get('/:id/view/flagged', async (req, res) => {
       ansflag.push(ans);
     }
 
-    res.render('communities/viewflaggd', {
+    res.render("communities/viewflaggd", {
       qflag: queflag,
       aflag: ansflag,
       communitiyID: req.params.id,
+      session: req.session,
     });
   } catch (e) {
-    res.render('communities/viewflaggd', {
+    res.render("communities/viewflaggd", {
       error: e,
       communitiyID: req.params.id,
+      session: req.session,
     });
   }
 });
-router.get('/:communitiyID/:questionId/delete/flaggedque', async (req, res) => {
+router.get("/:communitiyID/:questionId/delete/flaggedque", async (req, res) => {
   try {
     let cid = req.params.communitiyID;
     let qid = req.params.questionId;
@@ -305,12 +307,12 @@ router.get('/:communitiyID/:questionId/delete/flaggedque', async (req, res) => {
       return;
     }
     if (!cid) {
-      res.status(400).json({ error: 'No communityId found' });
+      res.status(400).json({ error: "No communityId found" });
       return;
     }
     const communityInfo = await communities.getCommunityById(cid);
     if (!communityInfo) {
-      res.status(400).json({ error: 'No community for the Id' });
+      res.status(400).json({ error: "No community for the Id" });
       return;
     }
     let adminId = communityInfo.community.administrator;
@@ -329,57 +331,49 @@ router.get('/:communitiyID/:questionId/delete/flaggedque', async (req, res) => {
     });
     for (const element of flaga) {
       if (Ansarray.includes(element._id)) {
-        let flaggedAns = await communities.deleteAnsewerfromflaggedAnsweres(
-          cid,
-          element._id
-        );
+        let flaggedAns = await communities.deleteAnsewerfromflaggedAnsweres(cid, element._id);
       }
     }
     const question = await questions.remove(qid);
 
     let community = await communities.deleteQuestionfromcommunity(cid, qid);
 
-    let flaggedQue = await communities.deleteQuestionfromflaggedQuestions(
-      cid,
-      qid
-    );
+    let flaggedQue = await communities.deleteQuestionfromflaggedQuestions(cid, qid);
 
-    res.render('communities/viewdeletedflaggd', {
+    res.render("communities/viewdeletedflaggd", {
       c: req.params.communitiyID,
-      message: 'You have successfully deleted the Flagged Question',
+      message: "You have successfully deleted the Flagged Question",
+      session: req.session,
     });
   } catch (e) {
-    res.render('communities/viewdeletedflaggd', {
+    res.render("communities/viewdeletedflaggd", {
       c: req.params.communitiyID,
       error: e,
+      session: req.session,
     });
   }
 });
-router.get('/:communitiyID/:answerId/delete/flaggedqans', async (req, res) => {
+router.get("/:communitiyID/:answerId/delete/flaggedqans", async (req, res) => {
   try {
     let cid = req.params.communitiyID;
     let aid = req.params.answerId;
     const answer = await questions.deleteAnswer(aid);
 
-    let flaggedAns = await communities.deleteAnsewerfromflaggedAnsweres(
-      cid,
-      aid
-    );
+    let flaggedAns = await communities.deleteAnsewerfromflaggedAnsweres(cid, aid);
 
-    res.render('communities/viewdeletedflaggd', {
+    res.render("communities/viewdeletedflaggd", {
       c: req.params.communitiyID,
-      message: 'You have successfully deleted the Flagged Answer',
+      message: "You have successfully deleted the Flagged Answer",
+      session: req.session,
     });
   } catch (e) {
-    res.render('communities/viewdeletedflaggd', {
+    res.render("communities/viewdeletedflaggd", {
       c: req.params.communitiyID,
       error: e,
+      session: req.session,
     });
   }
 });
-
-
-
 
 router.post("/quickCreate", async (req, res) => {
   let body = req.body;
