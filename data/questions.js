@@ -206,7 +206,6 @@ const search = async (body) => {
     let allArrayMatches = await questionsCollection.find({ tags: x }).toArray();
     allMatches = allMatches.concat(allArrayMatches);
   }
-  console.log(tokenizedKeywords, allMatches);
   return allMatches;
 };
 
