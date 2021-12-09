@@ -25,7 +25,7 @@ let upload = multer({
 }).single("profileImage");
 
 router.delete("/:id", async (req, res) => {
-  let userId = req.params.id;
+  let userId = xss(req.params.id);
   let validate = validator.validateId(userId);
   if (!validate.isValid) {
     res.render("users/get_specific_user", { error: validate.message });
@@ -49,26 +49,26 @@ router.delete("/:id", async (req, res) => {
 });
 
 router.get("/:id/edit", async (req, res) => {
-  if (req.session.userId) {
-    let userId = req.params.id;
+  if (xss(req.session.userId)) {
+    let userId = xss(req.params.id);
     const User = await users.listUser(userId);
-    res.status(200).render("users/Update_userForm", { User: User, session: req.session });
+    res.status(200).render("users/Update_userForm", { User: User, session: xss(req.session) });
   } else {
     res.redirect("/site/login");
   }
 });
 router.put("/:id", upload, async (req, res, next) => {
   // we get file name through multer req object : req.file.filename
-  if (req.session.userId) {
+  if (xss(req.session.userId)) {
     try {
-      let userId = req.params.id;
-      let firstName = req.body.firstName;
-      let lastName = req.body.lastName;
+      let userId = xss(req.params.id);
+      let firstName = xss(req.body.firstName);
+      let lastName = xss(req.body.lastName);
       const User = await users.listUser(userId);
       let profImage = User.profileImage;
       let profileImage;
       if (req.file) {
-        profileImage = req.file.filename;
+        profileImage = xss(req.file.filename);
       } else {
         profileImage = profImage;
       }
@@ -108,7 +108,7 @@ router.put("/:id", upload, async (req, res, next) => {
 });
 
 router.get("/signup", async (req, res) => {
-  if (!req.session.userId) {
+  if (!xss(req.session.userId)) {
     res.status(200).render("users/create_user");
     return;
   } else {
@@ -117,7 +117,7 @@ router.get("/signup", async (req, res) => {
 });
 
 router.get("/signup", async (req, res) => {
-  if (!req.session.userId) {
+  if (!xss(req.session.userId)) {
     res.status(200).render("users/create_user");
     return;
   } else {
@@ -126,13 +126,13 @@ router.get("/signup", async (req, res) => {
 });
 
 router.get("/:id", async (req, res) => {
-  let userId = req.params.id;
-  if (userId != req.session.userId) res.redirect("/site/login");
+  let userId = xss(req.params.id);
+  if (userId != xss(req.session.userId)) res.redirect("/site/login");
   let validate = validator.validateId(userId);
   if (!validate.isValid) {
     res.render("users/get_specific_user", {
       error: validate.message,
-      session: req.session,
+      session: xss(req.session),
     });
     return;
   }
@@ -152,7 +152,7 @@ router.get("/:id", async (req, res) => {
     const postedQuestions = await questions.getAllByUserId(userId);
     res.render("users/get_specific_user", {
       user: user,
-      session: req.session,
+      session: xss(req.session),
       subscribedCommunities: subscribedCommunities,
       adminCommunities: adminCommunities,
       answeredQuestions: answeredQuestions,
@@ -160,18 +160,18 @@ router.get("/:id", async (req, res) => {
     });
     return;
   } catch (e) {
-    res.status(400).render("users/get_specific_user", { error: e, session: req.session });
+    res.status(400).render("users/get_specific_user", { error: e, session: xss(req.session) });
   }
 });
 
 // create a new user
 router.post("/", upload, async (req, res) => {
   if (
-    !req.body.firstName ||
-    !req.body.lastName ||
-    !req.body.password ||
-    !req.body.emailAddress ||
-    !req.body.displayName
+    !xss(req.body.firstName) ||
+    !xss(req.body.lastName) ||
+    !xss(req.body.password) ||
+    !xss(req.body.emailAddress) ||
+    !xss(req.body.displayName)
   ) {
     res.render("users/create_user", { error: "Please provide all information." });
     return;
@@ -183,17 +183,40 @@ router.post("/", upload, async (req, res) => {
   let emailAddress = xss(req.body.emailAddress);
   let displayName = xss(req.body.displayName);
   // let { firstName, lastName, password, emailAddress, displayName } = req.body;
+
+  if(firstName.length === 0 || firstName.length >= 20 || !(/^[a-zA-Z]+$/g).test(firstName)){
+    res.render("users/create_user", { error: "Your firstName is invalid." });
+    return;
+  }
+  if(lastName.length === 0 || lastName.length >= 20 || !(/^[a-zA-Z]+$/g).test(lastName)){
+    res.render("users/create_user", { error: "Your lastName is invalid." });
+    return;
+  }
+  if(password.length <6 || (/^[ ]+$/g).test(password)){
+    res.render("users/create_user", { error: "Please provide 6 characters at least and password can not have white space." });
+    return;
+  }
   let passwordValid = validator.validatePassword(password);
   let emailValid = validator.validateEmailAddress(emailAddress);
-  if (!passwordValid.isValid || !emailValid.isValid) {
-    res.render("users/create_user", { error: "Please provide valid information." });
+  if (!passwordValid.isValid) {
+    res.render("users/create_user", { error: "Please provide valid password." });
+    return;
+  }
+  if(!emailValid.isValid){
+    res.render("users/create_user", { error: "Please provide valid email." });
     return;
   }
   let profileImage;
   if (!req.file) {
     profileImage = "defaultAvatar.jpg";
   } else {
-    profileImage = req.file.filename;
+    // check file suffix
+    if (!/\.(jpg|jpeg|png|GIF|JPG|PNG)$/.test(req.file.filename)){
+      res.render("users/create_user", { error: "Please provide valid image." });
+      return;
+    }else{
+      profileImage = xss(req.file.filename);
+    }
   }
   if (
     firstName.length === 0 ||
@@ -212,6 +235,7 @@ router.post("/", upload, async (req, res) => {
     res.render("users/create_user", { error: "Please provide valid information." });
     return;
   }
+
   try {
     const addUser = await users.userSignUp(firstName, lastName, displayName, password, emailAddress, profileImage);
     if (addUser.userInserted) {
