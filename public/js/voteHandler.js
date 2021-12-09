@@ -7,7 +7,6 @@ upvoteElement.click((event) => {
     method: "POST",
     url: upvoteElement.attr("data-id"),
   };
-  console.log(requestConfig);
   $.ajax(requestConfig).then(
     (response) => {
       $(".votecounter").text(response.count);

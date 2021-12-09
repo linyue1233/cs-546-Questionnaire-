@@ -169,7 +169,7 @@ const deleteAnswer = async (answerId) => {
 
   //deleteing the answer  from answers-sub document
   let fu = await questionsCollection.updateOne(
-    { reviews: { $elemMatch: { _id: answerId } } },
+    { answers: { $elemMatch: { _id: answerId } } },
     { $pull: { answers: { _id: answerId } } }
   );
 
@@ -208,12 +208,8 @@ const search = async (body) => {
     // console.log("each" + JSON.stringify(allArrayMatches));
     allMatches = allMatches.concat(allArrayMatches);
   }
-  console.log("each", allMatches);
-  let res = [...new Map(allMatches.map((v) => [v.id, v])).values()];
-  console.log(res);
-  // console.log(Object.values(res));
-  console.log(tokenizedKeywords, res);
-  return res;
+  return allMatches;
+
 };
 
 const registerUpvote = async (questionId, userId) => {

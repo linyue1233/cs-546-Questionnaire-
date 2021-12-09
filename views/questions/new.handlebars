@@ -2,7 +2,7 @@
 
 <article class="new-question">
   <h1>Ask a Question</h1>
-  <form action="/questions" name="new_question" method="POST" onsubmit="return validateCommunity()" class="new-question-form">
+  <form action="/questions" name="new_question" method="POST" onsubmit="return validateCommunity()" class="new-question-form d-table mx-auto w-50">
   <div class="form-group">
         <label for="community">  Community </label>
         <br>
@@ -40,23 +40,20 @@
     </div>
     <br>
     <label for="title">Title</label>
-      <input type="text" id="title" name="title" placeholder="Enter Title" value="{{title}}" class="full-width-input form-control"/>
+      <input type="text" id="title" name="title" placeholder="Enter Title" value="{{title}}" class="full-width-input form-control" required/>
     
    <br>
     <label for="description">Description</label>
-      <textarea id="description"  rows="6"  name="description" placeholder="Enter Description" class="full-width-input form-control" >{{description}}</textarea>
+      <textarea id="description"  rows="6"  name="description" placeholder="Enter Description" class="full-width-input form-control" required>{{description}}</textarea>
   <br>
     <label for="tags">Tags</label>
-      <input type="text" name="tags" id="tags" placeholder="Tags seprated by spaces" value="{{tags}}" class="full-width-input form-control"/>
+      <input type="text" name="tags" id="tags" placeholder="Tags seprated by spaces" value="{{tags}}" class="full-width-input form-control" required/>
     <br>
     <br>
     </label> 
-        <button type="submit" class="btn btn-primary float-right">Submit</button>
-    </label>
-   
-
-  
-  </form>
+        <button class="btn btn-primary w-100" type="submit" class="btn btn-primary float-right">Submit</button>
+    </label> 
+  </form><br><br>
 
 
 
@@ -70,4 +67,4 @@
   </ul>
   {{/if}}
 </article>
-
+<script src="/public/js/askQuestion.js"></script>

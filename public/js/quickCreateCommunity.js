@@ -3,7 +3,6 @@ let createButton = $("#create-comm-btn");
 const communityCreateUrl = "/communities/quickCreate";
 
 const validateStrings = (str) => {
-  console.log(str);
   if (!str) throw "Invalid entry, please pass in valid content";
   if (typeof str !== "string") throw "Invalid entry, please pass in valid content";
   if (str.length === 0 || str.trim().length === 0) throw "Invalid entry, please pass in valid content";
@@ -19,7 +18,6 @@ createButton.click((event) => {
     communityDesc = $("#qc-desc").val();
     validateStrings(communityDesc);
   } catch (e) {
-    console.log(e);
     //$(".showComError").show();
 
     document.getElementById("showQcErr").hidden = false;

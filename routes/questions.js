@@ -5,7 +5,7 @@ const answers = require("../data/answers");
 const data = require("../data");
 const questionData = data.questions;
 const communityData = data.communities;
-
+const xss = require('xss');
 const userData = data.users;
 const validator = require("../helpers/routeValidators/questionValidator");
 
@@ -21,11 +21,11 @@ router.get("/all", async (req, res) => {
 });
 
 router.get("/:id/edit", async (req, res) => {
-  if (req.session.userId) {
-    if (!req.params.id) res.status(400).json({ error: "No id found" });
+  if (xss(req.session.userId)) {
+    if (xss(!req.params.id)) res.status(400).json({ error: "No id found" });
     try {
-      const question = await questions.getID(req.params.id);
-      if (question.posterId != req.session.userId) {
+      const question = await questions.getID(xss(req.params.id));
+      if (question.posterId != xss(req.session.userId)) {
         res.status(400).render("questions/edit-question", {
           error: "Unauthorized access",
           session: req.session,
@@ -57,12 +57,12 @@ router.get("/:id/edit", async (req, res) => {
       });
     }
   } else {
-    res.redirect(`/questions/${req.params.id}`);
+    res.redirect(`/questions/${xss(req.params.id)}`);
   }
 });
 
 router.post("/search", async (req, res) => {
-  let body = req.body;
+  let body = xss(req.body);
   let validate = validator.validateSearchBody(body);
   if (!validate.isValid) {
     res.status(400).json({ hasErrors: true, error: validate.message });
@@ -85,7 +85,6 @@ router.post("/search", async (req, res) => {
     });
     return;
   }
-  console.log(searchResult);
   // FOR NOW, returning JSON
   // res.status(200).json({ totalResults: searchResult.length, results: searchResult });
   // ideally, do this:
@@ -100,7 +99,7 @@ router.post("/search", async (req, res) => {
 });
 
 router.put("/:id", async (req, res) => {
-  let body = req.body;
+  let body = xss(req.body);
   try {
     if (!body) throw "";
     if (!body.title || !body.description || !body.tags || !body.communityId) throw "";
@@ -113,9 +112,9 @@ router.put("/:id", async (req, res) => {
     });
   }
   try {
-    const question = await questions.getID(req.params.id);
+    const question = await questions.getID(xss(req.params.id));
     if (!question) throw "No question with that id";
-    if (question.posterId != req.session.userId) throw "Unauthorized Access";
+    if (question.posterId != xss(req.session.userId)) throw "Unauthorized Access";
   } catch (e) {
     res.status(500).render("questions/edit-question", {
       error: e,
@@ -128,7 +127,7 @@ router.put("/:id", async (req, res) => {
     for (let i = 0; i < tagsArray.length; i++) {
       tagsArray[i] = tagsArray[i].trim();
     }
-    await questions.editQuestion(req.params.id, body.title, body.description, tagsArray, body.communityId);
+    await questions.editQuestion(xss(req.params.id), xss(body.title), xss(body.description), tagsArray, xss(body.communityId));
     res.status(200).render("questions/edit-question", {
       success: "Question edited successfully",
       session: req.session,
@@ -142,19 +141,16 @@ router.put("/:id", async (req, res) => {
 });
 
 router.get("/search", async (req, res) => {
-  console.log("GET: /search");
   // res.json({ search: "success" });
   res.render("search/search", {});
 });
 
 router.get("/:id", async (req, res) => {
-  let id = req.params.id;
-  console.log(req.session);
+  let id = xss(req.params.id);
   try {
-    let questionAns = await questionData.getID(req.params.id);
+    let questionAns = await questionData.getID(xss(req.params.id));
     let thisQuestionPoster = questionAns.posterId;
     let userDetails = await userData.getUserById(thisQuestionPoster);
-    console.log(questionAns);
     // building answer object
     let answers = [];
     if (questionAns.answers) {
@@ -162,7 +158,6 @@ router.get("/:id", async (req, res) => {
         let answerPosterDetails = null;
         if (answer.posterId) {
           answerPosterDetails = await userData.getUserById(answer.posterId);
-          console.log(answerPosterDetails);
         }
         answers.push({
           _id: answer._id,
@@ -177,8 +172,11 @@ router.get("/:id", async (req, res) => {
       }
     }
 
-    questionAns.answers = answers;
-    console.log("here", questionAns);
+    // sort answer by vote
+    sortedAnswer = answers.sort(function(a,b){
+      return b.upvotes.length - a.upvotes.length;
+    })
+    questionAns.answers = sortedAnswer;
     questionAns.friendlyCreatedAt = questionAns.createdAt.toDateString();
     questionAns.friendlyUpdatedAt = questionAns.updatedAt.toDateString();
     questionAns.votes = questionAns.upvotes.length - questionAns.downvotes.length;
@@ -186,21 +184,20 @@ router.get("/:id", async (req, res) => {
     res.status(200).render("questions/individual-question", {
       questionInfo: questionAns,
       questionPoster: userDetails,
-      currentUserPostedQuestion: req.session.userId === thisQuestionPoster ? true : false,
       thisUserUpvoted: questionAns.upvotes.includes(req.session.userId),
       thisUserDownvoted: questionAns.downvotes.includes(req.session.userId),
+      currentUserPostedQuestion: xss(req.session.userId) === thisQuestionPoster ? true : false,
       session: req.session,
       scriptUrl: ["voteHandler.js"],
     });
   } catch (e) {
-    console.log(e);
     res.status(404).render("errors/internal_server_error", { message: e });
   }
 });
 
 router.get("/", async (req, res) => {
-  let communityId = req.query.communityId;
-  let posterId = req.query.userId;
+  let communityId = xss(req.query.communityId);
+  let posterId = xss(req.query.userId);
   // provide one parameter is ok
   if (communityId === undefined && posterId === undefined) {
     res.status(400).json({ error: "You should provide valid parameters" });
@@ -223,9 +220,9 @@ router.get("/:id/delete", async (req, res) => {
 });
 
 router.delete("/:id/delete", async (req, res) => {
-  let id = req.params.id;
+  let id = xss(req.params.id);
   // TODO: apply validation wherever necessary
-  if (req.session.userId) {
+  if (xss(req.session.userId)) {
     try {
       let question = await questions.getID(id);
       if (!question) throw "No question with that id";
@@ -259,7 +256,7 @@ router.delete("/:id/delete", async (req, res) => {
 });
 
 router.get("/create/new", async (req, res) => {
-  if (req.session.userId) {
+  if (xss(req.session.userId)) {
     let com = await communityData.getAllcommunities();
     res.status(200).render("Questions/new", {
       com: com,
@@ -273,7 +270,7 @@ router.get("/create/new", async (req, res) => {
 });
 
 router.post("/", async (req, res) => {
-  if (req.session.userId) {
+  if (xss(req.session.userId)) {
     const QuestionPostData = req.body;
 
     QuestionPostData.posterId = req.session.userId;
@@ -331,19 +328,18 @@ router.post("/", async (req, res) => {
 });
 
 router.delete("/:questionId/answers/:answerId", async (req, res) => {
-  let questionId = req.params.questionId;
-  let answerId = req.params.answerId;
+  let questionId = xss(req.params.questionId);
+  let answerId = xss(req.params.answerId);
   const que = await questions.deleteAnswer(answerId);
   const questionInfo = await questions.getID(questionId);
   res.status(200).render("individual-question", questionInfo);
 });
 
 router.get("/:questionId/answers", async (req, res) => {
-  if (!req.params.questionId) res.status(400).json({ error: "No id found" });
+  if (!xss(req.params.questionId)) res.status(400).json({ error: "No id found" });
   try {
-    const answersarray = await questions.getAllAnsweres(req.params.questionId);
-    let questionInfo = await questions.getID(req.params.questionId);
-    console.log(questionInfo);
+    const answersarray = await questions.getAllAnsweres(xss(req.params.questionId));
+    let questionInfo = await questions.getID(xss(req.params.questionId));
     questionInfo.answeres = answersarray;
     res.status(200).render("questions/individual-question", { questionInfo: questionInfo });
   } catch (e) {
@@ -352,8 +348,8 @@ router.get("/:questionId/answers", async (req, res) => {
 });
 
 router.get("/:questionId/answers/:answerId/edit", async (req, res) => {
-  let questionId = req.params.questionId;
-  let answerId = req.params.answerId;
+  let questionId = xss(req.params.questionId);
+  let answerId = xss(req.params.answerId);
   let url = `/questions/${questionId}/answers/${answerId}`;
   let currentAnswer = await answers.getAnswer(questionId, answerId);
   // console.log(currentAnswer);
@@ -362,29 +358,25 @@ router.get("/:questionId/answers/:answerId/edit", async (req, res) => {
 
 //create an answer
 router.post("/:id/answers/create/$", async (req, res) => {
-  const body = req.body.content;
-  console.log(body);
-  const questionId = req.params.id;
-  const userId = req.session.userId;
-  console.log(body);
+  const body = xss(req.body.content);
+  const questionId = xss(req.params.id);
+  const userId = xss(req.session.userId);
   if (!body) error = "No content present in input";
   try {
     const insertAns = await questions.createAns(userId, questionId, body);
-    console.log(insertAns);
     if (insertAns) {
       res.redirect("/questions/" + req.params.id);
       return;
     }
   } catch (e) {
-    console.log(e);
     res.status(404).json({ error: e });
   }
 });
 
 router.put("/:questionId/answers/:answerId", async (req, res) => {
-  let questionId = req.params.questionId;
-  let answerId = req.params.answerId;
-  let updatePayload = req.body;
+  let questionId = xss(req.params.questionId);
+  let answerId = xss(req.params.answerId);
+  let updatePayload = xss(req.body);
   /* Assuming the update body as below:
   {
     description: "CONTENT",
@@ -405,7 +397,6 @@ router.put("/:questionId/answers/:answerId", async (req, res) => {
     res.redirect("/questions/" + req.params.questionId);
     return;
   } catch (e) {
-    console.log(e);
     res.status(500).render("errors/internal_server_error");
     return;
   }
@@ -413,8 +404,8 @@ router.put("/:questionId/answers/:answerId", async (req, res) => {
 
 // get individual answer:
 router.get("/:questionId/answers/:answerId", async (req, res) => {
-  let questionId = req.params.questionId;
-  let answerId = req.params.answerId;
+  let questionId = xss(req.params.questionId);
+  let answerId = xss(req.params.answerId);
   if (questionId.trim() === "") {
     res.status(400).json({ error: "You should provide questionId" });
     return;
@@ -442,12 +433,12 @@ router.get("/:questionId/answers/:answerId", async (req, res) => {
 });
 
 router.post("/:id/upvote", async (req, res) => {
-  if (!req.session.userId) {
+  if (!xss(req.session.userId)) {
     res.status(400).json({ success: false, message: "User not logged in." });
     return;
   }
-  let questionId = req.params.id;
-  let userId = req.session.userId;
+  let questionId = xss(req.params.id);
+  let userId = xss(req.session.userId);
   const upvotePersist = await questions.registerUpvote(questionId, userId);
   const questionDetails = await questions.getID(questionId);
   let count = questionDetails.upvotes.length - questionDetails.downvotes.length;

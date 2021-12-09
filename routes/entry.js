@@ -2,11 +2,11 @@ const express = require("express");
 const router = express.Router();
 const users = require("../data/users");
 const validator = require("../helpers/routeValidators/userValidator");
-
+const xss = require("xss");
 router.get("/login", async (req, res) => {
-  // if existing session is valid, redirect to questions/all
-  if (req.session.userId) {
-    res.redirect("/questions/all");
+  // if existing session is valid, redirect to home
+  if (xss(req.session.userId)) {
+    res.redirect("/");
     return;
   }
   // show login form
@@ -15,8 +15,8 @@ router.get("/login", async (req, res) => {
 });
 
 router.post("/login", async (req, res) => {
-  let emailAddress = req.body.email;
-  let password = req.body.password;
+  let emailAddress = xss(req.body.email);
+  let password = xss(req.body.password);
   const validateUsername = validator.validateEmailAddress(emailAddress);
   const validatePassword = validator.validatePassword(password);
   if (!validateUsername.isValid || !validatePassword.isValid) {
@@ -28,13 +28,12 @@ router.post("/login", async (req, res) => {
   }
   try {
     const userLogin = await users.checkUser(emailAddress, password);
-    console.log(userLogin);
     if (userLogin.authenticated) {
       // setting session variables for use later on.
       req.session.userEmail = userLogin.userEmail;
       req.session.userDispName = userLogin.userDispName;
       req.session.userId = userLogin.userId;
-      res.redirect("/questions/all");
+      res.redirect(`/users/${userLogin.userId}`);
       return;
     }
     // code is not supposed to reach here, but if it does, reload login page with error.

@@ -82,7 +82,7 @@
 <h3>Post your answer here</h3>
     {{!-- build a rich text box to submit answer --}}
     {{!-- action need to modify --}}
-    <form id="textSubmit" action="/questions/{{questionInfo._id}}/answers/create/" method="post">
+    <form id="textSubmit" action="/questions/{{questionInfo._id}}/answers/create/" class="d-inline-block" method="post">
         <textarea name="content" id="editor">
         </textarea>
         <br>
