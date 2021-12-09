@@ -11,11 +11,11 @@ router.get("/", async (req, res) => {
       x.communityName = reqCommunity.community.name;
     }
     res.render("questions/all_questions", {
-      session: xss(req.session),
+      session: req.session,
       questions: questionList,
     });
   } catch (e) {
-    res.status(500).render("errors/internal_server_error", { session: xss(req.session) });
+    res.status(500).render("errors/internal_server_error", { session: req.session });
   }
 });
 

@@ -10,7 +10,6 @@ button.addEventListener('click', function (event) {
     tags.value.trim() == ''
   ) {
     event.preventDefault();
-    console.log(typeof title.value);
     alert(
       'Invalid Inputs! You have to select community, Title , Description and tags'
     );

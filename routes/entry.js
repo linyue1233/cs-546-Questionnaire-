@@ -10,7 +10,7 @@ router.get("/login", async (req, res) => {
     return;
   }
   // show login form
-  res.status(200).render("entry_pages/login", { session: xss(req.session) });
+  res.status(200).render("entry_pages/login", { session: req.session });
   return;
 });
 
@@ -22,7 +22,7 @@ router.post("/login", async (req, res) => {
   if (!validateUsername.isValid || !validatePassword.isValid) {
     res.status(400).render("entry_pages/login", {
       error: "Invalid email address or password combination.",
-      session: xss(req.session),
+      session: req.session,
     });
     return;
   }
@@ -39,13 +39,13 @@ router.post("/login", async (req, res) => {
     // code is not supposed to reach here, but if it does, reload login page with error.
     res.status(400).render("entry_pages/login", {
       error: "Invalid email address or password combination.",
-      session: xss(req.session),
+      session: req.session,
     });
     return;
   } catch (e) {
     res.status(400).render("entry_pages/login", {
       error: "Invalid email address or password combination.",
-      session: xss(req.session),
+      session: req.session,
     });
     return;
   }

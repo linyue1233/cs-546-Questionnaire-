@@ -28,14 +28,14 @@ router.get("/:id/edit", async (req, res) => {
       if (question.posterId != xss(req.session.userId)) {
         res.status(400).render("questions/edit-question", {
           error: "Unauthorized access",
-          session: xss(req.session),
+          session: req.session,
         });
       } else {
         const com = await communityData.getAllcommunities();
         if (!question)
           res.status(400).render("questions/edit-question", {
             error: "No Question with that ID",
-            session: xss(req.session),
+            session: req.session,
           });
         const comName = await communityData.getCommunityById(question.communityId);
         question.communityName = comName.community.name;
@@ -46,14 +46,14 @@ router.get("/:id/edit", async (req, res) => {
         }
         res.render("questions/edit-question", {
           question: question,
-          session: xss(req.session),
+          session: req.session,
           com: com,
         });
       }
     } catch (e) {
       res.status(500).render("questions/edit-question", {
         error: "No Question with that ID",
-        session: xss(req.session),
+        session: req.session,
       });
     }
   } else {
@@ -107,8 +107,8 @@ router.put("/:id", async (req, res) => {
   } catch (e) {
     res.status(500).render("questions/edit-question", {
       success: "Error! Incomplete or Invalid data. Try Again",
-      session: xss(req.session),
-      id: xss(req.params.id),
+      session: req.session,
+      id: req.params.id,
     });
   }
   try {
@@ -118,7 +118,7 @@ router.put("/:id", async (req, res) => {
   } catch (e) {
     res.status(500).render("questions/edit-question", {
       error: e,
-      session: xss(req.session),
+      session: req.session,
     });
     return;
   }
@@ -130,12 +130,12 @@ router.put("/:id", async (req, res) => {
     await questions.editQuestion(xss(req.params.id), xss(body.title), xss(body.description), tagsArray, xss(body.communityId));
     res.status(200).render("questions/edit-question", {
       success: "Question edited successfully",
-      session: xss(req.session),
-      id: xss(req.params.id),
+      session: req.session,
+      id: req.params.id,
     });
   } catch (e) {
     res.status(500).render("errors/internal_server_error", {
-      session: xss(req.session),
+      session: req.session,
     });
   }
 });
@@ -230,7 +230,7 @@ router.delete("/:id/delete", async (req, res) => {
           // ideally, do this:
           // res.status(200).render("questions/search_results", { totalResults: 0, searchResult });
           res.status(500).render("errors/internal_server_error", {
-            session: xss(req.session),
+            session: req.session,
           });
         }
         res.status(200).render("questions/delete", {
@@ -240,7 +240,7 @@ router.delete("/:id/delete", async (req, res) => {
       }
     } catch (e) {
       res.status(500).render("errors/internal_server_error", {
-        session: xss(req.session),
+        session: req.session,
       });
     }
   } else {
@@ -253,7 +253,7 @@ router.get("/create/new", async (req, res) => {
     let com = await communityData.getAllcommunities();
     res.status(200).render("Questions/new", {
       com: com,
-      session: xss(req.session),
+      session: req.session,
       no_ques: true,
       scriptUrl: ["quickCreateCommunity.js"],
     });

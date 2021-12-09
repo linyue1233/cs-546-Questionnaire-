@@ -52,7 +52,7 @@ router.get("/:id/edit", async (req, res) => {
   if (xss(req.session.userId)) {
     let userId = xss(req.params.id);
     const User = await users.listUser(userId);
-    res.status(200).render("users/Update_userForm", { User: User, session: xss(req.session) });
+    res.status(200).render("users/Update_userForm", { User: User, session: req.session });
   } else {
     res.redirect("/site/login");
   }
@@ -132,7 +132,7 @@ router.get("/:id", async (req, res) => {
   if (!validate.isValid) {
     res.render("users/get_specific_user", {
       error: validate.message,
-      session: xss(req.session),
+      session: req.session,
     });
     return;
   }
@@ -152,7 +152,7 @@ router.get("/:id", async (req, res) => {
     const postedQuestions = await questions.getAllByUserId(userId);
     res.render("users/get_specific_user", {
       user: user,
-      session: xss(req.session),
+      session: req.session,
       subscribedCommunities: subscribedCommunities,
       adminCommunities: adminCommunities,
       answeredQuestions: answeredQuestions,
@@ -160,7 +160,7 @@ router.get("/:id", async (req, res) => {
     });
     return;
   } catch (e) {
-    res.status(500).render("errors/internal_server_error", { session: xss(req.session) });
+    res.status(500).render("errors/internal_server_error", { session: req.session });
   }
 });
 

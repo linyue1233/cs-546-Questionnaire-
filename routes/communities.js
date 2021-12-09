@@ -11,9 +11,9 @@ const xss = require("xss");
 router.get("/", async (req, res) => {
   try {
     let com = await community.getAllcommunities();
-    res.render("communities/getAllcommunity", { com: com, session: xss(req.session) });
+    res.render("communities/getAllcommunity", { com: com, session: req.session });
   } catch (e) {
-    res.render("communities/getAllcommunity", { error: e, session: xss(req.session) });
+    res.render("communities/getAllcommunity", { error: e, session: req.session });
   }
 });
 
@@ -22,7 +22,7 @@ router.get("/create/new", async (req, res) => {
   if (xss(req.session.userId)) {
     res.render("communities/new-community", {
       loginError: false,
-      session: xss(req.session),
+      session: req.session,
       no_com: true,
     });
   } else {
@@ -49,7 +49,7 @@ router.post("/create/new", async (req, res) => {
           message: name + " Community successfully created",
           success: true,
           error: false,
-          session: xss(req.session),
+          session: req.session,
         });
       }
     } catch (e) {
@@ -69,7 +69,7 @@ router.get("/:id/edit", async (req, res) => {
     if (!validate.isValid) {
       res.status(400).render("errors/internal_server_error", {
         message: "No community present with id.",
-        session: xss(req.session),
+        session: req.session,
       });
       return;
     }
@@ -86,13 +86,13 @@ router.get("/:id/edit", async (req, res) => {
     res.status(200).render("communities/edit_community", {
       community: existingCommunity.community,
       subscribedUsers: subscribedUsers,
-      session: xss(req.session),
+      session: req.session,
     });
     return;
   } catch (e) {
     res
       .status(500)
-      .render("errors/internal_server_error", { message: "Something went wrong.", session: xss(req.session) });
+      .render("errors/internal_server_error", { message: "Something went wrong.", session: req.session });
     return;
   }
 });
@@ -305,7 +305,7 @@ router.get("/:communitiyID/:questionId/delete/flaggedque", async (req, res) => {
   try {
     let cid = xss(req.params.communitiyID);
     let qid = xss(req.params.questionId);
-    if (!req.session.userId) {
+    if (!xss(req.session.userId)) {
       res.redirect(`/communities/${cid}`);
       return;
     }
