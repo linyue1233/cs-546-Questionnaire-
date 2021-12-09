@@ -105,9 +105,26 @@ const userSignUp = async (firstName, lastName, displayName, password, emailAddre
   ) {
     throw `Please provide all information.`;
   }
+
+  firstName = firstName.trim();
+  lastName = lastName.trim();
+  emailAddress = emailAddress.trim();
+  password = password.trim();
+  displayName = displayName.trim();
+
+  if(firstName.length === 0 || firstName.length >= 20 || !(/^[a-zA-Z]+$/g).test(firstName)){
+    throw `Your firstName is invalid.`;
+  }
+  if(lastName.length === 0 || lastName.length >= 20 || !(/^[a-zA-Z]+$/g).test(lastName)){
+    throw `Your lastName is invalid.`;
+  }
+  if(password.length <6 || (/^[ ]+$/g).test(password)){
+    throw `Please provide 6 characters at least and password can not have white space`;
+  }
+
   const userCollection = await users();
   const usersList = await userCollection.find({}).toArray();
-
+  
   try {
     validator.validateEmailAddress(emailAddress);
   } catch (e) {
@@ -129,6 +146,7 @@ const userSignUp = async (firstName, lastName, displayName, password, emailAddre
       throw `This displayName has been registered`;
     }
   }
+
 
   validator.validatePassword(password);
   const hash = await bcrypt.hash(password, saltRounds);
