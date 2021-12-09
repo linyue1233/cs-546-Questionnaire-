@@ -4,6 +4,7 @@ const validator = require("../helpers/dataValidators/questionValidator");
 let questions = mongoCollections.questions;
 let users = mongoCollections.users;
 const uuid = require("uuid");
+let community = mongoCollections.communities;
 
 const getAllWithoutParams = async () => {
   const questionCollection = await questions();
@@ -209,10 +210,11 @@ const search = async (body) => {
     allMatches = allMatches.concat(allArrayMatches);
   }
   return allMatches;
-
 };
 
 const registerUpvote = async (questionId, userId) => {
+  validator.validateId(questionId);
+  validator.validateId(userId);
   const questionsCollection = await questions();
   const existingQuestion = await questionsCollection.findOne({ _id: questionId });
   let newUpvotes = existingQuestion.upvotes;
@@ -236,6 +238,8 @@ const registerUpvote = async (questionId, userId) => {
 };
 
 const registerDownvote = async (questionId, userId) => {
+  validator.validateId(questionId);
+  validator.validateId(userId);
   const questionsCollection = await questions();
   const existingQuestion = await questionsCollection.findOne({ _id: questionId });
   let newUpvotes = existingQuestion.upvotes;
@@ -258,6 +262,47 @@ const registerDownvote = async (questionId, userId) => {
   return (await questionsCollection.findOne({ _id: questionId })).downvotes;
 };
 
+const reportQuestion = async (questionId) => {
+  validator.validateId(questionId);
+  /*
+  add to field
+  [{ 
+    _id: questionId,
+    flag: 2
+  }]
+  */
+  const questionsCollection = await questions();
+  const communityCollection = await community();
+  const existingQuestion = await questionsCollection.findOne({ _id: questionId });
+  if (!existingQuestion) {
+    throw `No such question exists.`;
+  }
+  let existingCommunityId = existingQuestion.communityId;
+  const presentCommunity = await communityCollection.findOne({ _id: existingCommunityId });
+  if (!presentCommunity) {
+    throw `Community Id for the given question is invalid - could've been deleted.`;
+  }
+  let count = 0;
+  let isPresent = false;
+  for (const question of presentCommunity.flaggedQuestions) {
+    if (question._id === questionId) isPresent = true;
+    break;
+  }
+  // console.log(toAdd);
+  if (isPresent) {
+    const incrementReport = await communityCollection.updateOne(
+      { _id: existingCommunityId, "flaggedQuestions._id": questionId },
+      { $inc: { "flaggedQuestions.$.flag": 1 } }
+    );
+  } else {
+    const addToReport = await communityCollection.updateOne(
+      { _id: existingCommunityId },
+      { $push: { flaggedQuestions: { _id: questionId, flag: 1 } } }
+    );
+  }
+  return true;
+};
+
 module.exports = {
   remove,
   editQuestion,
@@ -274,4 +319,5 @@ module.exports = {
   getAllByUserId,
   getAllByCommunityId,
   registerDownvote,
+  reportQuestion,
 };

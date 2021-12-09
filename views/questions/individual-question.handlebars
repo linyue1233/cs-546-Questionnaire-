@@ -29,6 +29,9 @@
             <br>
             <button class="btn btn-light"><a href="/questions/{{questionInfo._id}}/edit">Edit</a></button>
             <button class="btn btn-light"><a href="/questions/{{questionInfo._id}}/delete">Delete</a></button>
+            {{#if userLoggedIn}}
+                <button class="btn btn-danger" id="reportQuestion" data-id="/questions/{{questionInfo._id}}/report">Report</button>
+            {{/if}}
         {{/if}}
         
         {{#unless currentUserPostedQuestion}}
@@ -40,7 +43,7 @@
             </div>
         <p>{{questionInfo.description}}</p>
         <div class="votingsystem">
-            {{#if thisUserUpvoted}}
+                {{#if thisUserUpvoted}}
                         <i class="fas fa-thumbs-up upvote" data-id="/questions/{{questionInfo._id}}/upvote"></i>
                     {{/if}}
                     {{#unless thisUserUpvoted}}
@@ -54,6 +57,9 @@
                         <i class="far fa-thumbs-down downvote" data-id="/questions/{{questionInfo._id}}/downvote"></i>
                     {{/unless}}
         </div>
+        {{#if userLoggedIn}}
+            <button class="btn btn-danger" id="reportQuestion" data-id="/questions/{{questionInfo._id}}/report">Report</button>
+        {{/if}}
         {{/unless}}
         {{#each questionInfo.tags}}
             <span class="badge badge-pill badge-info">{{this}}</span>
@@ -71,7 +77,7 @@
         {{#each questionInfo.answers}}    
         <li class="list-group-item">
             <p>{{{this.description}}}</p>
-            <h5>Posted By <a href="/users/{{this._id}}">{{this.displayName}}</a></h5>
+            <h5>Posted By <a href="/users/{{this.posterId}}/profile">{{this.displayName}}</a></h5>
             <p><a href='/questions/{{../questionInfo._id}}/answers/{{this._id}}/edit'>Edit Answer</a></p>
         </li>
         {{/each}}
@@ -79,6 +85,7 @@
     {{/if}}
 </div>
 <hr>
+{{#if userLoggedIn}}
 <h3>Post your answer here</h3>
     {{!-- build a rich text box to submit answer --}}
     {{!-- action need to modify --}}
@@ -86,8 +93,17 @@
         <textarea name="content" id="editor">
         </textarea>
         <br>
-        <p><input class= "float-right btn btn-primary" type="submit" value="Add Answer"></p>
+        <p><input class= "float-right btn btn-primary add-ans" type="submit" value="Add Answer"></p>
     </form>
+    <div class="alert alert-warning alert-dismissible fade show hide" id="ans-err" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    {{/if}}
+    {{#unless userLoggedIn}}
+    <h3>Contribute to this discussion by <a href="/site/login">logging in here.</a></h3>
+    {{/unless}}
 </div>
 
 

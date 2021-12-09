@@ -22,16 +22,15 @@
 {{#if this.aflag.length}}
   {{#each this.aflag}}
     <h4>Description: {{this.title}}</h4>
-
     <form
       action='/communities/{{this.communitiyID}}/{{this._id}}/delete/flaggedqans'
     >
-      <span>Numeber of times flagged:{{this.flag}}</span>
+      <span>Number of times flagged:{{this.flag}}</span>
       <button type='submit'>Delete</button>
     </form>
   {{/each}}
 {{else}}
-  <p> There are no flagged Answeres</p>
+  <p> There are no flagged answers</p>
 {{/if}}
 {{#if error}}
   <p> {{error}}</p>

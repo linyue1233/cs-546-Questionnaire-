@@ -256,4 +256,43 @@ router.post("/", upload, async (req, res) => {
   }
 });
 
+router.get("/:id/profile", async (req, res) => {
+  // public profile
+  let userId = xss(req.params.id);
+  let validate = validator.validateId(userId);
+  if (!validate.isValid) {
+    res.render("users/get_public_profile", {
+      error: validate.message,
+      session: req.session,
+    });
+    return;
+  }
+  try {
+    const user = await users.listUser(userId);
+    let subscribedCommunities = [];
+    for (let x of user.subscribedCommunities) {
+      let reqCommunity = await communities.getCommunityById(x);
+      subscribedCommunities.push({ _id: reqCommunity.community._id, name: reqCommunity.community.name });
+    }
+    let adminCommunities = [];
+    for (let x of user.adminCommunities) {
+      let reqCommunity = await communities.getCommunityById(x);
+      adminCommunities.push({ _id: reqCommunity.community._id, name: reqCommunity.community.name });
+    }
+    const answeredQuestions = await answers.getAnswerByUserId(userId);
+    const postedQuestions = await questions.getAllByUserId(userId);
+    res.render("users/get_public_profile", {
+      user: user,
+      session: req.session,
+      answeredQuestions: answeredQuestions,
+      postedQuestions: postedQuestions,
+    });
+    return;
+  } catch (e) {
+    console.log(e);
+    res.status(500).render("errors/internal_server_error", { session: req.session });
+    return;
+  }
+});
+
 module.exports = router;

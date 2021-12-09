@@ -1,0 +1,31 @@
+{{#if user}}
+    <img alt="user" src="/public/images/userprofile/{{user.profileImage}}" id="profile_image">
+    <h1>{{user.displayName}}</h1>
+    <div>{{user.firstName}} {{user.lastName}}</div>
+    <div class="label">{{user.emailAddress}}</div>
+<hr>
+<div class="card m-2">
+    <div class="card-header h2">
+        Answered Questions
+    </div>
+    <div class="card-body">
+        {{#each answeredQuestions}}
+        <p class="card-text"><a href="/questions/{{this._id}}">{{this.title}}</a></p>
+        {{/each}}
+  </div>
+</div>
+<div class="card m-2">
+    <div class="card-header h2">
+        Posted Questions
+    </div>
+    <div class="card-body">
+        {{#each postedQuestions}}
+        <p class="card-text"><a href="/questions/{{this._id}}">{{this.title}}</a></p>
+        {{/each}}
+  </div>
+</div>
+<br><br>
+{{/if}}
+{{#if error}}
+<p>{{ error }}</p>
+{{/if}}
