@@ -52,7 +52,6 @@ router.post("/create/new", async (req, res) => {
         });
       }
     } catch (e) {
-      console.log(e);
       res.render("communities/new-community", {
         message: e,
         error: true,
@@ -79,7 +78,6 @@ router.get("/:id/edit", async (req, res) => {
     // existingCommunity.subscribedUsers;
     for (const userId of existingCommunity.community.subscribedUsers) {
       let userDispName = await users.getDisplayNameByUserId(userId);
-      console.log(userDispName);
       if (userDispName) subscribedUsers.push({ userId: userId, displayName: userDispName });
     }
     res.status(200).render("communities/edit_community", {
@@ -89,7 +87,6 @@ router.get("/:id/edit", async (req, res) => {
     });
     return;
   } catch (e) {
-    console.log(e);
     res.status(500).render("errors/internal_server_error", { message: "Something went wrong.", session: xss(req.session) });
     return;
   }
@@ -99,7 +96,6 @@ router.put("/:id", async (req, res) => {
   try {
     let communityId = xss(req.params.id);
     let userId = xss(req.session.userId);
-    // console.log(req.session, userId);
     if (!userId) {
       // no user logged in
       res

@@ -34,7 +34,6 @@ const createCom = async (name, description, userId) => {
   if (insertedInfo.insertedCount == 0) throw "Insertion Failed";
 
   requiredUser = await userData.listUser(userId);
-  console.log(requiredUser);
   subscribedCommunities = requiredUser.subscribedCommunities;
   subscribedCommunities.push(insertedInfo.insertedId);
   adminCommunities = requiredUser.adminCommunities;
