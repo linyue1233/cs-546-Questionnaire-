@@ -73,12 +73,22 @@
 
     {{#if questionInfo.answers.length}}
     <h3>Answers</h3>
-    <ul class="list-group">
+    <ul class="list-group card border-0">
         {{#each questionInfo.answers}}    
-        <li class="list-group-item">
-            <p>{{{this.description}}}</p>
-            <h5>Posted By <a href="/users/{{this.posterId}}/profile">{{this.displayName}}</a></h5>
-            <p><a href='/questions/{{../questionInfo._id}}/answers/{{this._id}}/edit'>Edit Answer</a></p>
+        <li class="list-group-item p-0 mb-1">
+            <p class="h3 font-weight-normal card-body">{{{this.description}}}</p>
+            <div class="card-header border-0">
+            <h5 class="lead">Posted By <a href="/users/{{this.posterId}}/profile">{{this.displayName}}</a></h5>
+            {{#if currUser}}
+            <div class="btn-group">
+                <a href='/questions/{{../questionInfo._id}}/answers/{{this._id}}/edit'><button class="btn btn-sm btn-light">Edit</button></a>&nbsp;
+                <form method="post" action="/questions/{{../questionInfo._id}}/answers/{{this._id}}">
+                    <button type="submit" class="btn btn-sm btn-light">Delete</button>
+                    <input name="_method" type="hidden" value="delete">
+                </form>
+            </div>
+            </div>
+            {{/if}}
         </li>
         {{/each}}
     </ul>
@@ -89,12 +99,11 @@
 <h3>Post your answer here</h3>
     {{!-- build a rich text box to submit answer --}}
     {{!-- action need to modify --}}
-    <form id="textSubmit" action="/questions/{{questionInfo._id}}/answers/create/" class="input-group d-inline-block" method="post">
-        <textarea name="content" id="editor" required>
-        </textarea>
+    <form id="" action="/questions/{{questionInfo._id}}/answers/create/" class="input-group d-inline-block" method="post">
+        <textarea name="description" id="description" class="form-control w-100" rows="3" aria-label="" required></textarea>
         <br>
-        <p><input class= "float-right btn btn-primary add-ans" type="submit" value="Add Answer"></p>
-    </form>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form><br><br>
     <div class="alert alert-warning alert-dismissible fade hide" id="ans-err" role="alert">
         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
             <span aria-hidden="true">&times;</span>
@@ -105,12 +114,3 @@
     <h3>Contribute to this discussion by <a href="/site/login">logging in here.</a></h3>
     {{/unless}}
 </div>
-
-
-<script>
-    ClassicEditor
-        .create(document.querySelector('#editor'))
-        .catch(error => {
-            console.error(error);
-        });
-</script>

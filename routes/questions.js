@@ -165,6 +165,10 @@ router.get("/:id", async (req, res) => {
         if (answer.posterId) {
           answerPosterDetails = await userData.getUserById(answer.posterId);
         }
+        let currUser = false;
+        if (answerPosterDetails._id === req.session.userId) {
+          currUser = true;
+        }
         answers.push({
           _id: answer._id,
           posterId: answer.posterId,
@@ -174,6 +178,7 @@ router.get("/:id", async (req, res) => {
           downvotes: answer.downvotes,
           createdAt: answer.createdAt,
           updatedAt: answer.updatedAt,
+          currUser: currUser,
         });
       }
     }
@@ -198,7 +203,8 @@ router.get("/:id", async (req, res) => {
       scriptUrl: ["voteHandler.js"],
     });
   } catch (e) {
-    res.status(404).render("errors/internal_server_error", { message: e });
+    console.log(e);
+    res.status(404).render("errors/internal_server_error", { message: e, session: req.session });
   }
 });
 
@@ -337,9 +343,13 @@ router.post("/", async (req, res) => {
 router.delete("/:questionId/answers/:answerId", async (req, res) => {
   let questionId = xss(req.params.questionId);
   let answerId = xss(req.params.answerId);
-  const que = await questions.deleteAnswer(answerId);
-  const questionInfo = await questions.getID(questionId);
-  res.status(200).render("individual-question", questionInfo);
+  let userAns = await userData.getUserById(req.session.userId);
+  if (!req.session.userId || req.session.userId != userAns._id) {
+    res.status(500).json({ error: "Unauthorized access" });
+    return;
+  }
+  await questions.deleteAnswer(answerId);
+  res.redirect("/questions/" + questionId);
 });
 
 router.get("/:questionId/answers", async (req, res) => {
@@ -355,22 +365,31 @@ router.get("/:questionId/answers", async (req, res) => {
 });
 
 router.get("/:questionId/answers/:answerId/edit", async (req, res) => {
+  if (!req.session.userId) {
+    res.redirect("/");
+    return;
+  }
   let questionId = xss(req.params.questionId);
   let answerId = xss(req.params.answerId);
   let url = `/questions/${questionId}/answers/${answerId}`;
   let currentAnswer = await answers.getAnswer(questionId, answerId);
+  if (req.session.userId != currentAnswer.posterId) {
+    res.status(400).render("errors/internal_server_error", { message: "Unauthorized Access" });
+    return;
+  }
+  console.log(currentAnswer);
   // console.log(currentAnswer);
-  res.render("answers/edit_answer", { url, currentAnswer });
+  res.render("answers/edit_answer", { url, currentAnswer, session: req.session });
 });
 
 //create an answer
-router.post("/:id/answers/create/$", async (req, res) => {
-  const body = xss(req.body.content);
+router.post("/:id/answers/create/", async (req, res) => {
+  const description = xss(req.body.description);
   const questionId = xss(req.params.id);
   const userId = xss(req.session.userId);
-  if (!body) error = "No content present in input";
+  if (!description) error = "No content present in input";
   try {
-    const insertAns = await questions.createAns(userId, questionId, body);
+    const insertAns = await questions.createAns(userId, questionId, description);
     if (insertAns) {
       res.redirect("/questions/" + req.params.id);
       return;
@@ -383,7 +402,9 @@ router.post("/:id/answers/create/$", async (req, res) => {
 router.put("/:questionId/answers/:answerId", async (req, res) => {
   let questionId = xss(req.params.questionId);
   let answerId = xss(req.params.answerId);
-  let updatePayload = xss(req.body);
+  let updatePayload = { description: "", _method: "" };
+  updatePayload.description = xss(req.body.description);
+  updatePayload._method = xss(req.body._method);
   /* Assuming the update body as below:
   {
     description: "CONTENT",
@@ -396,15 +417,16 @@ router.put("/:questionId/answers/:answerId", async (req, res) => {
       hasErrors: true,
       error: validate.message,
       body: updatePayload,
+      session: req.session,
     });
     return;
   }
   try {
-    const updatedQuestionWithAnswer = await questions.updateAnswer(questionId, answerId, updatePayload);
+    await questions.updateAnswer(questionId, answerId, updatePayload);
     res.redirect("/questions/" + req.params.questionId);
     return;
   } catch (e) {
-    res.status(500).render("errors/internal_server_error");
+    res.status(500).render("errors/internal_server_error", { session: req.session });
     return;
   }
 });
