@@ -14,9 +14,13 @@
    <tr>
       <td><a href='/questions/{{this._id}}'>{{this.title}}</a></td>
       <td>{{this.flag}}</td>
-      <td><form
-        action='/communities/{{this.communitiyID}}/{{this._id}}/delete/flaggedque'
-      ><button class="btn btn-danger" type='submit'>Delete</button></form>
+      <td>
+        <form action='/communities/{{this.communitiyID}}/{{this._id}}/delete/flaggedque'>
+          <button class="btn btn-danger" type='submit'>Delete</button>
+        </form>
+        <form action='/communities/{{this.communitiyID}}/{{this._id}}/unflagQuestion' method="post">
+          <button class="btn btn-primary" type='submit'>Unflag</button>
+        </form>
       </td>
     </tr>
     {{/each}}
@@ -45,9 +49,10 @@
    <tr>
       <td><a href='/questions/{{this._id}}'>{{this.title}}</a></td>
       <td>{{this.flag}}</td>
-      <td><form
-        action='/communities/{{this.communitiyID}}/{{this._id}}/delete/flaggedque'
-      ><button class="btn btn-danger" type='submit'>Delete</button></form>
+      <td>
+        <form action='/communities/{{this.communitiyID}}/{{this._id}}/delete/flaggedque'>
+          <button class="btn btn-danger" type='submit'>Delete</button>
+        </form>
       </td>
     </tr>
     {{/each}}

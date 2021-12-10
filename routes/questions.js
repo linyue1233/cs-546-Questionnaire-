@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const questions = require("../data/questions");
 const answers = require("../data/answers");
+const communities = require("../data/communities");
 const data = require("../data");
 const questionData = data.questions;
 const communityData = data.communities;
@@ -191,7 +192,15 @@ router.get("/:id", async (req, res) => {
     questionAns.friendlyCreatedAt = questionAns.createdAt.toDateString();
     questionAns.friendlyUpdatedAt = questionAns.updatedAt.toDateString();
     questionAns.votes = questionAns.upvotes.length - questionAns.downvotes.length;
-    console.log(questionAns.upvotes.includes(req.session.userId), questionAns.downvotes.includes(req.session.userId));
+    const communityForQuestion = await communities.getCommunityDetailsById(questionAns.communityId);
+    let userReportedQuestion = false;
+    for (const allFlags of communityForQuestion.flaggedQuestions) {
+      console.log(req.session.userId, allFlags);
+      if (req.session.userId === allFlags.reporterId) {
+        userReportedQuestion = true;
+      }
+    }
+    // console.log(userReportedQuestion);
     res.status(200).render("questions/individual-question", {
       questionInfo: questionAns,
       questionPoster: userDetails,
@@ -199,6 +208,7 @@ router.get("/:id", async (req, res) => {
       thisUserUpvoted: questionAns.upvotes.includes(req.session.userId),
       thisUserDownvoted: questionAns.downvotes.includes(req.session.userId),
       currentUserPostedQuestion: xss(req.session.userId) === thisQuestionPoster ? true : false,
+      userReportedQuestion,
       session: req.session,
       scriptUrl: ["voteHandler.js"],
     });
@@ -492,12 +502,13 @@ router.post("/:id/downvote", async (req, res) => {
 router.post("/:id/report", async (req, res) => {
   try {
     let questionId = xss(req.params.id);
+    let userId = req.session.userId;
     let validate = validator.validateId(questionId);
     if (!validate.isValid) {
       res.redirect("/");
       return;
     }
-    let reportQuestion = await questions.reportQuestion(questionId);
+    let reportQuestion = await questions.reportQuestion(questionId, userId);
     if (reportQuestion) {
       res.status(200).json({ message: "Successfully reported the question." });
       return;

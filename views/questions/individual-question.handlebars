@@ -27,10 +27,15 @@
                     <p>Last Updated On: {{ questionInfo.friendlyUpdatedAt}}</p>
                 </div>    
             <br>
+            {{#if userLoggedIn}}
             <button class="btn btn-light"><a href="/questions/{{questionInfo._id}}/edit">Edit</a></button>
             <button class="btn btn-light"><a href="/questions/{{questionInfo._id}}/delete">Delete</a></button>
-            {{#if userLoggedIn}}
-                <button class="btn btn-danger" id="reportQuestion" data-id="/questions/{{questionInfo._id}}/report">Report</button>
+            {{#if userReportedQuestion}}
+                    <button class="btn btn-secondary" disabled>Flagged For Review</button>
+                {{/if}}
+                {{#unless userReportedQuestion}}
+                    <button class="btn btn-danger" id="reportQuestion" data-id="/questions/{{questionInfo._id}}/report">Report</button>
+                {{/unless}}
             {{/if}}
         {{/if}}
         
@@ -58,7 +63,12 @@
                     {{/unless}}
         </div>
         {{#if userLoggedIn}}
-            <button class="btn btn-danger" id="reportQuestion" data-id="/questions/{{questionInfo._id}}/report">Report</button>
+            {{#if userReportedQuestion}}
+                 <button class="btn btn-secondary" disabled>Flagged For Review</button>
+            {{/if}}
+            {{#unless userReportedQuestion}}
+               <button class="btn btn-danger" id="reportQuestion" data-id="/questions/{{questionInfo._id}}/report">Report</button>
+            {{/unless}}
         {{/if}}
         {{/unless}}
         {{#each questionInfo.tags}}

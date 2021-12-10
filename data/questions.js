@@ -262,8 +262,9 @@ const registerDownvote = async (questionId, userId) => {
   return (await questionsCollection.findOne({ _id: questionId })).downvotes;
 };
 
-const reportQuestion = async (questionId) => {
+const reportQuestion = async (questionId, userId) => {
   validator.validateId(questionId);
+  validator.validateId(userId);
   /*
   add to field
   [{ 
@@ -285,9 +286,13 @@ const reportQuestion = async (questionId) => {
   let count = 0;
   let isPresent = false;
   for (const question of presentCommunity.flaggedQuestions) {
+    if (question.reporterId === userId) {
+      throw `User already reported this question.`;
+    }
     if (question._id === questionId) isPresent = true;
     break;
   }
+
   // console.log(toAdd);
   if (isPresent) {
     const incrementReport = await communityCollection.updateOne(
@@ -297,7 +302,7 @@ const reportQuestion = async (questionId) => {
   } else {
     const addToReport = await communityCollection.updateOne(
       { _id: existingCommunityId },
-      { $push: { flaggedQuestions: { _id: questionId, flag: 1 } } }
+      { $push: { flaggedQuestions: { _id: questionId, reporterId: userId, flag: 1 } } }
     );
   }
   return true;
