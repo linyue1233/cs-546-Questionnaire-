@@ -77,10 +77,24 @@ $("#reportQuestion").click((event) => {
   console.log(requestConfig);
   $.ajax(requestConfig).then(
     (response) => {
-      alert(response.message);
+      $("#textSubmit")
+        .prepend(`<div class="alert alert-success alert-dismissible fade show" role="alert">${response.message}
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>`);
+      $(".btn-place").html(null);
+      $(".btn-place").html(
+        `<button class="btn btn-secondary" disabled id="reportQuestion">Flagged for review</button>`
+      );
     },
     (reason) => {
-      alert(response.message);
+      $("#textSubmit")
+        .prepend(`<div class="alert alert-success alert-dismissible fade show" role="alert">${response.message}
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>`);
     }
   );
 });

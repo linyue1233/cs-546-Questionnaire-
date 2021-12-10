@@ -100,7 +100,7 @@ router.post("/search", async (req, res) => {
 });
 
 router.put("/:id", async (req, res) => {
-  let body = xss(req.body);
+  let body = req.body;
   try {
     if (!body) throw "";
     if (!body.title || !body.description || !body.tags || !body.communityId) throw "";
@@ -393,7 +393,8 @@ router.post("/:id/answers/create/$", async (req, res) => {
 router.put("/:questionId/answers/:answerId", async (req, res) => {
   let questionId = xss(req.params.questionId);
   let answerId = xss(req.params.answerId);
-  let updatePayload = xss(req.body);
+  if (req.body.description) req.body.description = xss(req.body.description);
+  let updatePayload = req.body;
   /* Assuming the update body as below:
   {
     description: "CONTENT",
