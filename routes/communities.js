@@ -87,6 +87,8 @@ router.get("/:id/edit", async (req, res) => {
       community: existingCommunity.community,
       subscribedUsers: subscribedUsers,
       session: req.session,
+      loggedInUserId: req.session.userId,
+      scriptUrl: ["validateEditCommunity.js"],
     });
     return;
   } catch (e) {
@@ -101,9 +103,7 @@ router.put("/:id", async (req, res) => {
     let userId = xss(req.session.userId);
     if (!userId) {
       // no user logged in
-      res
-        .status(401)
-        .render("communities/view_all_communities", { error: "You've to be logged in to perform this action." });
+      res.status(401).redirect("/site/login");
       return;
     }
     let validateFlag =
@@ -114,13 +114,18 @@ router.put("/:id", async (req, res) => {
       res.status(400).render("communities/edit_community", { error: "Invalid edit operation for community." });
       return;
     }
-    let editPayload = xss(req.body);
+    console.log(req.body);
+    let editPayload = {};
+    for (const key in req.body) {
+      console.log(req.body[key]);
+      editPayload[key] = xss(req.body[key]);
+    }
+    console.log(editPayload);
+    //let editPayload = req.body;
     try {
       let editCommunity = await community.editCommunity(userId, communityId, editPayload);
       if (editCommunity.updateSuccess) {
-        res
-          .status(200)
-          .render("communities/view_specific_community", { communityDetails: editCommunity.updatedCommunity });
+        res.redirect("/communities/" + req.params.id);
         return;
       }
       res.status(500).render("communities/edit_community", { error: "Something went wrong." });

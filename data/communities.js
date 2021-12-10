@@ -99,6 +99,9 @@ const editCommunity = async (userId, communityId, editPayload) => {
     }
   );
   if (updateCommunity.modifiedCount === 0) {
+    return { updateSuccess: true, updatedCommunity: await communityCollection.findOne({ _id: communityId }) };
+  }
+  if (updateCommunity.matchedCount === 0 && updateCommunity.modifiedCount === 0) {
     throw `Something went wrong during community update.`;
   }
   return { updateSuccess: true, updatedCommunity: await communityCollection.findOne({ _id: communityId }) };
