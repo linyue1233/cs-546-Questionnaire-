@@ -15,6 +15,11 @@
   color: blue;
 }
 
+.link-rm-dec-b:hover {
+  text-decoration: none;
+  color: whitesmoke;
+}
+
 .votingsystem {
   margin: 10 10 10 10;
 }
@@ -81,8 +86,8 @@
 }
 
 #profile_image {
-  height: 100px;
-  width: 100px;
+  height: 180px;
+  width: 180px;
   border-radius: 50%;
 }
 

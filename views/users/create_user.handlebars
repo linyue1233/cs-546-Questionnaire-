@@ -2,14 +2,14 @@
     <h1 class="user-login">User Signup</h1>
     <form id="signup-form" action="/users" method="post" role="form" enctype="multipart/form-data">
     <div class="form-group">
-        <label>First Name* (Please enter with letters)<br>
-        <input type="text" id="firstName" name="firstName" placeholder="Enter your first name">
+        <label>First Name 
+        <input type="text" id="firstName" name="firstName" placeholder="Enter your first name" value="{{body.firstName}}">
         </label>
         <br>
         </div>
         <div class="form-group">
-        <label>Last Name* (Please enter with letters)<br>
-        <input type="text" id="lastName" name="lastName" placeholder="Enter your last name">
+        <label>Last Name
+        <input type="text" id="lastName" name="lastName" placeholder="Enter your last name" value="{{body.lastName}}">
         </label>
         <br>
         </div>
@@ -20,14 +20,15 @@
         <br>
         </div>
         <div class="form-group">
-        <label>Email Address* (Email according to RFC2822)<br>
-        <input type="text" id="emailAddress" name="emailAddress" placeholder="Enter your email address">
+
+        <label>Email Address
+        <input type="text" id="emailAddress" name="emailAddress" placeholder="Enter your email address" value="{{body.emailAddress}}">
         </label>
         <br>
         </div>
         <div class="form-group">
-        <label>Display Name*<br>
-        <input type="text" id="displayName" name="displayName" placeholder="Enter your desired displayName">
+        <label>Display Name
+        <input type="text" id="displayName" name="displayName" placeholder="Enter your desired displayName" value="{{body.displayName}}">
         </label>
         <br>
         </div>
@@ -43,7 +44,9 @@
     </form>
 
     {{#if error}}
-    <p> {{this.error}}</p>
+    <div class="alert alert-warning" role="alert">
+        {{this.error}}
+    </div>
     {{/if}}
 
     <a href="/site/login">Already have an account? Click here to log-in</a>

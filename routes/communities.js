@@ -90,9 +90,7 @@ router.get("/:id/edit", async (req, res) => {
     });
     return;
   } catch (e) {
-    res
-      .status(500)
-      .render("errors/internal_server_error", { message: "Something went wrong.", session: req.session });
+    res.status(500).render("errors/internal_server_error", { message: "Something went wrong.", session: req.session });
     return;
   }
 });
@@ -323,7 +321,6 @@ router.get("/:communitiyID/:questionId/delete/flaggedque", async (req, res) => {
       res.redirect(`/communities/${cid}`);
       return;
     }
-
     const answers = await questions.getAllAnsweres(qid);
     const com = await communities.getCommunityById(cid);
     const flaga = com.community.flaggedAnswers;

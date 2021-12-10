@@ -136,13 +136,13 @@ const userSignUp = async (firstName, lastName, displayName, password, emailAddre
     let tempEmail = item.emailAddress;
     let temp = tempEmail.toLowerCase();
     if (temp === lowerEmailAddress) {
-      throw `This email has been registered`;
+      throw `This email (${temp}) already exists.`;
     }
 
     let tempDisplayname = item.displayName.toLowerCase();
     temp = tempDisplayname.toLowerCase();
     if (temp === lowerDisplayname) {
-      throw `This displayName has been registered`;
+      throw `This displayName (${temp}) is not available. Choose a different name.`;
     }
   }
 

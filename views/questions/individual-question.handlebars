@@ -3,70 +3,116 @@
     <div class="card">
         <div class="card-body">
         {{#if currentUserPostedQuestion}}
-        <span><h1>{{questionInfo.title}}</h1>
-        <p>{{questionInfo.description}}</p>
-
-        <div class="votingsystem">
-            <i class="far fa-thumbs-up upvote" data-id="/questions/{{questionInfo._id}}/upvote"></i>
-            <span class="label label-primary votecounter">{{ questionInfo.votes }}</span>
-            <i class="far fa-thumbs-down downvote" data-id="/questions/{{questionInfo._id}}/downvote"></i>
-        </div>      
-		<a>{{ post.title }}</a>
-	</li>
-        <div class="posterInfo">
-            <p>Posted By: <a href="/users/{{questionPoster._id}}/profile">{{questionPoster.displayName}}</a></p></span>
-            <p>Posted On: {{questionInfo.friendlyCreatedAt}}</p>
-            <p>Last Updated On: {{ questionInfo.friendlyUpdatedAt}}</p>
-            <p>Tags :{{questionInfo.tags}}</p>
-        </div>
-        
-        <br>
-        <button class="btn btn-light"><a href="/questions/{{questionInfo._id}}/edit">Edit</a></button>
-        <button class="btn btn-light"><a href="/questions/{{questionInfo._id}}/delete">Delete</a></button>
+            <span><h1>{{questionInfo.title}}</h1>
+                <p>{{questionInfo.description}}</p>
+                <div class="votingsystem">
+                    {{#if thisUserUpvoted}}
+                        <i class="fas fa-thumbs-up upvote" data-id="/questions/{{questionInfo._id}}/upvote"></i>
+                    {{/if}}
+                    {{#unless thisUserUpvoted}}
+                        <i class="far fa-thumbs-up upvote" data-id="/questions/{{questionInfo._id}}/upvote"></i>
+                    {{/unless}}
+                    <span class="label label-primary votecounter">{{ questionInfo.votes }}</span>
+                    {{#if thisUserDownvoted}}
+                        <i class="fas fa-thumbs-down downvote" data-id="/questions/{{questionInfo._id}}/downvote"></i>
+                    {{/if}}
+                    {{#unless thisUserDownvoted}}
+                        <i class="far fa-thumbs-down downvote" data-id="/questions/{{questionInfo._id}}/downvote"></i>
+                    {{/unless}}
+                </div>      
+            <a>{{ post.title }}</a>
+                <div class="posterInfo">
+                    <p>Posted By: <a href="/users/{{questionPoster._id}}/profile">{{questionPoster.displayName}}</a></p>
+                    <p>Posted On: {{questionInfo.friendlyCreatedAt}}</p>
+                    <p>Last Updated On: {{ questionInfo.friendlyUpdatedAt}}</p>
+                </div>    
+            <br>
+            <button class="btn btn-light"><a href="/questions/{{questionInfo._id}}/edit">Edit</a></button>
+            <button class="btn btn-light"><a href="/questions/{{questionInfo._id}}/delete">Delete</a></button>
+            {{#if userLoggedIn}}
+                <button class="btn btn-danger" id="reportQuestion" data-id="/questions/{{questionInfo._id}}/report">Report</button>
+            {{/if}}
         {{/if}}
         
         {{#unless currentUserPostedQuestion}}
         <span><h1>{{questionInfo.title}}</h1>
-        <p>Posted By: <a href="/users/{{questionPoster._id}}/profile">{{questionPoster.posterName}}</a></p></span>
-        <p>Posted On: {{questionInfo.friendlyCreatedAt}}</p>
-        <p>Last Updated On: {{ questionInfo.friendlyUpdatedAt}}</p>
+            <div class="posterInfo">
+                <p>Posted By: <a href="/users/{{questionPoster._id}}/profile">{{questionPoster.displayName}}</a></p>
+                <p>Posted On: {{questionInfo.friendlyCreatedAt}}</p>
+                <p>Last Updated On: {{ questionInfo.friendlyUpdatedAt}}</p>
+            </div>
         <p>{{questionInfo.description}}</p>
         <div class="votingsystem">
-            <i class="far fa-thumbs-up upvote" data-id="/questions/{{questionInfo._id}}/upvote"></i>
-            <span class="label label-primary votecounter">{{ questionInfo.votes }}</span>
-            <i class="far fa-thumbs-down downvote" data-id="/questions/{{questionInfo._id}}/downvote"></i>
+                {{#if thisUserUpvoted}}
+                        <i class="fas fa-thumbs-up upvote" data-id="/questions/{{questionInfo._id}}/upvote"></i>
+                    {{/if}}
+                    {{#unless thisUserUpvoted}}
+                        <i class="far fa-thumbs-up upvote" data-id="/questions/{{questionInfo._id}}/upvote"></i>
+                    {{/unless}}
+                    <span class="label label-primary votecounter">{{ questionInfo.votes }}</span>
+                    {{#if thisUserDownvoted}}
+                        <i class="fas fa-thumbs-down downvote" data-id="/questions/{{questionInfo._id}}/downvote"></i>
+                    {{/if}}
+                    {{#unless thisUserDownvoted}}
+                        <i class="far fa-thumbs-down downvote" data-id="/questions/{{questionInfo._id}}/downvote"></i>
+                    {{/unless}}
         </div>
-        <br>
-        <h2>Tags :{{questionInfo.tags}}</h2>
+        {{#if userLoggedIn}}
+            <button class="btn btn-danger" id="reportQuestion" data-id="/questions/{{questionInfo._id}}/report">Report</button>
+        {{/if}}
         {{/unless}}
+        {{#each questionInfo.tags}}
+            <span class="badge badge-pill badge-info">{{this}}</span>
+        {{/each}}
         </div>    
+        <p>
+        </p>
     </div>
 
 <hr>
 
     {{#if questionInfo.answers.length}}
     <h3>Answers</h3>
-    <ul>
+    <ul class="list-group card border-0">
         {{#each questionInfo.answers}}    
-        <li>
-            <p>{{{this.description}}}</p>
-            <h5>Posted By <a href="/users/{{this._id}}">{{this.displayName}}</a></h5>
-            <p><a href='/questions/{{../questionInfo._id}}/answers/{{this._id}}/edit'>Edit Answer</a></p>
+        <li class="list-group-item p-0 mb-1">
+            <p class="h3 font-weight-normal card-body">{{{this.description}}}</p>
+            <div class="card-header border-0">
+            <h5 class="lead">Posted By <a href="/users/{{this.posterId}}/profile">{{this.displayName}}</a></h5>
+            {{#if currUser}}
+            <div class="btn-group">
+                <a href='/questions/{{../questionInfo._id}}/answers/{{this._id}}/edit'><button class="btn btn-sm btn-light">Edit</button></a>&nbsp;
+                <form method="post" action="/questions/{{../questionInfo._id}}/answers/{{this._id}}">
+                    <button type="submit" class="btn btn-sm btn-light">Delete</button>
+                    <input name="_method" type="hidden" value="delete">
+                </form>
+            </div>
+            </div>
+            {{/if}}
         </li>
         {{/each}}
     </ul>
     {{/if}}
 </div>
 <hr>
+{{#if userLoggedIn}}
 <h3>Post your answer here</h3>
     {{!-- build a rich text box to submit answer --}}
     {{!-- action need to modify --}}
-    <form id="textSubmit" action="/questions/{{questionInfo._id}}/answers/create/" class="d-inline-block" method="post">
-        <textarea name="content" id="editor">
-        </textarea>
+    <form id="" action="/questions/{{questionInfo._id}}/answers/create/" class="input-group d-inline-block" method="post">
+        <textarea name="description" id="description" class="form-control w-100" rows="3" aria-label="" required></textarea>
         <br>
-        <p><input class= "float-right btn btn-primary" type="submit" value="Add Answer"></p>
-    </form>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form><br><br>
+    <div class="alert alert-warning alert-dismissible fade show hide" id="ans-err" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    {{/if}}
+    {{#unless userLoggedIn}}
+    <h3>Contribute to this discussion by <a href="/site/login">logging in here.</a></h3>
+    {{/unless}}
 </div>
 
 

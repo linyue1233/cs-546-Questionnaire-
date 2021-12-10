@@ -2,27 +2,27 @@
 <div class="d-grid gap-2 d-md-flex justify-content-md-end">
   <a href="/users/{{user._id}}/edit"><button class="btn btn-info btn-sm" type="button">Edit</button></a>
 </div>
-<img src="/public/images/userprofile/{{user.profileImage}}" id="profile_image">
-<h2>{{user.displayName}}</h2>
-<div>{{user.firstName}} {{user.lastName}}</div><br>
-<div>Email : {{user.emailAddress}}</div><br>
+<img alt="user" src="/public/images/userprofile/{{user.profileImage}}" id="profile_image">
+<h1>{{user.displayName}}</h1>
+<div>{{user.firstName}} {{user.lastName}}</div>
+<div class="label">{{user.emailAddress}}</div><hr>
 
-<div>Subscribed Communities</div>
+<h2>Subscribed Communities</h2>
 {{#each subscribedCommunities}}
-<div><a href="/communities/{{this._id}}">{{this.name}}</a></div>
+  <div><a href="/communities/{{this._id}}">{{this.name}}</a></div>
 {{/each}}
 <br>
-<div>Created Communities</div>
+<h2>Created Communities</h2>
 {{#each adminCommunities}}
 <div><a href="/communities/{{this._id}}">{{this.name}}</a></div>
 {{/each}}
 <br>
-<div>Answered Questions</div>
+<h2>Answered Questions</h2>
 {{#each answeredQuestions}}
 <div><a href="/questions/{{this._id}}">{{this.title}}</a></div>
 {{/each}}
 <br>
-<div>Posted Questions</div>
+<h2>Posted Questions</h2>
 {{#each postedQuestions}}
 <div><a href="/questions/{{this._id}}">{{this.title}}</a></div>
 {{/each}}

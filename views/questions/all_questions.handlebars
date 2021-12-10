@@ -1,12 +1,20 @@
 <main>
   {{#each questions}}
+    <div class="card float-right">
+      <div class="card-body">
+        <h5 class="card-title">Votes</h5>
+        <p class="votes-disp float-right">{{this.voteCount}}</p>
+      </div>
+    </div>
     <h4><a href="/questions/{{this._id}}">{{this.title}}</a></h4>
     <p>{{this.description}}</p>
-    <span>Community : 
+    <h4>
+    <span class="badge badge-dark">
       {{#if this.communityId}}
-      <span><a href="/communities/{{this.communityId}}">{{this.communityName}}</span></a>
+      <span><a class=" link-rm-dec-b" href="/communities/{{this.communityId}}">{{this.communityName}}</span></a>
       {{/if}}
     </span><br>
+    </h4>
     <span>Tags:
       {{#if this.tags}}
         {{#each this.tags}}

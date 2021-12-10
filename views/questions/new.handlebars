@@ -6,8 +6,8 @@
   <div class="form-group">
         <label for="community">  Community </label>
         <br>
-        <select class="full-width-input form-control" id= "community" name="community">
-      <option value="">Select community...</option>
+        <select class="full-width-input form-control" id= "community" name="community" required>
+      <option>Select community...</option>
       {{#each this.com}}
         <option value="{{this._id}}">{{this.name}}</option>
       {{/each}}
