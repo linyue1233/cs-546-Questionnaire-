@@ -225,6 +225,25 @@ const deleteAnsewerfromflaggedAnsweres = async (communityId, answerID) => {
   return true;
 };
 
+const getCommunityDetailsById = async (id) => {
+  validator.validateCommunityId(id);
+  const communityCollection = await communities();
+  return await communityCollection.findOne({ _id: id });
+};
+
+const unflagQuestion = async (communityId, questionId) => {
+  validator.validateCommunityId(communityId);
+  validator.validateId(questionId);
+  const communityCollection = await communities();
+  let pulledQuestion = await communityCollection.updateOne(
+    { _id: communityId, "flaggedQuestions._id": questionId },
+    { $pull: { flaggedQuestions: { _id: questionId } } }
+  );
+  if (pulledQuestion.matchedCount === 0 && pulledQuestion.modifiedCount === 0)
+    throw `Something went wrong during unflagging question.`;
+  return true;
+};
+
 module.exports = {
   editCommunity,
   getCommunityById,
@@ -236,4 +255,6 @@ module.exports = {
   deleteQuestionfromcommunity,
   deleteAnsewerfromflaggedAnsweres,
   deleteQuestionfromflaggedQuestions,
+  getCommunityDetailsById,
+  unflagQuestion,
 };

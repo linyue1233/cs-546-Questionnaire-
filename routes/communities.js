@@ -395,4 +395,31 @@ router.post("/quickCreate", async (req, res) => {
   return;
 });
 
+router.post("/:communityId/:questionId/unflagQuestion", async (req, res) => {
+  let communityId = req.params.communityId;
+  let questionId = req.params.questionId;
+  let validate = validator.validateCommunityId(communityId);
+  if (!validate.isValid) {
+    res.redirect("/communities");
+    return;
+  }
+  validate = validator.validateId(questionId);
+  if (!validate.isValid) {
+    res.redirect("/communities/" + communityId);
+    return;
+  }
+  try {
+    const unflagQuestion = await communities.unflagQuestion(communityId, questionId);
+    console.log(unflagQuestion);
+    if (unflagQuestion) {
+      res.redirect("/communities/" + communityId + "/view/flagged");
+      return;
+    }
+  } catch (e) {
+    console.log(e);
+    res.redirect(req.originalUrl);
+    return;
+  }
+});
+
 module.exports = router;
