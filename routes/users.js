@@ -281,6 +281,7 @@ router.get("/:id/profile", async (req, res) => {
     }
     const answeredQuestions = await answers.getAnswerByUserId(userId);
     const postedQuestions = await questions.getAllByUserId(userId);
+    console.log(postedQuestions);
     res.render("users/get_public_profile", {
       user: user,
       session: req.session,

@@ -22,7 +22,11 @@
                 </div>      
             <a>{{ post.title }}</a>
                 <div class="posterInfo">
+                    {{#if questionInfo.anonymous}}
+                    <p>Posted By: Anonymous user</p>
+                    {{else}}
                     <p>Posted By: <a href="/users/{{questionPoster._id}}/profile">{{questionPoster.displayName}}</a></p>
+                    {{/if}}
                     <p>Posted On: {{questionInfo.friendlyCreatedAt}}</p>
                     <p>Last Updated On: {{ questionInfo.friendlyUpdatedAt}}</p>
                 </div>    
@@ -87,8 +91,16 @@
         {{#each questionInfo.answers}}    
         <li class="list-group-item p-0 mb-1">
             <p class="h3 font-weight-normal card-body">{{{this.description}}}</p>
+            {{#if acceptedAnswer}}
+            <div class="alert alert-success mb-0">This answer has been accepted by the admin</div>
+            {{/if}}
             <div class="card-header border-0">
             <h5 class="lead">Posted By <a href="/users/{{this.posterId}}/profile">{{this.displayName}}</a></h5>
+            {{#if posterUser}}
+            <form method="post" action="/questions/{{../questionInfo._id}}/acceptedAnswer/{{this._id}}">
+            <button type="submit" class="btn btn-sm btn-light" id="accepted-ans-btn">Accept Answer</button>
+            </form>
+            {{/if}}
             {{#if currUser}}
             <div class="btn-group">
                 <a href='/questions/{{../questionInfo._id}}/answers/{{this._id}}/edit'><button class="btn btn-sm btn-light">Edit</button></a>&nbsp;
