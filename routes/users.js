@@ -109,7 +109,7 @@ router.put("/:id", upload, async (req, res, next) => {
 
 router.get("/signup", async (req, res) => {
   if (!xss(req.session.userId)) {
-    res.status(200).render("users/create_user");
+    res.status(200).render("users/create_user", { scriptUrl: ["validateUserSignup.js"] });
     return;
   } else {
     res.redirect("/");

@@ -13,8 +13,14 @@ upvoteElement.click((event) => {
       $(".upvote").toggleClass("fas");
     },
     (reason) => {
-      alert("You've to be logged in first. You will be redirected to the login page now!");
-      window.location.href = "/site/login?errorCode=upvoteLogin";
+      $(".card-body")
+        .prepend(`<div class="alert alert-warning alert-dismissible fade show" role="alert">You've to be logged in first. <strong><a href="/site/login">Click here</a></strong>
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>`);
+      // alert("You've to be logged in first. You will be redirected to the login page now!");
+
       return;
     }
   );
@@ -36,8 +42,13 @@ downvoteElement.click((event) => {
       // }
     },
     (reason) => {
-      alert("You've to be logged in first. You will be redirected to the login page now!");
-      window.location.href = "/site/login?errorCode=downvoteLogin";
+      $(".card-body")
+        .prepend(`<div class="alert alert-warning alert-dismissible fade show" role="alert">You've to be logged in first. 
+        <strong><a href="/site/login">Click here</a></strong> to be redirected to the login page!
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>`);
       return;
     }
   );

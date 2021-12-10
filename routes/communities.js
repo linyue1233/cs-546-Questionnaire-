@@ -87,6 +87,7 @@ router.get("/:id/edit", async (req, res) => {
       community: existingCommunity.community,
       subscribedUsers: subscribedUsers,
       session: req.session,
+      loggedInUserId: req.session.userId,
       scriptUrl: ["validateEditCommunity.js"],
     });
     return;
