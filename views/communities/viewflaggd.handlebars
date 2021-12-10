@@ -1,35 +1,58 @@
 
-<h2>Flagged Questions:</h2>
+<h2>Flagged Questions</h2>
 {{#if this.qflag.length}}
-  {{#each this.qflag}}
-
-    <h4>Title: <a href='/questions/{{this._id}}'>{{this.title}}</a></h4>
-    <form
-      action='/communities/{{this.communitiyID}}/{{this._id}}/delete/flaggedque'
-    >
-      <span>Number of times flagged:{{this.flag}}</span>
-      <button type='submit' class="btn btn-link">Delete</button>
-    </form>
-    <br>
-  {{/each}}
+    <table class="table">
+  <thead>
+    <tr>
+      <th scope="col">Question</th>
+      <th scope="col">Flagged Times</th>
+      <th scope="col">Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each this.qflag}}
+   <tr>
+      <td><a href='/questions/{{this._id}}'>{{this.title}}</a></td>
+      <td>{{this.flag}}</td>
+      <td><form
+        action='/communities/{{this.communitiyID}}/{{this._id}}/delete/flaggedque'
+      ><button class="btn btn-danger" type='submit'>Delete</button></form>
+      </td>
+    </tr>
+    {{/each}}
+  </tbody>
+  </table>
+  
 {{else}}
   <p> There are no flagged Questions</p>
 {{/if}}
 {{#if error}}
   <p> {{error}}</p>
 {{/if}}
-<br><br>
-<h2>Flagged Answeres:</h2>
+
+<h2>Flagged Answers:</h2>
 {{#if this.aflag.length}}
-  {{#each this.aflag}}
-    <h4>Description: {{this.title}}</h4>
-    <form
-      action='/communities/{{this.communitiyID}}/{{this._id}}/delete/flaggedqans'
-    >
-      <span>Number of times flagged:{{this.flag}}</span>
-      <button type='submit' class="btn btn-link">Delete</button>
-    </form>
-  {{/each}}
+    <table class="table">
+  <thead>
+    <tr>
+      <th scope="col">Question</th>
+      <th scope="col">Flagged Times</th>
+      <th scope="col">Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each this.aflag}}
+   <tr>
+      <td><a href='/questions/{{this._id}}'>{{this.title}}</a></td>
+      <td>{{this.flag}}</td>
+      <td><form
+        action='/communities/{{this.communitiyID}}/{{this._id}}/delete/flaggedque'
+      ><button class="btn btn-danger" type='submit'>Delete</button></form>
+      </td>
+    </tr>
+    {{/each}}
+  </tbody>
+  </table>
 {{else}}
   <p> There are no flagged answers</p>
 {{/if}}
