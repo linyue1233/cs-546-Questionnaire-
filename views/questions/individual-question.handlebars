@@ -21,34 +21,54 @@
                     {{/unless}}
                 </div>      
             <a>{{ post.title }}</a>
-                <div class="posterInfo">
-                    {{#if questionInfo.anonymous}}
-                    <p>Posted By: Anonymous user</p>
-                    {{else}}
-                    <p>Posted By: <a href="/users/{{questionPoster._id}}/profile">{{questionPoster.displayName}}</a></p>
-                    {{/if}}
-                    <p>Posted On: {{questionInfo.friendlyCreatedAt}}</p>
-                    <p>Last Updated On: {{ questionInfo.friendlyUpdatedAt}}</p>
-                </div>    
+            <div class="card float-right">
+                    <div class="card-header">
+                        Poster Details
+                    </div>
+                    <div class="card-body">
+                        {{#if questionInfo.anonymous}}
+                            <p>Posted By: Anonymous user</p>
+                        {{else}}
+                            <p>Posted By: <a href="/users/{{questionPoster._id}}/profile">{{questionPoster.displayName}}</a></p>
+                        {{/if}}
+                        <p>Posted On: {{questionInfo.friendlyCreatedAt}}</p>
+                        <p>Last Updated On: {{ questionInfo.friendlyUpdatedAt}}</p>
+                    </div>
+                </div>
             <br>
             {{#if userLoggedIn}}
             <button class="btn btn-light"><a href="/questions/{{questionInfo._id}}/edit">Edit</a></button>
             <button class="btn btn-light"><a href="/questions/{{questionInfo._id}}/delete">Delete</a></button>
             {{#if userReportedQuestion}}
+                <span class="btn-place">
                     <button class="btn btn-secondary" disabled>Flagged For Review</button>
+                    </span>
                 {{/if}}
                 {{#unless userReportedQuestion}}
+                <span class="btn-place">
                     <button class="btn btn-danger" id="reportQuestion" data-id="/questions/{{questionInfo._id}}/report">Report</button>
+                </span>
                 {{/unless}}
             {{/if}}
         {{/if}}
         
         {{#unless currentUserPostedQuestion}}
         <span><h1>{{questionInfo.title}}</h1>
-            <div class="posterInfo">
-                <p>Posted By: <a href="/users/{{questionPoster._id}}/profile">{{questionPoster.displayName}}</a></p>
+            <div class="card float-right">
+                    <div class="card-header">
+                        Poster Details
+                    </div>
+                    <div class="card-body">
+                        {{#if questionInfo.anonymous}}
+                            <p>Posted By: Anonymous user</p>
+                        {{else}}
+                            <p>Posted By: <a href="/users/{{questionPoster._id}}/profile">{{questionPoster.displayName}}</a></p>
+                        {{/if}}
                 <p>Posted On: {{questionInfo.friendlyCreatedAt}}</p>
                 <p>Last Updated On: {{ questionInfo.friendlyUpdatedAt}}</p>
+                </div>
+                
+                </span>
             </div>
         <p>{{questionInfo.description}}</p>
         <div class="votingsystem">
@@ -68,13 +88,18 @@
         </div>
         {{#if userLoggedIn}}
             {{#if userReportedQuestion}}
+            <div class="btn-place">
                  <button class="btn btn-secondary" disabled>Flagged For Review</button>
+            </div>
             {{/if}}
             {{#unless userReportedQuestion}}
+            <div class="btn-place">
                <button class="btn btn-danger" id="reportQuestion" data-id="/questions/{{questionInfo._id}}/report">Report</button>
             {{/unless}}
+            </div>
         {{/if}}
         {{/unless}}
+        <hr>
         {{#each questionInfo.tags}}
             <span class="badge badge-pill badge-info">{{this}}</span>
         {{/each}}
@@ -86,7 +111,7 @@
 <hr>
 
     {{#if questionInfo.answers.length}}
-    <h3>Answers</h3>
+    <h2>Answers</h2>
     <ul class="list-group card border-0">
         {{#each questionInfo.answers}}    
         <li class="list-group-item p-0 mb-1">
@@ -118,7 +143,7 @@
 </div>
 <hr>
 {{#if userLoggedIn}}
-<h3>Post your answer here</h3>
+<h2>Post your answer here</h3>
     {{!-- build a rich text box to submit answer --}}
     {{!-- action need to modify --}}
     <form id="" action="/questions/{{questionInfo._id}}/answers/create/" class="input-group d-inline-block" method="post">
