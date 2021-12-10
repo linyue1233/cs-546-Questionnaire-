@@ -170,6 +170,14 @@ router.get("/:id", async (req, res) => {
         if (answerPosterDetails._id === req.session.userId) {
           currUser = true;
         }
+        let posterUser = false;
+        if (thisQuestionPoster == req.session.userId) {
+          posterUser = true;
+        }
+        let acceptedAnswer = false;
+        if (questionAns.acceptedAnswer == answer._id) {
+          acceptedAnswer = true;
+        }
         answers.push({
           _id: answer._id,
           posterId: answer.posterId,
@@ -180,6 +188,8 @@ router.get("/:id", async (req, res) => {
           createdAt: answer.createdAt,
           updatedAt: answer.updatedAt,
           currUser: currUser,
+          posterUser: posterUser,
+          acceptedAnswer: acceptedAnswer,
         });
       }
     }
@@ -334,10 +344,13 @@ router.post("/", async (req, res) => {
       });
       return;
     }
-
+    let anonymous = false;
+    if (QuestionPostData.anonymous) {
+      anonymous = true;
+    }
     try {
       const { title, description, posterId, community, tags } = QuestionPostData;
-      const newQuestion = await questions.addQuestion(title, description, posterId, community, tags);
+      const newQuestion = await questions.addQuestion(title, description, posterId, community, tags, anonymous);
       const addQuetoCom = await communityData.addQuestiontocommunity(community, newQuestion._id);
 
       res.redirect(`/questions/${newQuestion._id}`);
@@ -517,6 +530,28 @@ router.post("/:id/report", async (req, res) => {
     console.log(e);
     res.status(400).json({ message: e });
     return;
+  }
+});
+
+router.post("/:id/acceptedAnswer/:ansId", async (req, res) => {
+  if (!req.session.userId) {
+    res.redirect("/");
+    return;
+  }
+  try {
+    const questionDetails = await questions.getID(req.params.id);
+    if (questionDetails.posterId != req.session.userId) {
+      res.status(500).json({ error: "unauthorized access" });
+    }
+    let acceptedAnswer = await questions.acceptAnswer(req.params.id, req.params.ansId);
+    if (acceptedAnswer) {
+      res.status(200).redirect("/questions/" + req.params.id);
+    } else {
+      throw "cannot update question";
+    }
+  } catch (e) {
+    console.log(e);
+    res.status(500).json({ error: e });
   }
 });
 
