@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
@@ -65,20 +66,22 @@
       crossorigin="anonymous"
     ></script>
     <script src="https://kit.fontawesome.com/6bb6871a7b.js" crossorigin="anonymous"></script>
+  
+  {{#if scriptUrl}}
+  {{#each scriptUrl}}
+  <script src="/public/js/{{this}}"></script>
+  {{/each}}
+  {{/if}}
+  <br><br>
   <!-- Footer -->
   <footer class="bg-dark text-center text-white">
   <!-- Copyright -->
-  <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
+  <div class="text-center p-3">
     © 2020 Copyright:
     <a class="text-white" href="/">Questionnaire</a>
   </div>
   <!-- Copyright -->  
   </footer>
 <!-- Footer -->
-  {{#if scriptUrl}}
-  {{#each scriptUrl}}
-  <script src="/public/js/{{this}}"></script>
-  {{/each}}
-  {{/if}}
   </body>
 </html>

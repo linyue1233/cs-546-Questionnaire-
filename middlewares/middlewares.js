@@ -4,6 +4,9 @@ let changeMethodToPutForAnswerUpdate = (req, res, next) => {
   if (req.body._method === "PUT") {
     req.method = "put";
   }
+  if (req.body._method === "delete") {
+    req.method = "delete";
+  }
   next();
 };
 

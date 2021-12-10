@@ -97,17 +97,21 @@ router.get("/:id/edit", async (req, res) => {
     // existingCommunity.subscribedUsers;
     for (const userId of existingCommunity.community.subscribedUsers) {
       let userDispName = await users.getDisplayNameByUserId(userId);
-      if (userDispName) subscribedUsers.push({ userId: userId, displayName: userDispName });
+      if (userDispName && userId == xss(req.session.userId)) {
+        subscribedUsers.push({ userId: userId, displayName: userDispName, user: true });
+      } else if (userDispName && userId != xss(req.session.userId)) {
+        subscribedUsers.push({ userId: userId, displayName: userDispName, user: false });
+      }
     }
     res.status(200).render("communities/edit_community", {
       community: existingCommunity.community,
       subscribedUsers: subscribedUsers,
       session: req.session,
-      loggedInUserId: req.session.userId,
       scriptUrl: ["validateEditCommunity.js"],
     });
     return;
   } catch (e) {
+    console.log(e);
     res.status(500).render("errors/internal_server_error", { message: "Something went wrong.", session: req.session });
     return;
   }
@@ -126,7 +130,9 @@ router.put("/:id", async (req, res) => {
       validator.validateCommunityEditPayload(req.body).isValid || validator.validateCommunityId(communityId).isValid;
     if (!validateFlag) {
       // TODO: Log errors locally
-      res.status(400).render("communities/edit_community", { error: "Invalid edit operation for community." });
+      res
+        .status(400)
+        .render("communities/edit_community", { error: "Invalid edit operation for community.", session: req.session });
       return;
     }
     console.log(req.body);
