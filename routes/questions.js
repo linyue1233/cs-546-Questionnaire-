@@ -343,8 +343,12 @@ router.post("/", async (req, res) => {
 router.delete("/:questionId/answers/:answerId", async (req, res) => {
   let questionId = xss(req.params.questionId);
   let answerId = xss(req.params.answerId);
-  const que = await questions.deleteAnswer(answerId);
-  const questionInfo = await questions.getID(questionId);
+  let userAns = await userData.getUserById(req.session.userId);
+  if (!req.session.userId || req.session.userId != userAns._id) {
+    res.status(500).json({ error: "Unauthorized access" });
+    return;
+  }
+  await questions.deleteAnswer(answerId);
   res.redirect("/questions/" + questionId);
 });
 

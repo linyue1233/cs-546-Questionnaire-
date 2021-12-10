@@ -7,9 +7,10 @@
     <form
       action='/communities/{{this.communitiyID}}/{{this._id}}/delete/flaggedque'
     >
-      <span>Numeber of times flagged:{{this.flag}}</span>
-      <button type='submit'>Delete</button>
+      <span>Number of times flagged:{{this.flag}}</span>
+      <button type='submit' class="btn btn-link">Delete</button>
     </form>
+    <br>
   {{/each}}
 {{else}}
   <p> There are no flagged Questions</p>
@@ -17,7 +18,7 @@
 {{#if error}}
   <p> {{error}}</p>
 {{/if}}
-
+<br><br>
 <h2>Flagged Answeres:</h2>
 {{#if this.aflag.length}}
   {{#each this.aflag}}
@@ -26,7 +27,7 @@
       action='/communities/{{this.communitiyID}}/{{this._id}}/delete/flaggedqans'
     >
       <span>Number of times flagged:{{this.flag}}</span>
-      <button type='submit'>Delete</button>
+      <button type='submit' class="btn btn-link">Delete</button>
     </form>
   {{/each}}
 {{else}}
