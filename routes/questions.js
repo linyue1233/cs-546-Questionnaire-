@@ -100,7 +100,7 @@ router.post("/search", async (req, res) => {
 });
 
 router.put("/:id", async (req, res) => {
-  let body = xss(req.body);
+  let body = req.body;
   try {
     if (!body) throw "";
     if (!body.title || !body.description || !body.tags || !body.communityId) throw "";

@@ -17,6 +17,22 @@ router.get("/", async (req, res) => {
   }
 });
 
+router.post("/quickCreate", async (req, res) => {
+  let body = req.body;
+  let validate = validator.validateQuickCreateBody(body);
+  if (!validate.isValid) {
+    res.status(400).json({ success: false, error: "Can't quick create community. Invalid input" });
+    return;
+  }
+  const createCommunity = await communities.createCom(body.name, body.description, req.session.userId);
+  if (createCommunity) {
+    res.status(200).json({ success: true });
+    return;
+  }
+  res.status(400).json({ success: false, error: "Can't quick create community" });
+  return;
+});
+
 // Needs cleanup
 router.get("/create/new", async (req, res) => {
   if (xss(req.session.userId)) {
@@ -111,8 +127,7 @@ router.put("/:id", async (req, res) => {
       return;
     }
     let validateFlag =
-      validator.validateCommunityEditPayload(xss(req.body)).isValid ||
-      validator.validateCommunityId(communityId).isValid;
+      validator.validateCommunityEditPayload(req.body).isValid || validator.validateCommunityId(communityId).isValid;
     if (!validateFlag) {
       // TODO: Log errors locally
       res
@@ -383,22 +398,6 @@ router.get("/:communitiyID/:answerId/delete/flaggedqans", async (req, res) => {
       session: req.session,
     });
   }
-});
-
-router.post("/quickCreate", async (req, res) => {
-  let body = xss(req.body);
-  let validate = validator.validateQuickCreateBody(body);
-  if (!validate.isValid) {
-    res.status(400).json({ success: false, error: "Can't quick create community. Invalid input" });
-    return;
-  }
-  const createCommunity = await communities.createCom(body.name, body.description, req.session.userId);
-  if (createCommunity) {
-    res.status(200).json({ success: true });
-    return;
-  }
-  res.status(400).json({ success: false, error: "Can't quick create community" });
-  return;
 });
 
 router.post("/:communityId/:questionId/unflagQuestion", async (req, res) => {
