@@ -12,6 +12,9 @@
     <label for="admin">Administrator</label><br>
   <select class="form-control" id="admin" name="administrator" required>
     <option disabled>Choose an administrator from these subscribed users</option>
+    {{#if (eq this.userId loggedInUserId)}}
+    <option selected value="{{this.userId}}">{{this.displayName}}</option>
+    {{/if}}
     {{#each subscribedUsers}}
     <option value="{{this.userId}}">{{this.displayName}}</option>
     {{/each}}
