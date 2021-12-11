@@ -180,12 +180,14 @@ router.get("/:id", async (req, res) => {
           acceptedAnswer = true;
         }
         let sortedComments = [];
-        if(answer.comments.length !== 0){
-          sortedComments = answer.comments.sort(function(a,b){
-            return (b.updatedAt < a.updatedAt) ? -1 : ((a.updatedAt > b.updatedAt) ? 1 : 0);
-          });
+        if (answer.comments) {
+          if (answer.comments.length !== 0) {
+            sortedComments = answer.comments.sort(function (a, b) {
+              return b.updatedAt < a.updatedAt ? -1 : a.updatedAt > b.updatedAt ? 1 : 0;
+            });
+          }
         }
-        sortedComments = sortedComments.splice(0,4);
+        sortedComments = sortedComments.splice(0, 4);
         answers.push({
           _id: answer._id,
           posterId: answer.posterId,
@@ -233,7 +235,7 @@ router.get("/:id", async (req, res) => {
       currentUserPostedQuestion: xss(req.session.userId) === thisQuestionPoster ? true : false,
       userReportedQuestion,
       session: req.session,
-      scriptUrl: ["voteHandler.js","commentPost.js"],
+      scriptUrl: ["voteHandler.js", "commentPost.js"],
     });
   } catch (e) {
     console.log(e);
@@ -619,7 +621,7 @@ router.post("/:id/acceptedAnswer/:ansId", async (req, res) => {
 });
 
 // create a comment in an answer
-router.post("/:id/answer/:answerId/createComment", async function(req, res) {
+router.post("/:id/answer/:answerId/createComment", async function (req, res) {
   // if(!xss(req.session.userId)){
   //   res.status(403).json({ error: "Unauthorized access" });
   //   return;
@@ -628,28 +630,29 @@ router.post("/:id/answer/:answerId/createComment", async function(req, res) {
   let answerId = xss(req.params.answerId);
   let commentText = xss(req.body.commentText);
   let userId = xss(req.session.userId);
-  if(!questionId || !answerId){
-    res.status(403).json({ error: 'Please refresh the page.' });
+  if (!questionId || !answerId) {
+    res.status(403).json({ error: "Please refresh the page." });
     return;
   }
   // if(!questionId || !answerId ||!userId ){
   //   res.status(403).json({ error: 'Please refresh the page.' });
   //   return;
   // }
-  if(!commentText || commentText.trim().length === 0){
-    res.status(403).json({ error: 'Please input the valid content.' });
+  if (!commentText || commentText.trim().length === 0) {
+    res.status(403).json({ error: "Please input the valid content." });
     return;
   }
 
-  try{
-    const insertComment = await answers.addComment(commentText,userId,answerId,questionId);
-    if(insertComment){
+  try {
+    const insertComment = await answers.addComment(commentText, userId, answerId, questionId);
+    if (insertComment) {
       res.redirect("/questions/" + questionId);
       return;
     }
-  }catch (e) {
+  } catch (e) {
+    console.log(e);
     res.status(400).json({ error: e });
   }
-})
+});
 
 module.exports = router;
