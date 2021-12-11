@@ -1,12 +1,12 @@
 <div>
     <h1 class="user-login">User Signup</h1>
-    <form id="signup-form" class="form" action="/users" method="post" role="form" enctype="multipart/form-data">
+    <form id="signup-form" class="form" action="/users" method="post" enctype="multipart/form-data">
     <div class="form-group">
-        <label for="firstName">First Name </label>
+        <label for="firstName">First Name(Only letters) </label>
         <input type="text" id="firstName" class="form-control" name="firstName" placeholder="Enter your first name" value="{{body.firstName}}" required>
         </div>
         <div class="form-group">
-        <label for="lastName">Last Name </label>
+        <label for="lastName">Last Name(Only letters) </label>
         <input type="text" id="lastName" class="form-control" name="lastName" placeholder="Enter your last name" value="{{body.lastName}}" required>
         </div>
         <div class="form-group">
@@ -26,7 +26,7 @@
             <br>Accepted formats: jpg, jpeg, bmp, gif, png
         </label>
             <div class="custom-file">
-                <input type="file" id="profileImage" class="form-control" name="profileImage" value="Choose File">
+                <input type="file" id="profileImage" class="form-control" name="profileImage">
             </div>
         </div>    
         <br>
