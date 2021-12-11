@@ -170,9 +170,12 @@ router.get("/:id", async (req, res) => {
         if (answerPosterDetails._id === req.session.userId) {
           currUser = true;
         }
-        let sortedComments = answer.comments.sort(function(a,b){
-          return (b.updatedAt < a.updatedAt) ? -1 : ((a.updatedAt > b.updatedAt) ? 1 : 0);
-        });
+        let sortedComments = [];
+        if(answer.comments.length !== 0){
+          sortedComments = answer.comments.sort(function(a,b){
+            return (b.updatedAt < a.updatedAt) ? -1 : ((a.updatedAt > b.updatedAt) ? 1 : 0);
+          });
+        }
         sortedComments = sortedComments.splice(0,4);
         answers.push({
           _id: answer._id,
@@ -197,7 +200,6 @@ router.get("/:id", async (req, res) => {
     questionAns.friendlyCreatedAt = questionAns.createdAt.toDateString();
     questionAns.friendlyUpdatedAt = questionAns.updatedAt.toDateString();
     questionAns.votes = questionAns.upvotes.length - questionAns.downvotes.length;
-    console.log(questionAns);
     const communityForQuestion = await communities.getCommunityDetailsById(questionAns.communityId);
     let userReportedQuestion = false;
     for (const allFlags of communityForQuestion.flaggedQuestions) {
@@ -216,7 +218,7 @@ router.get("/:id", async (req, res) => {
       currentUserPostedQuestion: xss(req.session.userId) === thisQuestionPoster ? true : false,
       userReportedQuestion,
       session: req.session,
-      scriptUrl: ["voteHandler.js"],
+      scriptUrl: ["voteHandler.js","commentPost.js"],
     });
   } catch (e) {
     console.log(e);
