@@ -167,16 +167,20 @@ router.get("/:id", async (req, res) => {
           answerPosterDetails = await userData.getUserById(answer.posterId);
         }
         let currUser = false;
-        if (answerPosterDetails._id === req.session.userId) {
+        // adding this not null condition to handle breakage
+        if (answerPosterDetails && answerPosterDetails._id === req.session.userId) {
           currUser = true;
         }
         answers.push({
           _id: answer._id,
           posterId: answer.posterId,
-          displayName: answerPosterDetails ? answerPosterDetails.displayName : "Unavailable User",
+          displayName: answerPosterDetails ? answerPosterDetails.displayName : false,
           description: answer.description,
           upvotes: answer.upvotes,
           downvotes: answer.downvotes,
+          voteCount: answer.upvotes.length - answer.downvotes.length,
+          thisUserUpvotedAns: answer.upvotes.includes(req.session.userId),
+          thisUserDownvotedAns: answer.downvotes.includes(req.session.userId),
           createdAt: answer.createdAt,
           updatedAt: answer.updatedAt,
           currUser: currUser,
@@ -513,6 +517,56 @@ router.post("/:id/report", async (req, res) => {
       res.status(200).json({ message: "Successfully reported the question." });
       return;
     }
+  } catch (e) {
+    console.log(e);
+    res.status(400).json({ message: e });
+    return;
+  }
+});
+
+// ajax route - returns json
+router.post("/:questionId/answers/:answerId/upvote", async (req, res) => {
+  try {
+    let questionId = xss(req.params.questionId);
+    let answerId = xss(req.params.answerId);
+    let userId = req.session.userId;
+    if (!req.session.userId) {
+      res.status(401).json({ message: "You've to be logged in to perform this action! " });
+      return;
+    }
+    let validateQid = validator.validateId(questionId);
+    let validateAid = validator.validateId(answerId);
+    if (!(validateQid && validateAid)) {
+      res.status(400).json({ message: "Invalid input parameters - something wrong with the questionId and answerId " });
+      return;
+    }
+    let count = await questions.registerUpvoteForAnswer(questionId, answerId, userId);
+    res.status(200).json({ count });
+  } catch (e) {
+    console.log(e);
+    res.status(400).json({ message: e });
+    return;
+  }
+});
+
+// ajax route - returns json
+router.post("/:questionId/answers/:answerId/downvote", async (req, res) => {
+  try {
+    let questionId = xss(req.params.questionId);
+    let answerId = xss(req.params.answerId);
+    let userId = req.session.userId;
+    if (!req.session.userId) {
+      res.status(401).json({ message: "You've to be logged in to perform this action! " });
+      return;
+    }
+    let validateQid = validator.validateId(questionId);
+    let validateAid = validator.validateId(answerId);
+    if (!(validateQid && validateAid)) {
+      res.status(400).json({ message: "Invalid input parameters - something wrong with the questionId and answerId " });
+      return;
+    }
+    let count = await questions.registerDownvoteForAnswer(questionId, answerId, userId);
+    res.status(200).json({ count });
   } catch (e) {
     console.log(e);
     res.status(400).json({ message: e });

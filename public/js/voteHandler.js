@@ -1,5 +1,69 @@
 const upvoteElement = $(".upvote");
 const downvoteElement = $(".downvote");
+const answerUpvoteElem = $(".ans-up");
+const answerDownvoteElem = $(".ans-down");
+
+answerUpvoteElem.click((event) => {
+  event.preventDefault();
+  // console.log(event.target.dataset.id);
+  let url = event.target.dataset.id;
+  if (!url) return;
+  let requestConfig = {
+    method: "POST",
+    url,
+  };
+  $.ajax(requestConfig).then(
+    (message) => {
+      $(event.target).next().text(message.count);
+      $(event.target).removeClass("far").addClass("fas");
+    },
+    (reason) => {
+      if (reason.status === 401) {
+        $(".card-body").first()
+          .prepend(`<div class="alert alert-warning alert-dismissible fade show" role="alert">You've to be logged in first. 
+        <strong><a href="/site/login">Click here</a></strong> to be redirected to the login page!
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>`);
+      } else {
+        $(".card-body").first()
+          .prepend(`<div class="alert alert-warning alert-dismissible fade show" role="alert">Hmm, something is not right. This is the error we're seeing - ${reason.responseJSON.message}
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>`);
+      }
+    }
+  );
+});
+
+answerDownvoteElem.click((event) => {
+  event.preventDefault();
+  // console.log(event.target.dataset.id);
+  let url = event.target.dataset.id;
+  if (!url) return;
+  let requestConfig = {
+    method: "POST",
+    url,
+  };
+  $.ajax(requestConfig).then(
+    (message) => {
+      $(event.target).prev().text(message.count);
+      $(event.target).removeClass("far").addClass("fas");
+    },
+    (reason) => {
+      console.log(reason);
+      $(".card-body").first()
+        .prepend(`<div class="alert alert-warning alert-dismissible fade show" role="alert">You've to be logged in first. 
+        <strong><a href="/site/login">Click here</a></strong> to be redirected to the login page!
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>`);
+    }
+  );
+});
 
 upvoteElement.click((event) => {
   event.preventDefault();
@@ -10,11 +74,12 @@ upvoteElement.click((event) => {
   $.ajax(requestConfig).then(
     (response) => {
       $(".votecounter").text(response.count);
-      $(".upvote").toggleClass("fas");
+      $(".upvote").removeClass("far").addClass("fas");
     },
     (reason) => {
-      $(".card-body")
-        .prepend(`<div class="alert alert-warning alert-dismissible fade show" role="alert">You've to be logged in first. <strong><a href="/site/login">Click here</a></strong>
+      $(".card-body").first()
+        .prepend(`<div class="alert alert-warning alert-dismissible fade show" role="alert">You've to be logged in first. 
+        <strong><a href="/site/login">Click here</a></strong> to be redirected to the login page!
     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
         <span aria-hidden="true">&times;</span>
     </button>
@@ -38,11 +103,11 @@ downvoteElement.click((event) => {
       // if (response.success) {
       //          console.log(response)
       $(".votecounter").text(response.count);
-      $(".downvote").toggleClass("fas");
+      $(".downvote").removeClass("fas").addClass("far");
       // }
     },
     (reason) => {
-      $(".card-body")
+      $(".card-body").first()
         .prepend(`<div class="alert alert-warning alert-dismissible fade show" role="alert">You've to be logged in first. 
         <strong><a href="/site/login">Click here</a></strong> to be redirected to the login page!
     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -54,12 +119,11 @@ downvoteElement.click((event) => {
   );
 });
 
-$(".add-ans").click((event) => {
-  let answerContent = $(".ck-content").text();
+$("#add-ans").submit((event) => {
+  let answerContent = $("#description").text();
   if (answerContent.length === 0 || answerContent.trim().length === 0) {
     event.preventDefault();
-    $("#textSubmit")
-      .prepend(`<div class="alert alert-warning alert-dismissible fade show" role="alert">Someone once said
+    $("#add-ans").prepend(`<div class="alert alert-warning alert-dismissible fade show" role="alert">Someone once said
     <strong>'No answer is also an answer'</strong>! But here, it is recommended that you add some content first :)
     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
         <span aria-hidden="true">&times;</span>

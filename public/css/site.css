@@ -65,6 +65,13 @@
   background-color: black;
 }
 
+.border-around {
+  border: solid black;
+  border-width: thin;
+  margin: 12px;
+  padding: 10px;
+}
+
 .divider:after,
 .divider:before {
   content: "";
