@@ -120,7 +120,7 @@ downvoteElement.click((event) => {
 });
 
 $("#add-ans").submit((event) => {
-  let answerContent = $("#description").text();
+  let answerContent = $("#description").value;
   if (answerContent.length === 0 || answerContent.trim().length === 0) {
     event.preventDefault();
     $("#add-ans").prepend(`<div class="alert alert-warning alert-dismissible fade show" role="alert">Someone once said
