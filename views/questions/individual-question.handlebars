@@ -154,8 +154,9 @@
                 </form>
                 {{/if}}
                 {{#if currUser}}
-                <a href='/questions/{{../questionInfo._id}}/answers/{{this._id}}/edit'><button
-                        class="btn btn-sm btn-light">Edit</button></a>&nbsp;
+                {{!-- <a href='/questions/{{../questionInfo._id}}/answers/{{this._id}}/edit'><button
+                        class="btn btn-sm btn-light">Edit</button></a>&nbsp; --}}
+                <button class="btn btn-sm btn-light" onclick="location.href='/questions/{{../questionInfo._id}}/answers/{{this._id}}/edit'">Edit</button>&nbsp;
                 <form method="post" action="/questions/{{../questionInfo._id}}/answers/{{this._id}}">
                     <button type="submit" class="btn btn-sm btn-light mr-2">Delete</button>
                     <input name="_method" type="hidden" value="delete">
@@ -170,7 +171,7 @@
                             <form id="commentContent{{this._id}}" method="post"  action="/questions/{{../questionInfo._id}}/answer/{{this._id}}/createComment">
                             <input name="commentText" id="commentText{{this._id}}" class="form-control w-100" required>
                             <br>
-                            <button type="button" id="close{{this_id}}" class="btn btn-default" data-dismiss="modal" onclick="closeModal(this)">Close</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal" onclick="closeModal(this)">Close</button>
                             <button type="submit" class="btn btn-primary">Submit</button>
                             </form>
                         </div>
@@ -203,7 +204,7 @@
 <hr>
 
 {{#if userLoggedIn}}
-<h2>Post your answer here</h3>
+<h2>Post your answer here</h2>
     {{!-- build a rich text box to submit answer --}}
     {{!-- action need to modify --}}
     <form id="add-ans" action="/questions/{{questionInfo._id}}/answers/create/" class="input-group d-inline-block"
@@ -222,9 +223,6 @@
     {{#unless userLoggedIn}}
     <h3>Contribute to this discussion by <a href="/site/login">logging in here.</a></h3>
     {{/unless}}
-    </div>
-    </div>
-    </div>
 
     {{!-- {{#if userLoggedIn}}
             <div class="modal" id="commentModal{{this._id}}">

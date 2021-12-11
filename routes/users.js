@@ -222,6 +222,7 @@ router.post("/", upload, async (req, res) => {
       return;
     } else {
       profileImage = xss(req.file.filename);
+      profileImage = profileImage.split(" ").join("");
     }
   }
   if (
