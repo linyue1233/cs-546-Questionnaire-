@@ -107,7 +107,7 @@
 }
 
 .btn_comment_modal {
-  font-size: 17px;
+  font-size: 13px;
   font-family: "Source Sans Pro", sans-serif;
   border: none;
   border-radius: 5px;
@@ -159,4 +159,15 @@
   padding: 20px;
   border: 1px solid #888;
   width: 80%;
+}
+
+#commentBox {
+  background-color: #f1f1f1 !important;
+}
+
+.fa,
+.far,
+.fas {
+  font-family: "Font Awesome 5 Free";
+  cursor: pointer;
 }
