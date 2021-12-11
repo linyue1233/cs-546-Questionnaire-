@@ -1,5 +1,6 @@
 const mongoCollections = require("../config/mongoCollections");
 let questions = mongoCollections.questions;
+const uuid = require("uuid");
 
 async function getanswerbyanserId(answerID) {
   if (!answerID) throw ' must provide answerid';
@@ -47,8 +48,56 @@ const getAnswerByUserId = async (userId) => {
   return answers;
 };
 
+const addComment = async(commentText,userId,answerId,questionId) => {
+  if(!commentText){
+    throw `Please provide an valid comment.`;
+  }
+  commentText = commentText.trim();
+  if(commentText.length === 0 || commentText.length >= 500){
+    throw `Please provide an valid comment.`;
+  }
+  if(!userId){
+    throw `Please login, then you can comment.`;
+  }
+  if(!answerId && ! questionId){
+    throw `Something goes wrong with the question. Please refresh the page.`;
+  }
+  const questionCollection = await questions();
+  const newComment = {
+    _id: uuid.v4(),
+    commenterId: userId,
+    commentText: commentText,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  };
+  let signalQuestion = await questionCollection.findOne({_id: questionId, "answers._id": answerId});
+  let allAnswers = signalQuestion.answers;
+  if(!allAnswers){
+    throw `There is a issue with our db.`;
+  }
+  for(let item of allAnswers){
+    if(item._id === answerId){
+      item.comments.push(newComment);
+      break;
+    }
+  }
+  const commentInfo = await questionCollection.updateOne(
+    {'_id': questionId},
+    {
+      $set: {
+        answers: allAnswers
+      }
+    }
+  );
+  if(commentInfo.insetCount === 0){
+    throw `Something wrong when insert comment.`;
+  }
+  return true;
+};
+
 module.exports = {
   getAnswer,
   getAnswerByUserId,
-  getanswerbyanserId
+  getanswerbyanserId,
+  addComment,
 };

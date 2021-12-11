@@ -178,6 +178,13 @@ router.get("/:id", async (req, res) => {
         if (questionAns.acceptedAnswer == answer._id) {
           acceptedAnswer = true;
         }
+        let sortedComments = [];
+        if(answer.comments.length !== 0){
+          sortedComments = answer.comments.sort(function(a,b){
+            return (b.updatedAt < a.updatedAt) ? -1 : ((a.updatedAt > b.updatedAt) ? 1 : 0);
+          });
+        }
+        sortedComments = sortedComments.splice(0,4);
         answers.push({
           _id: answer._id,
           posterId: answer.posterId,
@@ -185,6 +192,7 @@ router.get("/:id", async (req, res) => {
           description: answer.description,
           upvotes: answer.upvotes,
           downvotes: answer.downvotes,
+          comments: sortedComments,
           createdAt: answer.createdAt,
           updatedAt: answer.updatedAt,
           currUser: currUser,
@@ -220,7 +228,7 @@ router.get("/:id", async (req, res) => {
       currentUserPostedQuestion: xss(req.session.userId) === thisQuestionPoster ? true : false,
       userReportedQuestion,
       session: req.session,
-      scriptUrl: ["voteHandler.js"],
+      scriptUrl: ["voteHandler.js","commentPost.js"],
     });
   } catch (e) {
     console.log(e);
@@ -368,7 +376,7 @@ router.delete("/:questionId/answers/:answerId", async (req, res) => {
   let answerId = xss(req.params.answerId);
   let userAns = await userData.getUserById(req.session.userId);
   if (!req.session.userId || req.session.userId != userAns._id) {
-    res.status(500).json({ error: "Unauthorized access" });
+    res.status(403).json({ error: "Unauthorized access" });
     return;
   }
   await questions.deleteAnswer(answerId);
@@ -554,5 +562,39 @@ router.post("/:id/acceptedAnswer/:ansId", async (req, res) => {
     res.status(500).json({ error: e });
   }
 });
+
+// create a comment in an answer
+router.post("/:id/answer/:answerId/createComment", async function(req, res) {
+  // if(!xss(req.session.userId)){
+  //   res.status(403).json({ error: "Unauthorized access" });
+  //   return;
+  // }
+  let questionId = xss(req.params.id);
+  let answerId = xss(req.params.answerId);
+  let commentText = xss(req.body.commentText);
+  let userId = xss(req.session.userId);
+  if(!questionId || !answerId){
+    res.status(403).json({ error: 'Please refresh the page.' });
+    return;
+  }
+  // if(!questionId || !answerId ||!userId ){
+  //   res.status(403).json({ error: 'Please refresh the page.' });
+  //   return;
+  // }
+  if(!commentText || commentText.trim().length === 0){
+    res.status(403).json({ error: 'Please input the valid content.' });
+    return;
+  }
+
+  try{
+    const insertComment = await answers.addComment(commentText,userId,answerId,questionId);
+    if(insertComment){
+      res.redirect("/questions/" + questionId);
+      return;
+    }
+  }catch (e) {
+    res.status(400).json({ error: e });
+  }
+})
 
 module.exports = router;
