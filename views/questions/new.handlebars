@@ -27,6 +27,7 @@
             <label for="communityName">A brief description about the community</label>
             <input type="text" class="form-control" id="qc-desc" name="communityDesc" placeholder="Enter a brief description about the community here">
           </div>
+          
           <div class="form-group">
             <input class = "btn btn-primary float-right" id="create-comm-btn" type="submit" value="Quick Create">
           </div>
@@ -49,7 +50,9 @@
     <label for="tags">Tags</label>
       <input type="text" name="tags" id="tags" placeholder="Tags seprated by spaces" value="{{tags}}" class="full-width-input form-control" required/>
     <br>
-    <br>
+      <input class="" name="anonymous" type="checkbox" value="true" id="flexCheckDefault">
+      <label class="ml-2" for="flexCheckDefault">Post Anonymously</label>  
+    <br><br>
     </label> 
         <button class="btn btn-primary w-100" id="b" type="submit" class="btn btn-primary float-right">Submit</button>
     </label> 

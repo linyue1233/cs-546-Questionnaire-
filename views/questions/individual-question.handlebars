@@ -2,8 +2,9 @@
     {{!-- Show only if current user if the poster of the question --}}
     <div class="card">
         <div class="card-body">
-        {{#if currentUserPostedQuestion}}
-            <span><h1>{{questionInfo.title}}</h1>
+            {{#if currentUserPostedQuestion}}
+            <span>
+                <h1>{{questionInfo.title}}</h1>
                 <p>{{questionInfo.description}}</p>
                 <div class="votingsystem">
                     {{#if thisUserUpvoted}}
@@ -19,14 +20,18 @@
                     {{#unless thisUserDownvoted}}
                         <i class="far fa-thumbs-down fa-2x downvote" data-id="/questions/{{questionInfo._id}}/downvote"></i>
                     {{/unless}}
-                </div>      
-            <a>{{ post.title }}</a>
-            <div class="card float-right">
+                </div>
+                <a>{{ post.title }}</a>
+                <div class="card float-right">
                     <div class="card-header">
                         Poster Details
                     </div>
                     <div class="card-body">
-                        <p>Posted By: <a href="/users/{{questionPoster._id}}/profile">{{questionPoster.displayName}}</a></p>
+                        {{#if questionInfo.anonymous}}
+                            <p>Posted By: Anonymous user</p>
+                        {{else}}
+                            <p>Posted By: <a href="/users/{{questionPoster._id}}/profile">{{questionPoster.displayName}}</a></p>
+                        {{/if}}
                         <p>Posted On: {{questionInfo.friendlyCreatedAt}}</p>
                         <p>Last Updated On: {{ questionInfo.friendlyUpdatedAt}}</p>
                     </div>
@@ -38,11 +43,12 @@
                 {{#if userReportedQuestion}}
                 <span class="btn-place">
                     <button class="btn btn-secondary" disabled>Flagged For Review</button>
-                    </span>
+                </span>
                 {{/if}}
                 {{#unless userReportedQuestion}}
                 <span class="btn-place">
-                    <button class="btn btn-danger" id="reportQuestion" data-id="/questions/{{questionInfo._id}}/report">Report</button>
+                    <button class="btn btn-danger" id="reportQuestion"
+                        data-id="/questions/{{questionInfo._id}}/report">Report</button>
                 </span>
                 {{/unless}}
             {{/if}}
@@ -54,13 +60,17 @@
                         Poster Details
                     </div>
                     <div class="card-body">
-                <p>Posted By: <a href="/users/{{questionPoster._id}}/profile">{{questionPoster.displayName}}</a></p>
+                        {{#if questionInfo.anonymous}}
+                            <p>Posted By: Anonymous user</p>
+                        {{else}}
+                            <p>Posted By: <a href="/users/{{questionPoster._id}}/profile">{{questionPoster.displayName}}</a></p>
+                        {{/if}}
                 <p>Posted On: {{questionInfo.friendlyCreatedAt}}</p>
                 <p>Last Updated On: {{ questionInfo.friendlyUpdatedAt}}</p>
                 </div>
                 
                 </span>
-            </div>
+        </div>
         <p>{{questionInfo.description}}</p>
         <div class="votingsystem">
                     {{#if thisUserUpvoted}}
@@ -92,12 +102,10 @@
         {{/unless}}
         <hr>
         {{#each questionInfo.tags}}
-            <span class="badge badge-pill badge-info">{{this}}</span>
+        <span class="badge badge-pill badge-info">{{this}}</span>
         {{/each}}
         </div>
         </div>
-        
-        
 <hr>
 
     {{#if questionInfo.answers.length}}
@@ -106,6 +114,17 @@
         {{#each questionInfo.answers}}    
         <li class="list-group-item p-0 mb-1">
             <p class="h3 font-weight-normal card-body">{{{this.description}}}</p>
+            {{#if this.comments.length}}
+        <div>
+            <h5>Comments</h5>
+            {{#each this.comments}}
+            <p>{{this.commentText}}</p>
+            {{/each}}
+        </div>
+        {{/if}}
+            {{#if acceptedAnswer}}
+            <div class="alert alert-success mb-0">This answer has been accepted by the admin</div>
+            {{/if}}
             <div class="card-header border-0">
                 <div class="float-right">
                 {{!-- upvote and downvote containers for answer --}}
@@ -129,29 +148,54 @@
             {{#unless this.displayName}}
                 <h5 class="lead">Posted By <strong>Deleted User</strong></a></h5>
             {{/unless}}
-            
+            <h5 class="lead">Posted By <a href="/users/{{this.posterId}}/profile">{{this.displayName}}</a></h5>
+            {{#if posterUser}}
+            <form method="post" action="/questions/{{../questionInfo._id}}/acceptedAnswer/{{this._id}}">
+            <button type="submit" class="btn btn-sm btn-light" id="accepted-ans-btn">Accept Answer</button>
+            </form>
+            {{/if}}
             {{#if currUser}}
             <div class="btn-group">
-                <a href='/questions/{{../questionInfo._id}}/answers/{{this._id}}/edit'><button class="btn btn-sm btn-light">Edit</button></a>&nbsp;
+                <a href='/questions/{{../questionInfo._id}}/answers/{{this._id}}/edit'><button
+                        class="btn btn-sm btn-light">Edit</button></a>&nbsp;
                 <form method="post" action="/questions/{{../questionInfo._id}}/answers/{{this._id}}">
                     <button type="submit" class="btn btn-sm btn-light">Delete</button>
                     <input name="_method" type="hidden" value="delete">
                 </form>
             </div>
             </div>
+        {{/if}}
+            {{#if userLoggedIn}}
+            <button id="{{this._id}}" type="button" onclick="openModal(this)" class="btn_comment_modal">Add comment</button>
+            <div class="modal" id="commentModal{{this._id}}">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-body">
+                            <form id="commentContent{{this._id}}" method="post"  action="/questions/{{../questionInfo._id}}/answer/{{this._id}}/createComment">
+                            <input name="commentText" id="commentText{{this._id}}" class="form-control w-100" rows="2" required></input>
+                            <br>
+                            <button type="button" id="close{{this_id}}" class="btn btn-default" data-dismiss="modal" onclick="closeModal(this)">Close</button>
+                            <button type="submit" class="btn btn-primary">Sumbit</button>
+                            </form>
+                        </div>
+                    </div><!-- /.model-content -->
+                </div><!-- /.model-dialog -->
+            </div><!-- /.modal -->
             {{/if}}
-        </li>
-        {{/each}}
-    </ul>
-    {{/if}}
+    </li>
+    {{/each}}
+</ul>
+{{/if}}
 </div>
 <hr>
 {{#if userLoggedIn}}
 <h2>Post your answer here</h3>
     {{!-- build a rich text box to submit answer --}}
     {{!-- action need to modify --}}
-    <form id="add-ans" action="/questions/{{questionInfo._id}}/answers/create/" class="input-group d-inline-block" method="post">
-        <textarea name="description" id="description" class="form-control w-100" rows="3" aria-label="" required></textarea>
+    <form id="" action="/questions/{{questionInfo._id}}/answers/create/" class="input-group d-inline-block"
+        method="post">
+        <textarea name="description" id="description" class="form-control w-100" rows="3" aria-label=""
+            required></textarea>
         <br>
         <button type="submit" class="btn btn-primary">Submit</button>
     </form><br><br>
@@ -164,4 +208,4 @@
     {{#unless userLoggedIn}}
     <h3>Contribute to this discussion by <a href="/site/login">logging in here.</a></h3>
     {{/unless}}
-</div>
+    </div>

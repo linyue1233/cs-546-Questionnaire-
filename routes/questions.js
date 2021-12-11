@@ -171,6 +171,21 @@ router.get("/:id", async (req, res) => {
         if (answerPosterDetails && answerPosterDetails._id === req.session.userId) {
           currUser = true;
         }
+        let posterUser = false;
+        if (thisQuestionPoster == req.session.userId) {
+          posterUser = true;
+        }
+        let acceptedAnswer = false;
+        if (questionAns.acceptedAnswer == answer._id) {
+          acceptedAnswer = true;
+        }
+        let sortedComments = [];
+        if(answer.comments.length !== 0){
+          sortedComments = answer.comments.sort(function(a,b){
+            return (b.updatedAt < a.updatedAt) ? -1 : ((a.updatedAt > b.updatedAt) ? 1 : 0);
+          });
+        }
+        sortedComments = sortedComments.splice(0,4);
         answers.push({
           _id: answer._id,
           posterId: answer.posterId,
@@ -181,9 +196,13 @@ router.get("/:id", async (req, res) => {
           voteCount: answer.upvotes.length - answer.downvotes.length,
           thisUserUpvotedAns: answer.upvotes.includes(req.session.userId),
           thisUserDownvotedAns: answer.downvotes.includes(req.session.userId),
+          comments: sortedComments,
           createdAt: answer.createdAt,
           updatedAt: answer.updatedAt,
           currUser: currUser,
+          posterUser: posterUser,
+          acceptedAnswer: acceptedAnswer,
+          userLoggedIn: req.session.userId ? true : false,
         });
       }
     }
@@ -214,7 +233,7 @@ router.get("/:id", async (req, res) => {
       currentUserPostedQuestion: xss(req.session.userId) === thisQuestionPoster ? true : false,
       userReportedQuestion,
       session: req.session,
-      scriptUrl: ["voteHandler.js"],
+      scriptUrl: ["voteHandler.js","commentPost.js"],
     });
   } catch (e) {
     console.log(e);
@@ -338,10 +357,13 @@ router.post("/", async (req, res) => {
       });
       return;
     }
-
+    let anonymous = false;
+    if (QuestionPostData.anonymous) {
+      anonymous = true;
+    }
     try {
       const { title, description, posterId, community, tags } = QuestionPostData;
-      const newQuestion = await questions.addQuestion(title, description, posterId, community, tags);
+      const newQuestion = await questions.addQuestion(title, description, posterId, community, tags, anonymous);
       const addQuetoCom = await communityData.addQuestiontocommunity(community, newQuestion._id);
 
       res.redirect(`/questions/${newQuestion._id}`);
@@ -359,7 +381,7 @@ router.delete("/:questionId/answers/:answerId", async (req, res) => {
   let answerId = xss(req.params.answerId);
   let userAns = await userData.getUserById(req.session.userId);
   if (!req.session.userId || req.session.userId != userAns._id) {
-    res.status(500).json({ error: "Unauthorized access" });
+    res.status(403).json({ error: "Unauthorized access" });
     return;
   }
   await questions.deleteAnswer(answerId);
@@ -573,5 +595,61 @@ router.post("/:questionId/answers/:answerId/downvote", async (req, res) => {
     return;
   }
 });
+
+router.post("/:id/acceptedAnswer/:ansId", async (req, res) => {
+  if (!req.session.userId) {
+    res.redirect("/");
+    return;
+  }
+  try {
+    const questionDetails = await questions.getID(req.params.id);
+    if (questionDetails.posterId != req.session.userId) {
+      res.status(500).json({ error: "unauthorized access" });
+    }
+    let acceptedAnswer = await questions.acceptAnswer(req.params.id, req.params.ansId);
+    if (acceptedAnswer) {
+      res.status(200).redirect("/questions/" + req.params.id);
+    } else {
+      throw "cannot update question";
+    }
+  } catch (e) {
+    console.log(e);
+    res.status(500).json({ error: e });
+  }
+});
+
+// create a comment in an answer
+router.post("/:id/answer/:answerId/createComment", async function(req, res) {
+  // if(!xss(req.session.userId)){
+  //   res.status(403).json({ error: "Unauthorized access" });
+  //   return;
+  // }
+  let questionId = xss(req.params.id);
+  let answerId = xss(req.params.answerId);
+  let commentText = xss(req.body.commentText);
+  let userId = xss(req.session.userId);
+  if(!questionId || !answerId){
+    res.status(403).json({ error: 'Please refresh the page.' });
+    return;
+  }
+  // if(!questionId || !answerId ||!userId ){
+  //   res.status(403).json({ error: 'Please refresh the page.' });
+  //   return;
+  // }
+  if(!commentText || commentText.trim().length === 0){
+    res.status(403).json({ error: 'Please input the valid content.' });
+    return;
+  }
+
+  try{
+    const insertComment = await answers.addComment(commentText,userId,answerId,questionId);
+    if(insertComment){
+      res.redirect("/questions/" + questionId);
+      return;
+    }
+  }catch (e) {
+    res.status(400).json({ error: e });
+  }
+})
 
 module.exports = router;

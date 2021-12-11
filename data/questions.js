@@ -22,6 +22,7 @@ const createAns = async (userId, qId, ans) => {
     description: ans,
     upvotes: [],
     downvotes: [],
+    comments: [],
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   };
@@ -78,6 +79,20 @@ const getID = async (id) => {
   return question;
 };
 
+const acceptAnswer = async (id, aId) => {
+  if (!id || !aId) throw "No Id found";
+  const questionCollection = await questions();
+  let question = await questionCollection.findOne({ _id: id });
+  if (!question) throw "No question with that ID";
+  const acceptAns = {
+    acceptedAnswer: aId,
+    updatedAt: new Date(),
+  };
+  const updatedInfo = await questionCollection.updateOne({ _id: id }, { $set: acceptAns });
+  if (updatedInfo.modifiedCount == 0) throw "Could not update";
+  return true;
+};
+
 const editQuestion = async (id, title, description, tags, communityId) => {
   if (!id) throw "No ID found";
   if (!title || !description || !tags || !communityId) throw "No data found";
@@ -110,7 +125,7 @@ const remove = async (id) => {
   return { deleted: true, id: id };
 };
 
-const addQuestion = async (title, description, posterId, community, tagsstring) => {
+const addQuestion = async (title, description, posterId, community, tagsstring, anonymous) => {
   //Initial testing-posterid is not available
   if (!title || !description || !community || !tagsstring) {
     throw " not a valid inputs";
@@ -143,6 +158,7 @@ const addQuestion = async (title, description, posterId, community, tagsstring) 
     downvotes: [],
     answers: [],
     acceptedAnswer: "",
+    anonymous: anonymous,
     createdAt: new Date(),
     updatedAt: new Date(),
   };
@@ -414,4 +430,5 @@ module.exports = {
   reportQuestion,
   registerUpvoteForAnswer,
   registerDownvoteForAnswer,
+  acceptAnswer,
 };

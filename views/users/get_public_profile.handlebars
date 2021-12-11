@@ -20,7 +20,9 @@
     </div>
     <div class="card-body">
         {{#each postedQuestions}}
+        {{#unless this.anonymous}}
         <p class="card-text"><a href="/questions/{{this._id}}">{{this.title}}</a></p>
+        {{/unless}}
         {{/each}}
   </div>
 </div>
