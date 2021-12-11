@@ -198,6 +198,7 @@ router.get("/:id", async (req, res) => {
           currUser: currUser,
           posterUser: posterUser,
           acceptedAnswer: acceptedAnswer,
+          userLoggedIn: req.session.userId ? true : false,
         });
       }
     }

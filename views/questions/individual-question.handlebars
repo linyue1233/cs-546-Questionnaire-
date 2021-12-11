@@ -146,11 +146,12 @@
                     <input name="_method" type="hidden" value="delete">
                 </form>
             </div>
-        </div>
+            </div>
+        {{/if}}
+            {{#if userLoggedIn}}
             <button id="btnCommentModal" type="button" class="btn_comment_modal">Add comment</button>
             <div class="modal" id="commentModal">
                 <div class="modal-dialog">
-                    <!-- 模块会话 -->
                     <div class="modal-content">
                         <div class="modal-body">
                             <form id="commentContent" method="post"  action="/questions/{{../questionInfo._id}}/answer/{{this._id}}/createComment">
@@ -163,7 +164,7 @@
                     </div><!-- /.model-content -->
                 </div><!-- /.model-dialog -->
             </div><!-- /.modal -->
-        {{/if}}
+            {{/if}}
     </li>
     {{/each}}
 </ul>
