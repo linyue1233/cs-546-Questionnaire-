@@ -21,7 +21,7 @@
         <input class="btn btn-secondary" type="submit" value="Search">
       </form>
     <div class="btn-group" role="group" aria-label="">
-      <a href="/"><button type="button" class="btn btn-light">Home</button></a>&nbsp;
+      <button type="button" onclick="location.href='/'" class="btn btn-light">Home</button>&nbsp;
       <div class="dropdown">
     <button class="btn btn-light dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
       Menu
@@ -37,11 +37,15 @@
     </div>
   </div>&nbsp;
     {{#if session.userId}}
-        <a href="/users/{{session.userId}}"><button type="button" class="btn btn-light">My Account</button></a>&nbsp;
-        <a href="/site/logout"><button type="button" class="btn btn-light">Logout</button></a>
+        {{!-- <a href="/users/{{session.userId}}"><button type="button" class="btn btn-light">My Account</button></a>&nbsp; --}}
+        <button type="button" class="btn btn-light" onclick="location.href='/users/{{session.userId}}'">My Account</button></a>&nbsp;
+        {{!-- <a href="/site/logout"><button type="button" class="btn btn-light">Logout</button></a> --}}
+        <button type="button" class="btn btn-light" onclick="location.href='/site/logout'">Logout</button>
       {{else}}
-        <a href="/users/signup"><button type="button" class="btn btn-light">Register</button></a>&nbsp;
-        <a href="/site/login"><button type="button" class="btn btn-light">Login</button></a>
+        {{!-- <a href="/users/signup"><button type="button" class="btn btn-light">Register</button></a>&nbsp; --}}
+        <button type="button" class="btn btn-light" onclick="location.href='/users/signup'">Register</button>&nbsp;
+        {{!-- <a href="/site/login"><button type="button" class="btn btn-light">Login</button></a> --}}
+        <button type="button" class="btn btn-light" onclick="location.href='/site/login'">Login</button>
       </div>
       {{/if}}
     </nav>
