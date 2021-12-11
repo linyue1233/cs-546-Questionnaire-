@@ -5,8 +5,8 @@ const validateStrings = (...strs) => {
     if (!str) return false;
     if (typeof str !== "string") return false;
     if (str.length === 0 || str.trim().length === 0) return false;
-    const regex = new RegExp("^[a-zA-Z0-9_]*$");
-    if (!regex.test(str)) return false;
+    // const regex = new RegExp("^[a-zA-Z0-9_]*$");
+    // if (!regex.test(str)) return false;
   }
   return true;
 };

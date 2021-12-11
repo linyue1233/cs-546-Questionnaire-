@@ -8,17 +8,17 @@
                 <p>{{questionInfo.description}}</p>
                 <div class="votingsystem">
                     {{#if thisUserUpvoted}}
-                    <i class="fas fa-thumbs-up upvote" data-id="/questions/{{questionInfo._id}}/upvote"></i>
+                        <i class="fas fa-thumbs-up  fa-2x upvote" data-id="/questions/{{questionInfo._id}}/upvote"></i>
                     {{/if}}
                     {{#unless thisUserUpvoted}}
-                    <i class="far fa-thumbs-up upvote" data-id="/questions/{{questionInfo._id}}/upvote"></i>
+                        <i class="far fa-thumbs-up  fa-2x upvote" data-id="/questions/{{questionInfo._id}}/upvote"></i>
                     {{/unless}}
-                    <span class="label label-primary votecounter">{{ questionInfo.votes }}</span>
+                    <span class="label label-primary border-around votecounter">{{ questionInfo.votes }}</span>
                     {{#if thisUserDownvoted}}
-                    <i class="fas fa-thumbs-down downvote" data-id="/questions/{{questionInfo._id}}/downvote"></i>
+                        <i class="fas fa-thumbs-down fa-2x downvote" data-id="/questions/{{questionInfo._id}}/downvote"></i>
                     {{/if}}
                     {{#unless thisUserDownvoted}}
-                    <i class="far fa-thumbs-down downvote" data-id="/questions/{{questionInfo._id}}/downvote"></i>
+                        <i class="far fa-thumbs-down fa-2x downvote" data-id="/questions/{{questionInfo._id}}/downvote"></i>
                     {{/unless}}
                 </div>
                 <a>{{ post.title }}</a>
@@ -36,10 +36,10 @@
                         <p>Last Updated On: {{ questionInfo.friendlyUpdatedAt}}</p>
                     </div>
                 </div>
-                <br>
-                {{#if userLoggedIn}}
-                <button class="btn btn-light"><a href="/questions/{{questionInfo._id}}/edit">Edit</a></button>
-                <button class="btn btn-light"><a href="/questions/{{questionInfo._id}}/delete">Delete</a></button>
+            <br>
+            {{#if userLoggedIn}}
+            <button class="btn btn-light"><a href="/questions/{{questionInfo._id}}/edit">Edit</a></button>
+            <button class="btn btn-light"><a href="/questions/{{questionInfo._id}}/delete">Delete</a></button>
                 {{#if userReportedQuestion}}
                 <span class="btn-place">
                     <button class="btn btn-secondary" disabled>Flagged For Review</button>
@@ -53,7 +53,6 @@
                 {{/unless}}
             {{/if}}
         {{/if}}
-        
         {{#unless currentUserPostedQuestion}}
         <span><h1>{{questionInfo.title}}</h1>
             <div class="card float-right">
@@ -74,43 +73,39 @@
         </div>
         <p>{{questionInfo.description}}</p>
         <div class="votingsystem">
-            {{#if thisUserUpvoted}}
-            <i class="fas fa-thumbs-up upvote" data-id="/questions/{{questionInfo._id}}/upvote"></i>
-            {{/if}}
-            {{#unless thisUserUpvoted}}
-            <i class="far fa-thumbs-up upvote" data-id="/questions/{{questionInfo._id}}/upvote"></i>
-            {{/unless}}
-            <span class="label label-primary votecounter">{{ questionInfo.votes }}</span>
-            {{#if thisUserDownvoted}}
-            <i class="fas fa-thumbs-down downvote" data-id="/questions/{{questionInfo._id}}/downvote"></i>
-            {{/if}}
-            {{#unless thisUserDownvoted}}
-            <i class="far fa-thumbs-down downvote" data-id="/questions/{{questionInfo._id}}/downvote"></i>
-            {{/unless}}
+                    {{#if thisUserUpvoted}}
+                        <i class="fas fa-thumbs-up upvote" data-id="/questions/{{questionInfo._id}}/upvote"></i>
+                    {{/if}}
+                    {{#unless thisUserUpvoted}}
+                        <i class="far fa-thumbs-up upvote" data-id="/questions/{{questionInfo._id}}/upvote"></i>
+                    {{/unless}}
+                    <span class="label label-primary  border-around votecounter">{{ questionInfo.votes }}</span>
+                    {{#if thisUserDownvoted}}
+                        <i class="fas fa-thumbs-down downvote" data-id="/questions/{{questionInfo._id}}/downvote"></i>
+                    {{/if}}
+                    {{#unless thisUserDownvoted}}
+                        <i class="far fa-thumbs-down downvote" data-id="/questions/{{questionInfo._id}}/downvote"></i>
+                    {{/unless}}
         </div>
         {{#if userLoggedIn}}
-        {{#if userReportedQuestion}}
-        <div class="btn-place">
-            <button class="btn btn-secondary" disabled>Flagged For Review</button>
-        </div>
-        {{/if}}
-        {{#unless userReportedQuestion}}
-        <div class="btn-place">
-            <button class="btn btn-danger" id="reportQuestion"
-                data-id="/questions/{{questionInfo._id}}/report">Report</button>
+            {{#if userReportedQuestion}}
+            <div class="btn-place">
+                 <button class="btn btn-secondary" disabled>Flagged For Review</button>
+            </div>
+            {{/if}}
+            {{#unless userReportedQuestion}}
+            <div class="btn-place">
+               <button class="btn btn-danger" id="reportQuestion" data-id="/questions/{{questionInfo._id}}/report">Report</button>
+            </div>
             {{/unless}}
-        </div>
-        {{/if}}
+        {{/if}}  
         {{/unless}}
         <hr>
         {{#each questionInfo.tags}}
         <span class="badge badge-pill badge-info">{{this}}</span>
         {{/each}}
-    </div>
-    <p>
-    </p>
-</div>
-
+        </div>
+        </div>
 <hr>
 
     {{#if questionInfo.answers.length}}
@@ -131,6 +126,28 @@
             <div class="alert alert-success mb-0">This answer has been accepted by the admin</div>
             {{/if}}
             <div class="card-header border-0">
+                <div class="float-right">
+                {{!-- upvote and downvote containers for answer --}}
+                {{#if thisUserUpvotedAns}}
+                    <i class="fas fa-thumbs-up ans-up" data-id="/questions/{{../questionInfo._id}}/answers/{{this._id}}/upvote"></i>
+                {{/if}}
+                {{#unless thisUserUpvotedAns}}
+                    <i class="far fa-thumbs-up ans-up" data-id="/questions/{{../questionInfo._id}}/answers/{{this._id}}/upvote"></i>
+                {{/unless}}
+                    <span class="label border-around label-primary ans-votecounter">{{this.voteCount}}</span>
+                {{#if thisUserDownvotedAns}}
+                    <i class="fas fa-thumbs-down ans-down" data-id="/questions/{{../questionInfo._id}}/answers/{{this._id}}//downvote"></i>
+                {{/if}}
+                {{#unless thisUserDownvotedAns}}
+                    <i class="far fa-thumbs-down ans-down" data-id="/questions/{{../questionInfo._id}}/answers/{{this._id}}/downvote"></i>
+                {{/unless}}
+            </div>
+            {{#if this.displayName}}
+                <h5 class="lead">Posted By <a href="/users/{{this.posterId}}/profile">{{this.displayName}}</a></h5>
+            {{/if}}
+            {{#unless this.displayName}}
+                <h5 class="lead">Posted By <strong>Deleted User</strong></a></h5>
+            {{/unless}}
             <h5 class="lead">Posted By <a href="/users/{{this.posterId}}/profile">{{this.displayName}}</a></h5>
             {{#if posterUser}}
             <form method="post" action="/questions/{{../questionInfo._id}}/acceptedAnswer/{{this._id}}">

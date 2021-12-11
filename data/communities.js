@@ -81,6 +81,7 @@ const editCommunity = async (userId, communityId, editPayload) => {
   validator.validateCommunityId(communityId);
   validator.validateCommunityEditPayload(editPayload);
   const communityCollection = await communities();
+  const usersCollection = await users();
   let existingCommunity = await communityCollection.findOne({ _id: communityId });
   if (existingCommunity === null) {
     throw `There is no community matching the provided id.`;
@@ -97,6 +98,16 @@ const editCommunity = async (userId, communityId, editPayload) => {
         administrator: editPayload.administrator,
       },
     }
+  );
+  const updateExistingUser = await usersCollection.updateOne(
+    {
+      _id: existingCommunity.administrator,
+    },
+    { $pull: { adminCommunities: communityId } }
+  );
+  const insertCurrentAdmin = await usersCollection.updateOne(
+    { _id: editPayload.administrator },
+    { $addToSet: { adminCommunities: communityId } }
   );
   if (updateCommunity.modifiedCount === 0) {
     return { updateSuccess: true, updatedCommunity: await communityCollection.findOne({ _id: communityId }) };

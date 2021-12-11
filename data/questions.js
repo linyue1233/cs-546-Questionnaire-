@@ -324,6 +324,93 @@ const reportQuestion = async (questionId, userId) => {
   return true;
 };
 
+const registerUpvoteForAnswer = async (questionId, answerId, userId) => {
+  validator.validateId(questionId);
+  validator.validateId(answerId);
+  validator.validateId(userId);
+  const questionCollection = await questions();
+  const existingQuestion = await questionCollection.findOne({ _id: questionId, "answers._id": answerId });
+  if (!existingQuestion) throw `No question present with id (${questionId}) and answer (${answerId})`;
+  for (const answer of existingQuestion.answers) {
+    if (answer.upvotes.includes(userId)) {
+      // upvote already done - toggle and remove userId from upvotes array.
+      await questionCollection.updateOne(
+        { _id: questionId, "answers._id": answerId },
+        { $pull: { "answers.$.upvotes": userId } }
+      );
+    }
+    if (answer.downvotes.includes(userId)) {
+      // upvote to be done while present in downvote array - toggle and remove userId from downvotes array and add it to upvotes array
+      await questionCollection.updateOne(
+        { _id: questionId, "answers._id": answerId },
+        { $pull: { "answers.$.downvotes": userId } }
+      );
+      await questionCollection.updateOne(
+        { _id: questionId, "answers._id": answerId },
+        { $addToSet: { "answers.$.upvotes": userId } }
+      );
+    }
+    if (!answer.upvotes.includes(userId) && !answer.downvotes.includes(userId)) {
+      // user not present in both upvote and downvote array - add to upvote directly.
+      await questionCollection.updateOne(
+        { _id: questionId, "answers._id": answerId },
+        { $addToSet: { "answers.$.upvotes": userId } }
+      );
+    }
+  }
+  // return final count here
+  const question = await questionCollection.findOne({ _id: questionId, "answers._id": answerId });
+  let count = 0;
+  for (const answer of question.answers) {
+    if (answerId === answer._id) {
+      count = answer.upvotes.length - answer.downvotes.length;
+    }
+  }
+  return count;
+};
+
+const registerDownvoteForAnswer = async (questionId, answerId, userId) => {
+  validator.validateId(questionId);
+  validator.validateId(answerId);
+  validator.validateId(userId);
+  const questionCollection = await questions();
+  const existingQuestion = await questionCollection.findOne({ _id: questionId, "answers._id": answerId });
+  if (!existingQuestion) throw `No question present with id (${questionId}) and answer (${answerId})`;
+  for (const answer of existingQuestion.answers) {
+    if (answer.downvotes.includes(userId)) {
+      await questionCollection.updateOne(
+        { _id: questionId, "answers._id": answerId },
+        { $pull: { "answers.$.downvotes": userId } }
+      );
+    }
+    if (answer.upvotes.includes(userId)) {
+      await questionCollection.updateOne(
+        { _id: questionId, "answers._id": answerId },
+        { $pull: { "answers.$.upvotes": userId } }
+      );
+      await questionCollection.updateOne(
+        { _id: questionId, "answers._id": answerId },
+        { $addToSet: { "answers.$.downvotes": userId } }
+      );
+    }
+    if (!answer.upvotes.includes(userId) && !answer.downvotes.includes(userId)) {
+      await questionCollection.updateOne(
+        { _id: questionId, "answers._id": answerId },
+        { $addToSet: { "answers.$.downvotes": userId } }
+      );
+    }
+  }
+  // return final count here
+  const question = await questionCollection.findOne({ _id: questionId, "answers._id": answerId });
+  let count = 0;
+  for (const answer of question.answers) {
+    if (answerId === answer._id) {
+      count = answer.upvotes.length - answer.downvotes.length;
+    }
+  }
+  return count;
+};
+
 module.exports = {
   remove,
   editQuestion,
@@ -341,5 +428,7 @@ module.exports = {
   getAllByCommunityId,
   registerDownvote,
   reportQuestion,
+  registerUpvoteForAnswer,
+  registerDownvoteForAnswer,
   acceptAnswer,
 };
