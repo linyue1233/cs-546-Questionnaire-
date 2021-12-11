@@ -120,7 +120,7 @@ downvoteElement.click((event) => {
 });
 
 $("#add-ans").submit((event) => {
-  let answerContent = $("#description").value;
+  let answerContent = $("#description").val();
   if (answerContent.length === 0 || answerContent.trim().length === 0) {
     event.preventDefault();
     $("#add-ans").prepend(`<div class="alert alert-warning alert-dismissible fade show" role="alert">Someone once said
@@ -167,29 +167,29 @@ $(".report-ans").click((event) => {
   event.preventDefault();
   let requestConfig = {
     method: "POST",
-    url: $("#reportQuestion").attr("data-id"),
+    url: event.target.dataset.id,
   };
   console.log(requestConfig);
-  $.ajax(requestConfig).then(
-    (response) => {
-      $("#textSubmit")
-        .prepend(`<div class="alert alert-success alert-dismissible fade show" role="alert">${response.message}
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-    </button>
-</div>`);
-      $(".btn-place").html(null);
-      $(".btn-place").html(
-        `<button class="btn btn-secondary" disabled id="reportQuestion">Flagged for review</button>`
-      );
-    },
-    (reason) => {
-      $("#textSubmit")
-        .prepend(`<div class="alert alert-success alert-dismissible fade show" role="alert">${response.message}
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-    </button>
-</div>`);
-    }
-  );
+  //   $.ajax(requestConfig).then(
+  //     (response) => {
+  //       $("#textSubmit")
+  //         .prepend(`<div class="alert alert-success alert-dismissible fade show" role="alert">${response.message}
+  //     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+  //         <span aria-hidden="true">&times;</span>
+  //     </button>
+  // </div>`);
+  //       $(".btn-place").html(null);
+  //       $(".btn-place").html(
+  //         `<button class="btn btn-secondary" disabled id="reportQuestion">Flagged for review</button>`
+  //       );
+  //     },
+  //     (reason) => {
+  //       $("#textSubmit")
+  //         .prepend(`<div class="alert alert-success alert-dismissible fade show" role="alert">${response.message}
+  //     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+  //         <span aria-hidden="true">&times;</span>
+  //     </button>
+  // </div>`);
+  //     }
+  //  );
 });
