@@ -8,10 +8,10 @@
                 <p>{{questionInfo.description}}</p>
                 <div class="votingsystem">
                     {{#if thisUserUpvoted}}
-                        <i class="fas fa-thumbs-up  fa-2x upvote" data-id="/questions/{{questionInfo._id}}/upvote"></i>
+                        <i class="fas fa-thumbs-up fa-2x upvote" data-id="/questions/{{questionInfo._id}}/upvote"></i>
                     {{/if}}
                     {{#unless thisUserUpvoted}}
-                        <i class="far fa-thumbs-up  fa-2x upvote" data-id="/questions/{{questionInfo._id}}/upvote"></i>
+                        <i class="far fa-thumbs-up fa-2x upvote" data-id="/questions/{{questionInfo._id}}/upvote"></i>
                     {{/unless}}
                     <span class="label label-primary border-around votecounter">{{ questionInfo.votes }}</span>
                     {{#if thisUserDownvoted}}
@@ -28,7 +28,7 @@
                     </div>
                     <div class="card-body">
                         {{#if questionInfo.anonymous}}
-                            <p>Posted By: Anonymous user</p>
+                            <p>Posted Anonymously</p>
                         {{else}}
                             <p>Posted By: <a href="/users/{{questionPoster._id}}/profile">{{questionPoster.displayName}}</a></p>
                         {{/if}}
@@ -61,7 +61,7 @@
                     </div>
                     <div class="card-body">
                         {{#if questionInfo.anonymous}}
-                            <p>Posted By: Anonymous user</p>
+                            <p>Posted By: Anonymous User</p>
                         {{else}}
                             <p>Posted By: <a href="/users/{{questionPoster._id}}/profile">{{questionPoster.displayName}}</a></p>
                         {{/if}}
@@ -89,6 +89,7 @@
         </div>
         {{#if userLoggedIn}}
             {{#if userReportedQuestion}}
+            <br>
             <div class="btn-place">
                  <button class="btn btn-secondary" disabled>Flagged For Review</button>
             </div>
@@ -123,7 +124,7 @@
         </div>
         {{/if}}
             {{#if acceptedAnswer}}
-            <div class="alert alert-success mb-0">This answer has been accepted by the admin</div>
+            <div class="alert alert-success mb-0">This answer has been accepted by the question poster</div>
             {{/if}}
             <div class="card-header border-0">
                 <div class="float-right">
@@ -146,12 +147,11 @@
                 <h5 class="lead">Posted By <a href="/users/{{this.posterId}}/profile">{{this.displayName}}</a></h5>
             {{/if}}
             {{#unless this.displayName}}
-                <h5 class="lead">Posted By <strong>Deleted User</strong></a></h5>
+                <h5 class="lead">Posted By <strong>Unknown User</strong></a></h5>
             {{/unless}}
-            <h5 class="lead">Posted By <a href="/users/{{this.posterId}}/profile">{{this.displayName}}</a></h5>
             {{#if posterUser}}
             <form method="post" action="/questions/{{../questionInfo._id}}/acceptedAnswer/{{this._id}}">
-            <button type="submit" class="btn btn-sm btn-light" id="accepted-ans-btn">Accept Answer</button>
+                <button type="submit" class="btn btn-sm btn-light" id="accepted-ans-btn">Accept Answer</button>
             </form>
             {{/if}}
             {{#if currUser}}
@@ -175,7 +175,7 @@
                             <input name="commentText" id="commentText{{this._id}}" class="form-control w-100" rows="2" required></input>
                             <br>
                             <button type="button" id="close{{this_id}}" class="btn btn-default" data-dismiss="modal" onclick="closeModal(this)">Close</button>
-                            <button type="submit" class="btn btn-primary">Sumbit</button>
+                            <button type="submit" class="btn btn-primary">Submit</button>
                             </form>
                         </div>
                     </div><!-- /.model-content -->
@@ -192,7 +192,7 @@
 <h2>Post your answer here</h3>
     {{!-- build a rich text box to submit answer --}}
     {{!-- action need to modify --}}
-    <form id="" action="/questions/{{questionInfo._id}}/answers/create/" class="input-group d-inline-block"
+    <form id="add-ans" action="/questions/{{questionInfo._id}}/answers/create/" class="input-group d-inline-block"
         method="post">
         <textarea name="description" id="description" class="form-control w-100" rows="3" aria-label=""
             required></textarea>
