@@ -38,9 +38,10 @@
   </div>&nbsp;
     {{#if session.userId}}
         {{!-- <a href="/users/{{session.userId}}"><button type="button" class="btn btn-light">My Account</button></a>&nbsp; --}}
-        <button type="button" class="btn btn-light" onclick="location.href='/users/{{session.userId}}'">My Account</button></a>&nbsp;
+        <button type="button" class="btn btn-light" onclick="location.href='/users/{{session.userId}}'">My Account</button>&nbsp;
         {{!-- <a href="/site/logout"><button type="button" class="btn btn-light">Logout</button></a> --}}
         <button type="button" class="btn btn-light" onclick="location.href='/site/logout'">Logout</button>
+    </div>
       {{else}}
         {{!-- <a href="/users/signup"><button type="button" class="btn btn-light">Register</button></a>&nbsp; --}}
         <button type="button" class="btn btn-light" onclick="location.href='/users/signup'">Register</button>&nbsp;
