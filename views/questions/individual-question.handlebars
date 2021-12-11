@@ -149,45 +149,46 @@
             {{#unless this.displayName}}
                 <h5 class="lead">Posted By <strong>Unknown User</strong></a></h5>
             {{/unless}}
-            {{#if posterUser}}
-            <form method="post" action="/questions/{{../questionInfo._id}}/acceptedAnswer/{{this._id}}">
-                <button type="submit" class="btn btn-sm btn-light" id="accepted-ans-btn">Accept Answer</button>
-            </form>
-            {{/if}}
             {{#if currUser}}
             <div class="btn-group">
+                {{#if posterUser}}
+                <form method="post" action="/questions/{{../questionInfo._id}}/acceptedAnswer/{{this._id}}">
+                <button type="submit" class="btn btn-sm btn-light" id="accepted-ans-btn">Accept Answer</button>
+                </form> 
+                {{/if}}
                 <a href='/questions/{{../questionInfo._id}}/answers/{{this._id}}/edit'><button
                         class="btn btn-sm btn-light">Edit</button></a>&nbsp;
                 <form method="post" action="/questions/{{../questionInfo._id}}/answers/{{this._id}}">
                     <button type="submit" class="btn btn-sm btn-light">Delete</button>
                     <input name="_method" type="hidden" value="delete">
                 </form>
-            </div>
-            </div>
-        {{/if}}
-            {{#if userLoggedIn}}
-            <button id="{{this._id}}" type="button" onclick="openModal(this)" class="btn_comment_modal">Add comment</button>
-            <div class="modal" id="commentModal{{this._id}}">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-body">
-                            <form id="commentContent{{this._id}}" method="post"  action="/questions/{{../questionInfo._id}}/answer/{{this._id}}/createComment">
-                            <input name="commentText" id="commentText{{this._id}}" class="form-control w-100" rows="2" required></input>
-                            <br>
-                            <button type="button" id="close{{this_id}}" class="btn btn-default" data-dismiss="modal" onclick="closeModal(this)">Close</button>
-                            <button type="submit" class="btn btn-primary">Submit</button>
-                            </form>
-                        </div>
-                    </div><!-- /.model-content -->
-                </div><!-- /.model-dialog -->
-            </div><!-- /.modal -->
             {{/if}}
-    </li>
+                {{#if userLoggedIn}}
+                <button id="{{this._id}}" type="button" onclick="openModal(this)" class="btn_comment_modal btn-sm btn-light">Add comment</button>
+                {{#if userReportedAnswer}}
+                    <br>
+                    <div class="btn-place">
+                 <button class="btn btn-secondary" disabled>Flagged For Review</button>
+            </div>
+            {{/if}}
+            {{#unless userReportedAnswer}}
+            <div class="btn-place">
+               <button class="btn btn-danger btn-sm" id="reportAnswer" data-id="/questions/{{../questionInfo._id}}/answers/{{this._id}}/report">Report</button>
+            </div>
+            </div>
+            {{/unless}}
+        {{/if}}  
+            
+        </li>
     {{/each}}
+    
 </ul>
 {{/if}}
 </div>
+
+            
 <hr>
+
 {{#if userLoggedIn}}
 <h2>Post your answer here</h3>
     {{!-- build a rich text box to submit answer --}}
@@ -209,3 +210,22 @@
     <h3>Contribute to this discussion by <a href="/site/login">logging in here.</a></h3>
     {{/unless}}
     </div>
+    </div>
+    </div>
+
+    {{#if userLoggedIn}}
+            <div class="modal" id="commentModal{{this._id}}">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-body">
+                            <form id="commentContent{{this._id}}" method="post"  action="/questions/{{../questionInfo._id}}/answer/{{this._id}}/createComment">
+                            <input name="commentText" id="commentText{{this._id}}" class="form-control w-100" rows="2" required></input>
+                            <br>
+                            <button type="button" id="close{{this_id}}" class="btn btn-default" data-dismiss="modal" onclick="closeModal(this)">Close</button>
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                            </form>
+                        </div>
+                    </div><!-- /.model-content -->
+                </div><!-- /.model-dialog -->
+            </div><!-- /.modal -->
+            {{/if}}

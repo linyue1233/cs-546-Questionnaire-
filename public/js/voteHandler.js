@@ -141,6 +141,37 @@ $("#reportQuestion").click((event) => {
   console.log(requestConfig);
   $.ajax(requestConfig).then(
     (response) => {
+      $(".card-body").first()
+        .prepend(`<div class="alert alert-success alert-dismissible fade show" role="alert">${response.message}. The admin will look into this and will resolve accordingly.
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>`);
+      $(".btn-place").html(null);
+      $(".btn-place").html(
+        `<button class="btn btn-secondary" disabled id="reportQuestion">Flagged for review</button>`
+      );
+    },
+    (reason) => {
+      $(".card-body").first()
+        .prepend(`<div class="alert alert-success alert-dismissible fade show" role="alert">${response.message}
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>`);
+    }
+  );
+});
+
+$(".report-ans").click((event) => {
+  event.preventDefault();
+  let requestConfig = {
+    method: "POST",
+    url: $("#reportQuestion").attr("data-id"),
+  };
+  console.log(requestConfig);
+  $.ajax(requestConfig).then(
+    (response) => {
       $("#textSubmit")
         .prepend(`<div class="alert alert-success alert-dismissible fade show" role="alert">${response.message}
     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
