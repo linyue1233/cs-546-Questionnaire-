@@ -108,6 +108,14 @@
         {{#each questionInfo.answers}}    
         <li class="list-group-item p-0 mb-1">
             <p class="h3 font-weight-normal card-body">{{{this.description}}}</p>
+            {{#if this.comments.length}}
+            <div>
+                <h3>Comments</h3>
+                {{#each this.comments}}
+                    <p>{{this.commentText}}</p>
+                {{/each}}
+            </div>
+            {{/if}}
             <div class="card-header border-0">
             <h5 class="lead">Posted By <a href="/users/{{this.posterId}}/profile">{{this.displayName}}</a></h5>
             {{#if currUser}}

@@ -22,6 +22,7 @@ const createAns = async (userId, qId, ans) => {
     description: ans,
     upvotes: [],
     downvotes: [],
+    comments: [],
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   };
