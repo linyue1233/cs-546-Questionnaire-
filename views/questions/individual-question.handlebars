@@ -149,15 +149,15 @@
             </div>
         {{/if}}
             {{#if userLoggedIn}}
-            <button id="btnCommentModal" type="button" class="btn_comment_modal">Add comment</button>
-            <div class="modal" id="commentModal">
+            <button id="{{this._id}}" type="button" onclick="openModal(this)" class="btn_comment_modal">Add comment</button>
+            <div class="modal" id="commentModal{{this._id}}">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-body">
-                            <form id="commentContent" method="post"  action="/questions/{{../questionInfo._id}}/answer/{{this._id}}/createComment">
-                            <input name="commentText" id="commentText" class="form-control w-100" rows="2" required></input>
+                            <form id="commentContent{{this._id}}" method="post"  action="/questions/{{../questionInfo._id}}/answer/{{this._id}}/createComment">
+                            <input name="commentText" id="commentText{{this._id}}" class="form-control w-100" rows="2" required></input>
                             <br>
-                            <button type="button" class="btn btn-default" data-dismiss="modal" onclick="closeModal()">Close</button>
+                            <button type="button" id="close{{this_id}}" class="btn btn-default" data-dismiss="modal" onclick="closeModal(this)">Close</button>
                             <button type="submit" class="btn btn-primary">Sumbit</button>
                             </form>
                         </div>
