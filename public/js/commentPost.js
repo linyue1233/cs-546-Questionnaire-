@@ -31,30 +31,30 @@
 let allAnswerId = "";
 
 function openModal(answer) {
-    let answerId = $(answer).attr('id');
-    console.log(answerId);
-    let commentModal = document.getElementById("commentModal" + answerId);
-    allAnswerId = answerId;
-    commentModal.style.display = "block";
-    document.getElementById("commentContent" + answerId).addEventListener('submit', (event) => {
-        let comment = document.getElementById("commentText" + answerId).value;
-        console.log(comment);
-        if (comment === undefined || comment.trim() === "") {
-            event.preventDefault();
-            if (document.getElementById("contentError"+answerId)) {
-                return;
-            } else {
-                $("#commentContent"+answerId).append(`<br><p id="contentError${answerId}"> Please input valid content.</p>`);
-                return;
-            }
-        }
-    })
+  let answerId = $(answer).attr("id");
+  console.log(answerId);
+  let commentModal = document.getElementById("commentModal" + answerId);
+  allAnswerId = answerId;
+  commentModal.style.display = "block";
+  document.getElementById("commentContent" + answerId).addEventListener("submit", (event) => {
+    let comment = document.getElementById("commentText" + answerId).value;
+    console.log(comment);
+    if (comment === undefined || comment.trim() === "") {
+      event.preventDefault();
+      if (document.getElementById("contentError" + answerId)) {
+        return;
+      } else {
+        $("#commentContent" + answerId).append(`<br><p id="contentError${answerId}"> Please input valid content.</p>`);
+        return;
+      }
+    }
+  });
 }
 
 function closeModal(answer) {
-    console.log(answer);
-    document.getElementById("commentModal"+allAnswerId).style.display = "none";
-    if($("#contentError"+allAnswerId).html()){
-        $("#contentError"+allAnswerId).hide();
-    }
+  console.log(answer);
+  document.getElementById("commentModal" + allAnswerId).style.display = "none";
+  if ($("#contentError" + allAnswerId).html()) {
+    $("#contentError" + allAnswerId).hide();
+  }
 }
