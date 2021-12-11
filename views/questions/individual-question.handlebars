@@ -3,7 +3,6 @@
     <div class="card">
         <div class="card-body">
             {{#if currentUserPostedQuestion}}
-            <span>
                 <h1>{{questionInfo.title}}</h1>
                 <p>{{questionInfo.description}}</p>
                 <div class="votingsystem">
@@ -54,7 +53,7 @@
             {{/if}}
         {{/if}}
         {{#unless currentUserPostedQuestion}}
-        <span><h1>{{questionInfo.title}}</h1>
+        <h1>{{questionInfo.title}}</h1>
             <div class="card float-right">
                     <div class="card-header">
                         Question Details
@@ -68,8 +67,6 @@
                 <p>Posted On: {{questionInfo.friendlyCreatedAt}}</p>
                 <p>Last Updated On: {{ questionInfo.friendlyUpdatedAt}}</p>
                 </div>
-                
-                </span>
         </div>
         <p>{{questionInfo.description}}</p>
         <div class="votingsystem">
@@ -143,6 +140,7 @@
                     <i class="far fa-thumbs-down ans-down" data-id="/questions/{{../questionInfo._id}}/answers/{{this._id}}/downvote"></i>
                 {{/unless}}
             </div>
+            </div>
             {{#if this.displayName}}
                 <h5 class="lead">Posted By <a href="/users/{{this.posterId}}/profile">{{this.displayName}}</a></h5>
             {{/if}}
@@ -170,7 +168,7 @@
                     <div class="modal-content">
                         <div class="modal-body">
                             <form id="commentContent{{this._id}}" method="post"  action="/questions/{{../questionInfo._id}}/answer/{{this._id}}/createComment">
-                            <input name="commentText" id="commentText{{this._id}}" class="form-control w-100" rows="2" required></input>
+                            <input name="commentText" id="commentText{{this._id}}" class="form-control w-100" required>
                             <br>
                             <button type="button" id="close{{this_id}}" class="btn btn-default" data-dismiss="modal" onclick="closeModal(this)">Close</button>
                             <button type="submit" class="btn btn-primary">Submit</button>
@@ -228,13 +226,13 @@
     </div>
     </div>
 
-    {{#if userLoggedIn}}
+    {{!-- {{#if userLoggedIn}}
             <div class="modal" id="commentModal{{this._id}}">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-body">
                             <form id="commentContent{{this._id}}" method="post"  action="/questions/{{../questionInfo._id}}/answer/{{this._id}}/createComment">
-                            <input name="commentText" id="commentText{{this._id}}" class="form-control w-100" rows="2" required></input>
+                            <input name="commentText" id="commentText{{this._id}}" class="form-control w-100" required>
                             <br>
                             <button type="button" id="close{{this_id}}" class="btn btn-default" data-dismiss="modal" onclick="closeModal(this)">Close</button>
                             <button type="submit" class="btn btn-primary">Submit</button>
@@ -243,4 +241,4 @@
                     </div><!-- /.model-content -->
                 </div><!-- /.model-dialog -->
             </div><!-- /.modal -->
-            {{/if}}
+            {{/if}} --}}
