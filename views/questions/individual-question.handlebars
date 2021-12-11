@@ -24,7 +24,7 @@
                 <a>{{ post.title }}</a>
                 <div class="card float-right">
                     <div class="card-header">
-                        Poster Details
+                        Question Details
                     </div>
                     <div class="card-body">
                         {{#if questionInfo.anonymous}}
@@ -57,11 +57,11 @@
         <span><h1>{{questionInfo.title}}</h1>
             <div class="card float-right">
                     <div class="card-header">
-                        Poster Details
+                        Question Details
                     </div>
                     <div class="card-body">
                         {{#if questionInfo.anonymous}}
-                            <p>Posted By: Anonymous User</p>
+                            <p>Posted Anonymously</p>
                         {{else}}
                             <p>Posted By: <a href="/users/{{questionPoster._id}}/profile">{{questionPoster.displayName}}</a></p>
                         {{/if}}
@@ -149,13 +149,13 @@
             {{#unless this.displayName}}
                 <h5 class="lead">Posted By <strong>Unknown User</strong></a></h5>
             {{/unless}}
-            {{#if currUser}}
             <div class="btn-group">
                 {{#if posterUser}}
                 <form method="post" action="/questions/{{../questionInfo._id}}/acceptedAnswer/{{this._id}}">
                 <button type="submit" class="btn btn-sm btn-light" id="accepted-ans-btn">Accept Answer</button>
-                </form> 
+                </form>
                 {{/if}}
+                {{#if currUser}}
                 <a href='/questions/{{../questionInfo._id}}/answers/{{this._id}}/edit'><button
                         class="btn btn-sm btn-light">Edit</button></a>&nbsp;
                 <form method="post" action="/questions/{{../questionInfo._id}}/answers/{{this._id}}">
