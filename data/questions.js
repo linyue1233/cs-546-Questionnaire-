@@ -301,24 +301,30 @@ const reportQuestion = async (questionId, userId) => {
   }
   let count = 0;
   let isPresent = false;
+  let flaggedUserArray = [];
   for (const question of presentCommunity.flaggedQuestions) {
-    if (question.reporterId === userId) {
-      throw `User already reported this question.`;
+    if (question._id === questionId) {
+      isPresent = true;
+      for (const reporter of question.reporterId) {
+        if (reporter == userId) {
+          throw `User already reported this question.`;
+        }
+      }
+      flaggedUserArray = question.reporterId;
     }
-    if (question._id === questionId) isPresent = true;
-    break;
   }
 
+  flaggedUserArray.push(userId);
   // console.log(toAdd);
   if (isPresent) {
     const incrementReport = await communityCollection.updateOne(
       { _id: existingCommunityId, "flaggedQuestions._id": questionId },
-      { $inc: { "flaggedQuestions.$.flag": 1 } }
+      { $inc: { "flaggedQuestions.$.flag": 1 }, $set: { "flaggedQuestions.$.reporterId": flaggedUserArray } }
     );
   } else {
     const addToReport = await communityCollection.updateOne(
       { _id: existingCommunityId },
-      { $push: { flaggedQuestions: { _id: questionId, reporterId: userId, flag: 1 } } }
+      { $push: { flaggedQuestions: { _id: questionId, reporterId: [userId], flag: 1 } } }
     );
   }
   return true;

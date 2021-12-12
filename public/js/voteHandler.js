@@ -147,8 +147,8 @@ $("#reportQuestion").click((event) => {
         <span aria-hidden="true">&times;</span>
     </button>
 </div>`);
-      $(".btn-place").html(null);
-      $(".btn-place").html(
+      $(".qbtn-place").html(null);
+      $(".qbtn-place").html(
         `<button class="btn btn-secondary" disabled id="reportQuestion">Flagged for review</button>`
       );
     },
@@ -172,8 +172,7 @@ $(".report-ans").click((event) => {
   console.log(requestConfig);
   $.ajax(requestConfig).then(
     (response) => {
-      $(event.target).parent().html(null);
-      $(event.target).html(`<button class="btn btn-secondary btn-sm" disabled>Flagged for review</button>`);
+      $(event.target).parent().html(`<button class="btn btn-secondary btn-sm" disabled>Flagged for review</button>`);
     },
     (reason) => {
       $(event.target).parent()

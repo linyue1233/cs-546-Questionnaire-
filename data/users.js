@@ -207,7 +207,7 @@ const performPasswordReset = async (token, newPassword) => {
   if (!user) {
     throw `No user exists with a matching persistence token`;
   }
-  const newHash = await bcrypt.hash(newPassword, 16);
+  const newHash = await bcrypt.hash(newPassword, 10);
   const performReset = await userCollection.updateOne(
     { persistenceToken: token },
     { $set: { password: newHash, persistenceToken: uuid.v4() } }

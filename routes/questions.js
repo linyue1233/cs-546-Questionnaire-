@@ -221,8 +221,12 @@ router.get("/:id", async (req, res) => {
     let userReportedQuestion = false;
     for (const allFlags of communityForQuestion.flaggedQuestions) {
       console.log(req.session.userId, allFlags);
-      if (req.session.userId === allFlags.reporterId) {
-        userReportedQuestion = true;
+      if (allFlags._id == questionAns._id) {
+        for (const reporter of allFlags.reporterId) {
+          if (req.session.userId === reporter) {
+            userReportedQuestion = true;
+          }
+        }
       }
     }
     for (const allAnsFlag of communityForQuestion.flaggedAnswers) {
