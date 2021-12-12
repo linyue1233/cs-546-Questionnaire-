@@ -2,7 +2,7 @@
 
 <article class="edit-user">
     <h1>Update User Profile.</h1>
-  <form action="/users/{{User._id}}/" method="POST" role="form" enctype="multipart/form-data" class="new-question-form">
+  <form action="/users/{{User._id}}/" method="POST" enctype="multipart/form-data" class="new-question-form">
        
     <br>
     <label>
@@ -17,11 +17,11 @@
    <br>
 
     <label>
-       Profile Picture: <input type="file" name="profileImage"  value="{{User.profileImage}}" class="full-width-input"/>
+       Profile Picture: <input type="file" name="profileImage"  class="full-width-input"/>
     </label>
    <br><br>
   
-    </label> 
+    <label> 
         <button id="bu" class="btn btn-secondary btn-sm"> submit</button>
      
     </label>

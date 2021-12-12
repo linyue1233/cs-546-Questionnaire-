@@ -1,17 +1,17 @@
 <h1>Edit Community "{{community.name}}"</h1><br>
 <form id="editcom-form" class="w-50 mx-auto" action="/communities/{{community._id}}/" name="com_edit_form" onsubmit="return validateAdmin()" method="post">
 <div class="form-group">
-  <label for="name">Name</label>
-  <input type="text" class="form-control" name="title" placeholder="Community Title" value="{{community.name}}" required/>
+  <label for="editName">Name</label>
+  <input id="editName" type="text" class="form-control" name="title" placeholder="Community Title" value="{{community.name}}" required/>
 </div>
 <div class="form-group">
-  <label for="description">Description</label><br>
-  <input type="text" class="form-control" name="description" placeholder="Community Description" value="{{community.description}}" required/>
+  <label for="editDescription">Description</label><br>
+  <input id="editDescription" type="text" class="form-control" name="description" placeholder="Community Description" value="{{community.description}}" required/>
   </div>
   <div class="form-group">
     <label for="admin">Administrator</label><br>
   <select class="form-control" id="admin" name="administrator" required>
-    <option disabled>Choose an administrator from these subscribed users</option>
+    <option value="" disabled>Choose an administrator from these subscribed users</option>
     {{#each subscribedUsers}}
       {{#if this.user}}
     <option selected value="{{this.userId}}">{{this.displayName}}</option>  

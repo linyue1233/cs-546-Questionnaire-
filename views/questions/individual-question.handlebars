@@ -37,8 +37,11 @@
                 </div>
             <br>
             {{#if userLoggedIn}}
-            <button class="btn btn-light"><a href="/questions/{{questionInfo._id}}/edit">Edit</a></button>
-            <button class="btn btn-light"><a href="/questions/{{questionInfo._id}}/delete">Delete</a></button>
+            {{!-- <button class="btn btn-light"><a href="/questions/{{questionInfo._id}}/edit">Edit</a></button>
+            <button class="btn btn-light"><a href="/questions/{{questionInfo._id}}/delete">Delete</a></button> --}}
+            <button class="btn btn-light" onclick="location.href='/questions/{{questionInfo._id}}/edit'">Edit</button>
+            <button class="btn btn-light" onclick="location.href='/questions/{{questionInfo._id}}/delete'">Delete</button>
+
                 {{#if userReportedQuestion}}
                 <span class="btn-place">
                     <button class="btn btn-secondary" disabled>Flagged For Review</button>
