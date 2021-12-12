@@ -225,6 +225,16 @@ router.get("/:id", async (req, res) => {
         userReportedQuestion = true;
       }
     }
+    for (const allAnsFlag of communityForQuestion.flaggedAnswers) {
+      for (let i = 0; i < questionAns.answers.length; i++) {
+        if (questionAns.answers[i]._id === allAnsFlag._id && allAnsFlag.reporterId.includes(req.session.userId)) {
+          questionAns.answers[i]["thisUserReportedAns"] = true;
+          // continue;
+        }
+        if (!questionAns.answers[i]["thisUserReportedAns"]) questionAns.answers[i]["thisUserReportedAns"] = false;
+      }
+    }
+    console.log(questionAns);
     // console.log(userReportedQuestion);
     res.status(200).render("questions/individual-question", {
       questionInfo: questionAns,
@@ -652,6 +662,36 @@ router.post("/:id/answer/:answerId/createComment", async function (req, res) {
   } catch (e) {
     console.log(e);
     res.status(400).json({ error: e });
+  }
+});
+
+// ajax route - must return json
+router.post("/:questionId/answers/:answerId/report", async (req, res) => {
+  try {
+    let questionId = xss(req.params.questionId);
+    let answerId = xss(req.params.answerId);
+    let userId = req.session.userId;
+    if (!userId) {
+      res.status(401).json({ message: "You've to be logged in first. " });
+      return;
+    }
+    let validateQuestionId = validator.validateId(questionId);
+    let validateAnswerId = validator.validateId(answerId);
+    if (!(validateQuestionId && validateAnswerId)) {
+      res.status(400).json({ message: "Cannot report question. Invalid parameters passed." });
+      return;
+    }
+    const reportAnswer = await answers.reportAnswer(questionId, answerId, userId);
+    if (reportAnswer) {
+      res.status(200).json({ message: "Successfully reported the answer. " });
+      return;
+    }
+    res.status(400).json({ message: "Couldn't report answer. Something went wrong." });
+    return;
+  } catch (e) {
+    console.log(e);
+    res.status(400).json({ message: "Couldn't report answer. Something went wrong." });
+    return;
   }
 });
 

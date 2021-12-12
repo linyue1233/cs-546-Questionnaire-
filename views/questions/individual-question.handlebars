@@ -178,15 +178,15 @@
                     </div><!-- /.model-dialog -->
                 </div><!-- /.modal -->
                 {{!-- <button id="{{this._id}}" type="button" onclick="openModal(this)" class="btn_comment_modal btn-sm btn-light">Add comment</button> --}}
-                {{#if userReportedAnswer}}
+                {{#if this.thisUserReportedAns}}
                     <br>
                     <div class="btn-place">
-                 <button class="btn btn-secondary" disabled>Flagged For Review</button>
-            </div>
-            {{/if}}
-            {{#unless userReportedAnswer}}
-            <div class="btn-place">
-               <button class="btn btn-danger btn-sm" id="reportAnswer" data-id="/questions/{{../questionInfo._id}}/answers/{{this._id}}/report">Report</button>
+                 <button class="btn btn-secondary btn-sm" disabled>Flagged For Review</button>
+                </div>
+                {{/if}}
+                {{#unless this.thisUserReportedAns}}
+                <div class="btn-place">
+                    <button class="btn btn-danger btn-sm report-ans" data-id="/questions/{{../questionInfo._id}}/answers/{{this._id}}/report">Report</button>
             </div>
             </div>
             {{/unless}}
