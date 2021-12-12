@@ -60,9 +60,9 @@ const deleteUser = async (userId) => {
   }
   return { deleted: true, _id: userId };
 };
+
 const updateUser = async (userId, firstName, lastName, profileImage) => {
   const userCollection = await users();
-
   if (!userId) throw "UserId must be present";
   if (!firstName) throw "firstName must be present";
   if (!lastName) throw "lastname must be present";
@@ -72,6 +72,7 @@ const updateUser = async (userId, firstName, lastName, profileImage) => {
     firstName: firstName,
     lastName: lastName,
     profileImage: profileImage,
+    persistenceToken: uuid.v4(),
   };
 
   const updateInfo = await userCollection.updateOne({ _id: userId }, { $set: userUpdateInfo });
@@ -111,19 +112,19 @@ const userSignUp = async (firstName, lastName, displayName, password, emailAddre
   password = password.trim();
   displayName = displayName.trim();
 
-  if(firstName.length === 0 || firstName.length >= 20 || !(/^[a-zA-Z]+$/g).test(firstName)){
+  if (firstName.length === 0 || firstName.length >= 20 || !/^[a-zA-Z]+$/g.test(firstName)) {
     throw `Your firstName is invalid.`;
   }
-  if(lastName.length === 0 || lastName.length >= 20 || !(/^[a-zA-Z]+$/g).test(lastName)){
+  if (lastName.length === 0 || lastName.length >= 20 || !/^[a-zA-Z]+$/g.test(lastName)) {
     throw `Your lastName is invalid.`;
   }
-  if(password.length <6 || (/^[ ]+$/g).test(password)){
+  if (password.length < 6 || /^[ ]+$/g.test(password)) {
     throw `Please provide 6 characters at least and password can not have white space`;
   }
 
   const userCollection = await users();
   const usersList = await userCollection.find({}).toArray();
-  
+
   try {
     validator.validateEmailAddress(emailAddress);
   } catch (e) {
@@ -146,7 +147,6 @@ const userSignUp = async (firstName, lastName, displayName, password, emailAddre
     }
   }
 
-
   validator.validatePassword(password);
   const hash = await bcrypt.hash(password, saltRounds);
 
@@ -161,6 +161,7 @@ const userSignUp = async (firstName, lastName, displayName, password, emailAddre
     profileImage: avatarPath,
     deleted: false,
     displayName: displayName,
+    persistenceToken: uuid.v4(),
     createdAt: new Date().toUTCString(),
     updatedAt: new Date().toUTCString(),
   };
@@ -177,6 +178,43 @@ const getUserById = async (id) => {
   return await userCollection.findOne({ _id: id });
 };
 
+const checkUserForPasswordReset = async (email) => {
+  validator.validateEmailAddress(email);
+  const userCollection = await users();
+  const existingUser = await userCollection.findOne({ emailAddress: email });
+  if (!existingUser) {
+    throw `No User Exists with that email address`;
+  }
+  let pToken = existingUser.persistenceToken;
+  let name = existingUser.firstName;
+  return { token: pToken, name };
+};
+
+const findUserByPersistenceToken = async (token) => {
+  validator.validateId(token);
+  const userCollection = await users();
+  const user = await userCollection.findOne({ persistenceToken: token });
+  if (!user) {
+    throw `No user exists with a matching persistence token`;
+  }
+  return user;
+};
+
+const performPasswordReset = async (token, newPassword) => {
+  validator.validateId(token);
+  const userCollection = await users();
+  const user = await userCollection.findOne({ persistenceToken: token });
+  if (!user) {
+    throw `No user exists with a matching persistence token`;
+  }
+  const newHash = await bcrypt.hash(newPassword, 16);
+  const performReset = await userCollection.updateOne(
+    { persistenceToken: token },
+    { $set: { password: newHash, persistenceToken: uuid.v4() } }
+  );
+  return true;
+};
+
 module.exports = {
   deleteUser,
   checkUser,
@@ -185,4 +223,7 @@ module.exports = {
   userSignUp,
   updateUser,
   getUserById,
+  checkUserForPasswordReset,
+  findUserByPersistenceToken,
+  performPasswordReset,
 };
