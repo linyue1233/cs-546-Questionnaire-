@@ -43,12 +43,12 @@
             <button class="btn btn-light" onclick="location.href='/questions/{{questionInfo._id}}/delete'">Delete</button>
 
                 {{#if userReportedQuestion}}
-                <span class="btn-place">
+                <span class="qbtn-place">
                     <button class="btn btn-secondary" disabled>Flagged For Review</button>
                 </span>
                 {{/if}}
                 {{#unless userReportedQuestion}}
-                <span class="btn-place">
+                <span class="qbtn-place">
                     <button class="btn btn-danger" id="reportQuestion"
                         data-id="/questions/{{questionInfo._id}}/report">Report</button>
                 </span>
@@ -86,16 +86,15 @@
                     {{#unless thisUserDownvoted}}
                         <i class="far fa-thumbs-down downvote" data-id="/questions/{{questionInfo._id}}/downvote"></i>
                     {{/unless}}
-        </div>
+        </div><br>
         {{#if userLoggedIn}}
             {{#if userReportedQuestion}}
-            <br>
-            <div class="btn-place">
+            <div class="qbtn-place">
                  <button class="btn btn-secondary" disabled>Flagged For Review</button>
             </div>
             {{/if}}
             {{#unless userReportedQuestion}}
-            <div class="btn-place">
+            <div class="qbtn-place">
                <button class="btn btn-danger" id="reportQuestion" data-id="/questions/{{questionInfo._id}}/report">Report</button>
             </div>
             {{/unless}}
@@ -126,7 +125,7 @@
             {{#if acceptedAnswer}}
             <div class="alert alert-success mb-0"><i class="fas fa-user-check fa-lg"></i> This answer has been accepted by the question poster</div>
             {{/if}}
-            <div class="card-header border-0">
+            <div class="card-header voting-bar border-0">
                 <div class="float-right">
                 {{!-- upvote and downvote containers for answer --}}
                 {{#if thisUserUpvotedAns}}
@@ -145,12 +144,12 @@
             </div>
             </div>
             {{#if this.displayName}}
-                <h5 class="lead">Posted By <a href="/users/{{this.posterId}}/profile">{{this.displayName}}</a></h5>
+                <h5 class="lead m-2">Posted By <a href="/users/{{this.posterId}}/profile">{{this.displayName}}</a></h5>
             {{/if}}
             {{#unless this.displayName}}
                 <h5 class="lead">Posted By <strong>Unknown User</strong></a></h5>
             {{/unless}}
-            <div class="btn-group">
+            <div class="btn-group m-2">
                 {{#if posterUser}}
                 <form method="post" action="/questions/{{../questionInfo._id}}/acceptedAnswer/{{this._id}}">
                 <button type="submit" class="btn btn-sm btn-light mr-2" id="accepted-ans-btn">Accept Answer</button>
@@ -191,11 +190,11 @@
                 {{#unless this.thisUserReportedAns}}
                 <div class="btn-place">
                     <button class="btn btn-danger btn-sm report-ans" data-id="/questions/{{../questionInfo._id}}/answers/{{this._id}}/report">Report</button>
-            </div>
-            </div>
+                </div>
+            
             {{/unless}}
         {{/if}}  
-            
+            </div>
         </li>
     {{/each}}
     

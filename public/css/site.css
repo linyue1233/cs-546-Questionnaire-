@@ -171,3 +171,7 @@
   font-family: "Font Awesome 5 Free";
   cursor: pointer;
 }
+
+.voting-bar {
+  min-height: 50px;
+}
