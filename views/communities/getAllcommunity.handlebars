@@ -1,13 +1,16 @@
 <h2>All Communities</h2><br>
 <div class="d-inline">
 {{#each this.com}}
-<div class="card m-2" id="com_card">
-  <div class="card-header h3">
+<div class="card m-2">
+  <div class="com_card">
+<div class="card-header h3">
     <a href="/communities/{{this._id}}" class="h3">{{this.name}}</a>
   </div>
   <div class="card-body">
     <p class="card-text">Description: {{this.description}}</p>
   </div>
+  </div>
+  
 </div>
 {{/each}}
 </div>
