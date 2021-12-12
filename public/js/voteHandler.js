@@ -15,7 +15,11 @@ answerUpvoteElem.click((event) => {
   $.ajax(requestConfig).then(
     (message) => {
       $(event.target).next().text(message.count);
-      $(event.target).removeClass("far").addClass("fas");
+      if ($(event.target).hasClass("far")) {
+        $(event.target).removeClass("far").addClass("fas");
+      } else {
+        $(event.target).removeClass("fas").addClass("far");
+      }
     },
     (reason) => {
       if (reason.status === 401) {
@@ -50,7 +54,11 @@ answerDownvoteElem.click((event) => {
   $.ajax(requestConfig).then(
     (message) => {
       $(event.target).prev().text(message.count);
-      $(event.target).removeClass("far").addClass("fas");
+      if ($(event.target).hasClass("far")) {
+        $(event.target).removeClass("far").addClass("fas");
+      } else {
+        $(event.target).removeClass("fas").addClass("far");
+      }
     },
     (reason) => {
       console.log(reason);
@@ -74,7 +82,11 @@ upvoteElement.click((event) => {
   $.ajax(requestConfig).then(
     (response) => {
       $(".votecounter").text(response.count);
-      $(".upvote").removeClass("far").addClass("fas");
+      if ($(event.target).hasClass("far")) {
+        $(event.target).removeClass("far").addClass("fas");
+      } else {
+        $(event.target).removeClass("fas").addClass("far");
+      }
     },
     (reason) => {
       $(".card-body").first()
@@ -103,7 +115,11 @@ downvoteElement.click((event) => {
       // if (response.success) {
       //          console.log(response)
       $(".votecounter").text(response.count);
-      $(".downvote").removeClass("fas").addClass("far");
+      if ($(event.target).hasClass("far")) {
+        $(event.target).removeClass("far").addClass("fas");
+      } else {
+        $(event.target).removeClass("fas").addClass("far");
+      }
       // }
     },
     (reason) => {
