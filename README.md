@@ -21,12 +21,21 @@ Our emailAddress accordsto RFC2822. And you can upload you avatar image. If you 
 
 ## After login
 After login, you will enter the homepage which shows all questions. And now you can edit your account.
+
+### Questions and Answers
 Choose an interesting question and see the answers, if you do not approve this answer, you can downvote and submit your answer.
 Or if you think one of the answers is not correct, you can write your comment under the answer.
+Of course, if you think some content is no good, you can report it.
+You can choose a question or answer to upvode or downvote.
+If you want to find some questions quickly, you can use search bar which is in the top of page. 
+Just input the relevant tags and titles.
+
+### Community
 You can ask a question in an existed community or qucikly create a community.
 Choose a community that you are interested in and subscribe to it.
-Of course, if you think some content is no good, you can report it.
+Or you can create a new community in an individual page.
 
 
 # Contributors
 Shiva, Abhi, Sid, Lin
+We wish you can enjor our project.
