@@ -170,26 +170,18 @@ $(".report-ans").click((event) => {
     url: event.target.dataset.id,
   };
   console.log(requestConfig);
-  //   $.ajax(requestConfig).then(
-  //     (response) => {
-  //       $("#textSubmit")
-  //         .prepend(`<div class="alert alert-success alert-dismissible fade show" role="alert">${response.message}
-  //     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-  //         <span aria-hidden="true">&times;</span>
-  //     </button>
-  // </div>`);
-  //       $(".btn-place").html(null);
-  //       $(".btn-place").html(
-  //         `<button class="btn btn-secondary" disabled id="reportQuestion">Flagged for review</button>`
-  //       );
-  //     },
-  //     (reason) => {
-  //       $("#textSubmit")
-  //         .prepend(`<div class="alert alert-success alert-dismissible fade show" role="alert">${response.message}
-  //     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-  //         <span aria-hidden="true">&times;</span>
-  //     </button>
-  // </div>`);
-  //     }
-  //  );
+  $.ajax(requestConfig).then(
+    (response) => {
+      $(event.target).parent().html(null);
+      $(event.target).html(`<button class="btn btn-secondary btn-sm" disabled>Flagged for review</button>`);
+    },
+    (reason) => {
+      $(event.target).parent()
+        .prepend(`<div class="alert alert-success alert-dismissible fade show" role="alert">${reason.message}
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+      </button>
+  </div>`);
+    }
+  );
 });

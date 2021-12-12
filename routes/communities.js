@@ -300,12 +300,14 @@ router.get("/:id/view/flagged", async (req, res) => {
 
     for (const elem of ansflageobj) {
       const ansInfo = await answers.getanswerbyanserId(elem._id);
+      console.log(ansInfo);
       let t = ansInfo.description;
       let ans = {
         _id: elem._id,
         communitiyID: req.params.id,
         title: t,
         flag: elem.flag,
+        questionId: ansInfo.questionId,
       };
 
       ansflag.push(ans);

@@ -39,7 +39,7 @@
     <table class="table">
   <thead>
     <tr>
-      <th scope="col">Question</th>
+      <th scope="col">Answer</th>
       <th scope="col">Flagged Times</th>
       <th scope="col">Action</th>
     </tr>
@@ -47,10 +47,10 @@
   <tbody>
     {{#each this.aflag}}
    <tr>
-      <td><a href='/questions/{{this._id}}'>{{this.title}}</a></td>
+      <td><a href='/questions/{{this.questionId}}'>{{this.title}}</a></td>
       <td>{{this.flag}}</td>
       <td>
-        <form action='/communities/{{this.communitiyID}}/{{this._id}}/delete/flaggedque'>
+        <form action='/communities/{{this.communitiyID}}/{{this._id}}/delete/flaggedqans'>
           <button class="btn btn-danger" type='submit'>Delete</button>
         </form>
       </td>
