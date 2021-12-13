@@ -5,7 +5,7 @@ In daily life, we always encounter various problems, but the answers on the Inte
 
 # Install
 Before run the code, you should run npm -install or npm -i to download packages
-
+We have seed file to initialize database.
 
 # Usage
 
