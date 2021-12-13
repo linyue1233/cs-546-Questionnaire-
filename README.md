@@ -13,6 +13,7 @@ Before run the code, you should run npm -install or npm -i to download packages
 Our homepage shows all the questions with descriptions. User can vistit all-questions and see the answers in it without login.
 What's more, you can also vistit all-community without login and see the questions in it.
 If you want to login or register, you can click the upper right corner.
+If you forget your password, just enter your emailAddress and reset your password.
 
 ## Register
 In the register page, you will input some information about you, remember your emailAddress is very important!!!

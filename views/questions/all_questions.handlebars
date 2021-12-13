@@ -2,19 +2,19 @@
   {{#each questions}}
     <div class="card float-right">
       <div class="card-body">
-        <h5 class="card-title">Votes</h5>
+        <div class="h5 card-title">Votes</div>
         <p class="votes-disp float-right">{{this.voteCount}}</p>
       </div>
     </div>
-    <h4><a href="/questions/{{this._id}}">{{this.title}}</a></h4>
+    <div class="h4"><a href="/questions/{{this._id}}">{{this.title}}</a></div>
     <p>{{this.description}}</p>
-    <h4>
+    <div class="h4">
     <span class="badge badge-dark">
       {{#if this.communityId}}
       <span><a class=" link-rm-dec-b" href="/communities/{{this.communityId}}">{{this.communityName}}</a></span>
       {{/if}}
     </span><br>
-    </h4>
+    </div>
     <span>Tags:
       {{#if this.tags}}
         {{#each this.tags}}

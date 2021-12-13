@@ -10,9 +10,15 @@
   left: 0;
 }
 
+.link-rm-dec,
+.link-rm-dec-b {
+  text-decoration: none;
+  color: whitesmoke;
+}
+
 .link-rm-dec:hover {
   text-decoration: none;
-  color: blue;
+  color: whitesmoke;
 }
 
 .link-rm-dec-b:hover {
