@@ -1,0 +1,159 @@
+[{
+  "_id": "fecce1ee-21ab-4a9a-80fc-4f33239c3b24",
+  "name": "Photography",
+  "description": "A community for photographers!",
+  "questions": [
+    "c7a84f42-7f91-41dd-962a-f6fb2515f0cf",
+    "e49e9147-3e27-4b68-b815-4009c1f5117e",
+    "5dfcd653-ecf0-4b68-a9a3-dfce42d7c38c",
+    "ccce5708-7537-446b-aedb-3584bf68a0b0"
+  ],
+  "subscribedUsers": [
+    "54e87284-b7a4-4258-acbf-7c18dc7febff"
+  ],
+  "administrator": "54e87284-b7a4-4258-acbf-7c18dc7febff",
+  "flaggedQuestions": [],
+  "flaggedAnswers": [
+    {
+      "_id": "fac76e13-c607-457e-ac2d-180133aa0531",
+      "questionId": "5dfcd653-ecf0-4b68-a9a3-dfce42d7c38c",
+      "reporterId": [
+        "d30c7c44-6a7e-4d13-827a-eb4ffe6f6dbd"
+      ],
+      "flag": 1
+    }
+  ],
+  "createdAt": {
+    "$date": "2021-12-12T22:36:31.457Z"
+  },
+  "updatedAt": {
+    "$date": "2021-12-12T22:36:31.457Z"
+  }
+},{
+  "_id": "134dd1da-9eb4-480a-a605-58173a7d31f3",
+  "name": "Coding and Development",
+  "description": "A community for developers and software engineers - experienced and newbies alike! :)",
+  "questions": [
+    "eeecc819-4eeb-4bd7-af6e-929f47f5d14e",
+    "e14fbf21-ad34-4f16-8caa-9259cdd3ed70",
+    "6af2de4d-e21e-449b-8feb-2c6c8794efda",
+    "3033287f-eb06-426e-8628-e07086115192"
+  ],
+  "subscribedUsers": [
+    "54e87284-b7a4-4258-acbf-7c18dc7febff"
+  ],
+  "administrator": "54e87284-b7a4-4258-acbf-7c18dc7febff",
+  "flaggedQuestions": [],
+  "flaggedAnswers": [
+    {
+      "_id": "a51e5a65-5ee9-4556-8e00-0644a55fc390",
+      "questionId": "6af2de4d-e21e-449b-8feb-2c6c8794efda",
+      "reporterId": [
+        "f26dff40-8a7f-4719-9e51-ef16dde7a25a"
+      ],
+      "flag": 1
+    }
+  ],
+  "createdAt": {
+    "$date": "2021-12-12T22:42:09.191Z"
+  },
+  "updatedAt": {
+    "$date": "2021-12-12T22:42:09.191Z"
+  }
+},{
+  "_id": "84089f48-7823-4a01-b4b7-5294408bc2ee",
+  "name": "The Great Outdoors",
+  "description": "For all hikers out there!",
+  "questions": [
+    "24443894-1cda-4813-aab0-e77a14780832"
+  ],
+  "subscribedUsers": [
+    "9b871932-5abf-4608-8273-a1f3888398cd"
+  ],
+  "administrator": "9b871932-5abf-4608-8273-a1f3888398cd",
+  "flaggedQuestions": [],
+  "flaggedAnswers": [],
+  "createdAt": {
+    "$date": "2021-12-12T22:53:59.742Z"
+  },
+  "updatedAt": {
+    "$date": "2021-12-12T22:53:59.742Z"
+  }
+},{
+  "_id": "0f0a25b8-f09d-4eed-8702-9fb28a139ec6",
+  "name": "Servers and stuff",
+  "description": "Community related to servers and other stuff!",
+  "questions": [
+    "9d52870d-9967-4ea7-930b-7d7310148bd9",
+    "2a6acd7e-931d-4d00-a73d-0b60edbbbb81"
+  ],
+  "subscribedUsers": [
+    "9b871932-5abf-4608-8273-a1f3888398cd"
+  ],
+  "administrator": "9b871932-5abf-4608-8273-a1f3888398cd",
+  "flaggedQuestions": [],
+  "flaggedAnswers": [],
+  "createdAt": {
+    "$date": "2021-12-12T23:02:28.896Z"
+  },
+  "updatedAt": {
+    "$date": "2021-12-12T23:02:28.896Z"
+  }
+},{
+  "_id": "00513741-526d-40d5-9160-a0cc14782450",
+  "name": "Gaming",
+  "description": "For all the gamers who live more than once!",
+  "questions": [
+    "3171313c-220b-400e-ab55-45196e9c53bd",
+    "63863414-f6d2-4876-a059-f45fcc99c917"
+  ],
+  "subscribedUsers": [
+    "f26dff40-8a7f-4719-9e51-ef16dde7a25a"
+  ],
+  "administrator": "f26dff40-8a7f-4719-9e51-ef16dde7a25a",
+  "flaggedQuestions": [
+    {
+      "_id": "3171313c-220b-400e-ab55-45196e9c53bd",
+      "reporterId": [
+        "54e87284-b7a4-4258-acbf-7c18dc7febff"
+      ],
+      "flag": 1
+    }
+  ],
+  "flaggedAnswers": [],
+  "createdAt": {
+    "$date": "2021-12-12T23:21:13.047Z"
+  },
+  "updatedAt": {
+    "$date": "2021-12-12T23:21:13.047Z"
+  }
+},{
+  "_id": "fe881b06-9462-4d15-b8a1-c6c8bf12b8a0",
+  "name": "Physics",
+  "description": "In the beginning there was nothing, which exploded.",
+  "questions": [
+    "22f0ece4-8c70-4544-96eb-31ed0aa36620",
+    "a09c96f9-62da-4a65-8941-7689d6c49f83"
+  ],
+  "subscribedUsers": [
+    "f26dff40-8a7f-4719-9e51-ef16dde7a25a"
+  ],
+  "administrator": "f26dff40-8a7f-4719-9e51-ef16dde7a25a",
+  "flaggedQuestions": [
+    {
+      "_id": "a09c96f9-62da-4a65-8941-7689d6c49f83",
+      "reporterId": [
+        "9b871932-5abf-4608-8273-a1f3888398cd",
+        "54e87284-b7a4-4258-acbf-7c18dc7febff"
+      ],
+      "flag": 2
+    }
+  ],
+  "flaggedAnswers": [],
+  "createdAt": {
+    "$date": "2021-12-12T23:23:55.728Z"
+  },
+  "updatedAt": {
+    "$date": "2021-12-12T23:23:55.728Z"
+  }
+}]

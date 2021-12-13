@@ -57,6 +57,7 @@ router.get("/:id/edit", async (req, res) => {
     res.redirect("/site/login");
   }
 });
+
 router.put("/:id", upload, async (req, res, next) => {
   // we get file name through multer req object : req.file.filename
   if (xss(req.session.userId)) {
@@ -110,15 +111,6 @@ router.put("/:id", upload, async (req, res, next) => {
 router.get("/signup", async (req, res) => {
   if (!xss(req.session.userId)) {
     res.status(200).render("users/create_user", { scriptUrl: ["validateUserSignup.js"] });
-    return;
-  } else {
-    res.redirect("/");
-  }
-});
-
-router.get("/signup", async (req, res) => {
-  if (!xss(req.session.userId)) {
-    res.status(200).render("users/create_user");
     return;
   } else {
     res.redirect("/");
@@ -185,16 +177,17 @@ router.post("/", upload, async (req, res) => {
   // let { firstName, lastName, password, emailAddress, displayName } = req.body;
 
   if (firstName.length === 0 || firstName.length >= 20 || !/^[a-zA-Z]+$/g.test(firstName)) {
-    res.render("users/create_user", { error: "Your firstName is invalid." });
+    res.render("users/create_user", { error: "Your firstName is invalid.", body: req.body });
     return;
   }
   if (lastName.length === 0 || lastName.length >= 20 || !/^[a-zA-Z]+$/g.test(lastName)) {
-    res.render("users/create_user", { error: "Your lastName is invalid." });
+    res.render("users/create_user", { error: "Your lastName is invalid.", body: req.body });
     return;
   }
   if (password.length < 6 || /^[ ]+$/g.test(password)) {
     res.render("users/create_user", {
       error: "Please provide 6 characters at least and password can not have white space.",
+      body: req.body,
     });
     return;
   }
@@ -205,11 +198,11 @@ router.post("/", upload, async (req, res) => {
     return;
   }
   if (!passwordValid.isValid) {
-    res.render("users/create_user", { error: "Please provide valid password." });
+    res.render("users/create_user", { error: "Please provide valid password.", body: req.body });
     return;
   }
   if (!emailValid.isValid) {
-    res.render("users/create_user", { error: "Please provide valid email." });
+    res.render("users/create_user", { error: "Please provide valid email.", body: req.body });
     return;
   }
   let profileImage;
@@ -218,7 +211,7 @@ router.post("/", upload, async (req, res) => {
   } else {
     // check file suffix
     if (!/\.(jpg|jpeg|png|GIF|JPG|PNG)$/.test(req.file.filename)) {
-      res.render("users/create_user", { error: "Please provide valid image." });
+      res.render("users/create_user", { error: "Please provide valid image.", body: req.body });
       return;
     } else {
       profileImage = xss(req.file.filename);
@@ -239,7 +232,7 @@ router.post("/", upload, async (req, res) => {
     profileImage.length === 0 ||
     profileImage.trim().length === 0
   ) {
-    res.render("users/create_user", { error: "Please provide valid information." });
+    res.render("users/create_user", { error: "Please provide valid information.", body: req.body });
     return;
   }
 
@@ -250,7 +243,7 @@ router.post("/", upload, async (req, res) => {
       res.redirect("/site/login");
       return;
     }
-    res.status(400).render("users/create_user", { error: "Something went wrong." });
+    res.status(400).render("users/create_user", { error: "Something went wrong.", body: req.body });
   } catch (e) {
     res.status(400).render("users/create_user", { error: e, body: req.body });
     return;

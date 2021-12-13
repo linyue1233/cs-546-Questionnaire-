@@ -3,14 +3,14 @@
         <h1>Questions related to "{{searchTerm}}"</h1>
     </div>
     <div>
-        <h3>Total Results: {{searchTotal}}</h3>
+        <h2>Total Results: {{searchTotal}}</h2>
     </div>
     {{#if result}}
     <div>
         <!-- List of questions with details -->
         {{#each searchResults}}
         <div>
-            <h4><a href="/questions/{{this._id}}">{{this.title}}</a></h4>
+            <p><a href="/questions/{{this._id}}">{{this.title}}</a></p>
             <p>{{this.description}}</p>
         </div>
         {{/each}}

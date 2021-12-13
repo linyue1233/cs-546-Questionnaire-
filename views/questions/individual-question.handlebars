@@ -74,17 +74,17 @@
         <p>{{questionInfo.description}}</p>
         <div class="votingsystem">
                     {{#if thisUserUpvoted}}
-                        <i class="fas fa-thumbs-up upvote" data-id="/questions/{{questionInfo._id}}/upvote"></i>
+                        <i class="fas fa-thumbs-up fa-2x upvote" data-id="/questions/{{questionInfo._id}}/upvote"></i>
                     {{/if}}
                     {{#unless thisUserUpvoted}}
-                        <i class="far fa-thumbs-up upvote" data-id="/questions/{{questionInfo._id}}/upvote"></i>
+                        <i class="far fa-thumbs-up fa-2x upvote" data-id="/questions/{{questionInfo._id}}/upvote"></i>
                     {{/unless}}
                     <span class="label label-primary  border-around votecounter">{{ questionInfo.votes }}</span>
                     {{#if thisUserDownvoted}}
-                        <i class="fas fa-thumbs-down downvote" data-id="/questions/{{questionInfo._id}}/downvote"></i>
+                        <i class="fas fa-thumbs-down fa-2x downvote" data-id="/questions/{{questionInfo._id}}/downvote"></i>
                     {{/if}}
                     {{#unless thisUserDownvoted}}
-                        <i class="far fa-thumbs-down downvote" data-id="/questions/{{questionInfo._id}}/downvote"></i>
+                        <i class="far fa-thumbs-down fa-2x downvote" data-id="/questions/{{questionInfo._id}}/downvote"></i>
                     {{/unless}}
         </div><br>
         {{#if userLoggedIn}}
@@ -142,27 +142,28 @@
                     <i class="far fa-thumbs-down ans-down" data-id="/questions/{{../questionInfo._id}}/answers/{{this._id}}/downvote"></i>
                 {{/unless}}
             </div>
-            </div>
+            
             {{#if this.displayName}}
-                <h5 class="lead m-2">Posted By <a href="/users/{{this.posterId}}/profile">{{this.displayName}}</a></h5>
+                <p class="lead m-2"><strong>Posted By </strong> <a href="/users/{{this.posterId}}/profile">{{this.displayName}}</a></p>
             {{/if}}
             {{#unless this.displayName}}
-                <h5 class="lead">Posted By <strong>Unknown User</strong></a></h5>
+                <p class="lead">Posted By <strong>Unknown User</strong></a></p>
             {{/unless}}
             <div class="btn-group m-2">
                 {{#if posterUser}}
                 <form method="post" action="/questions/{{../questionInfo._id}}/acceptedAnswer/{{this._id}}">
-                <button type="submit" class="btn btn-sm btn-light mr-2" id="accepted-ans-btn">Accept Answer</button>
+                <button type="submit" class="btn btn-sm btn-light mr-2">Accept Answer</button>
                 </form>
                 {{/if}}
                 {{#if currUser}}
                 {{!-- <a href='/questions/{{../questionInfo._id}}/answers/{{this._id}}/edit'><button
                         class="btn btn-sm btn-light">Edit</button></a>&nbsp; --}}
-                <button class="btn btn-sm btn-light" onclick="location.href='/questions/{{../questionInfo._id}}/answers/{{this._id}}/edit'">Edit</button>&nbsp;
+                <button class="btn btn-sm btn-light" onclick="location.href='/questions/{{../questionInfo._id}}/answers/{{this._id}}/edit'">Edit</button>
                 <form method="post" action="/questions/{{../questionInfo._id}}/answers/{{this._id}}">
                     <button type="submit" class="btn btn-sm btn-light mr-2">Delete</button>
                     <input name="_method" type="hidden" value="delete">
                 </form>
+                
             {{/if}}
                 {{#if userLoggedIn}}
                 <button id="{{this._id}}" type="button" onclick="openModal(this)" class="btn_comment_modal mr-2">Add comment</button>
@@ -190,6 +191,7 @@
                 {{#unless this.thisUserReportedAns}}
                 <div class="btn-place">
                     <button class="btn btn-danger btn-sm report-ans" data-id="/questions/{{../questionInfo._id}}/answers/{{this._id}}/report">Report</button>
+                </div>
                 </div>
             
             {{/unless}}

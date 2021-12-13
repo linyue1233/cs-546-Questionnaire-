@@ -55,4 +55,15 @@ userSignupForm.submit((event) => {
     userSignupForm.prepend(errorHtml);
     return;
   }
+  if (firstName.indexOf(" ") !== -1 || lastName.indexOf(" ") !== -1) {
+    event.preventDefault();
+    let errorHtml = `<div class="alert alert-warning alert-dismissible fade show" role="alert">You should check in your firstname and lastname fields. Only letters are not allowed.
+                        <br>Accepted formats for user avatars are "jpg", "jpeg", "bmp", "gif", "png".
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>`;
+    userSignupForm.prepend(errorHtml);
+    return;
+  }
 });
