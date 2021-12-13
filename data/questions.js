@@ -116,8 +116,19 @@ const editQuestion = async (id, title, description, tags, communityId) => {
 const remove = async (id) => {
   // return the following object for deletion status: { deleted: true, id: id }
   // TODO: add validation wherever necessary
+  const communityCollection = await community();
   const questionsCollection = await questions();
+  const question = await questionsCollection.findOne({ _id: id });
+  const communityId = question.communityId;
   const removedInfo = await questionsCollection.deleteOne({ _id: id });
+  let existingQues = await communityCollection.updateOne({ _id: communityId }, { $pull: { questions: id } });
+  if (existingQues === null) {
+    throw `There's no community present with that id.`;
+  }
+  let existingCommunity = await communityCollection.updateOne(
+    { _id: communityId },
+    { $pull: { flaggedQuestions: { _id: id } } }
+  );
   if (removedInfo.deletedCount === 0) {
     console.log("Something went wrong during question deletion!");
     return { deleted: false, id: id };
@@ -178,12 +189,18 @@ const deleteAnswer = async (answerId) => {
   if (typeof answerId !== "string") throw " id must be string";
   if (answerId.trim().length === 0) throw " error:empty string";
   const questionsCollection = await questions();
-
   let find = await questionsCollection.findOne({
     answers: { $elemMatch: { _id: answerId } },
   });
   if (find === null) throw "no  answer exist with that answerid";
-
+  const communityCollection = await community();
+  let existingCommunity = await communityCollection.updateOne(
+    { _id: find.communityId },
+    { $pull: { flaggedAnswers: { _id: answerId } } }
+  );
+  if (existingCommunity === null) {
+    throw `There's no community present with that id.`;
+  }
   //deleteing the answer  from answers-sub document
   let fu = await questionsCollection.updateOne(
     { answers: { $elemMatch: { _id: answerId } } },

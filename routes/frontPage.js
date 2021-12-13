@@ -19,6 +19,7 @@ router.get("/", async (req, res) => {
       questions: questionList,
     });
   } catch (e) {
+    console.log(e);
     res.status(500).render("errors/internal_server_error", { session: req.session });
   }
 });
