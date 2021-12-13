@@ -15,9 +15,19 @@ const sendPasswordResetEmail = async (toEmail, nameToAddress, persistenceToken) 
     from: "questionnaire_assist@outlook.com",
     to: toEmail,
     subject: "Forgot Password Request for Questionnaire",
-    text: `Hey ${nameToAddress}! We received a request from your end for resetting your password. 
-        If you did trigger this email, you can go to this link to reset your password: http://localhost:3000/site/forgot_password/${persistenceToken}/edit. In case this was not done by you,
-        you can ignore this email. Have a great one! :)`,
+    html: `<body style="font-family: menlo; color: #00004d">
+    <center>
+    <h1>Hey ${nameToAddress}! Your password reset link is here! </h1>
+    <hr>
+  We received a request from your end for resetting your password.
+          If you did trigger this email, you can go to this <a target="_blank" href="http://localhost:3000/site/forgot_password/${persistenceToken}/edit">link</a> to reset your password. 
+          In case this was not done by you, you can safely ignore this email. 
+          <br> We @Questionnaire wish you a great day!
+      <br>
+      <br>
+      <p>P.S: This is the link: <a href="http://localhost:3000/site/forgot_password/${persistenceToken}/edit">http://localhost:3000/site/forgot_password/${persistenceToken}/edit</a> - if you're having trouble, just copy-paste it into the URL of your browser.
+      Also, this link is meant for your hands only - <strong>DO NOT</strong> share it with anyone.
+  </body>`,
   };
 
   transporter.sendMail(message).then(

@@ -225,6 +225,9 @@ const search = async (body) => {
     // console.log("each" + JSON.stringify(allArrayMatches));
     allMatches = allMatches.concat(allArrayMatches);
   }
+  allMatches = allMatches.filter(
+    (value, index, elem) => elem.findIndex((item) => item.place === value.place && item.name === value.name) === index
+  );
   return allMatches;
 };
 

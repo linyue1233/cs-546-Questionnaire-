@@ -51,6 +51,7 @@ router.get("/:id/edit", async (req, res) => {
           question: question,
           session: req.session,
           com: com,
+          scriptUrl: ["validateEditQuestion.js"],
         });
       }
     } catch (e) {

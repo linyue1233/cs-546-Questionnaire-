@@ -82,10 +82,13 @@ upvoteElement.click((event) => {
   $.ajax(requestConfig).then(
     (response) => {
       $(".votecounter").text(response.count);
-      if ($(event.target).hasClass("far")) {
-        $(event.target).removeClass("far").addClass("fas");
+      if ($(".downvote").hasClass("fas")) {
+        $(".downvote").removeClass("fas").addClass("far");
+      }
+      if ($(".upvote").hasClass("far")) {
+        $(".upvote").removeClass("far").addClass("fas");
       } else {
-        $(event.target).removeClass("fas").addClass("far");
+        $(".upvote").removeClass("fas").addClass("far");
       }
     },
     (reason) => {
@@ -115,10 +118,13 @@ downvoteElement.click((event) => {
       // if (response.success) {
       //          console.log(response)
       $(".votecounter").text(response.count);
-      if ($(event.target).hasClass("far")) {
-        $(event.target).removeClass("far").addClass("fas");
+      if ($(".upvote").hasClass("fas")) {
+        $(".upvote").removeClass("fas").addClass("far");
+      }
+      if ($(".downvote").hasClass("far")) {
+        $(".downvote").removeClass("far").addClass("fas");
       } else {
-        $(event.target).removeClass("fas").addClass("far");
+        $(".downvote").removeClass("fas").addClass("far");
       }
       // }
     },
@@ -165,7 +171,7 @@ $("#reportQuestion").click((event) => {
 </div>`);
       $(".qbtn-place").html(null);
       $(".qbtn-place").html(
-        `<button class="btn btn-secondary" disabled id="reportQuestion">Flagged for review</button>`
+        `<button class="btn btn-secondary" disabled id="reportQuestion">Flagged For Review</button>`
       );
     },
     (reason) => {
@@ -188,11 +194,11 @@ $(".report-ans").click((event) => {
   console.log(requestConfig);
   $.ajax(requestConfig).then(
     (response) => {
-      $(event.target).parent().html(`<button class="btn btn-secondary btn-sm" disabled>Flagged for review</button>`);
+      $(event.target).parent().html(`<button class="btn btn-secondary btn-sm" disabled>Flagged For Review</button>`);
     },
     (reason) => {
       $(event.target).parent()
-        .prepend(`<div class="alert alert-success alert-dismissible fade show" role="alert">${reason.message}
+        .prepend(`<div class="alert alert-success alert-dismissible fade show" role="alert">Unable to report, please try again later!
       <button type="button" class="close" data-dismiss="alert" aria-label="Close">
           <span aria-hidden="true">&times;</span>
       </button>

@@ -1,14 +1,14 @@
 <h1>Edit Question</h1>
 {{#unless error}}
 {{#unless success}}
-<form class="w-50 mx-auto" method="post" action="/questions/{{question._id}}">
+<form class="w-50 mx-auto" method="post" action="/questions/{{question._id}}" id="edit-ques">
   <div class="form-group">
     <label for="title">Title</label>
     <input type="text" name="title" class="form-control" id="title" aria-describedby="title" value="{{question.title}}" required>
   </div>
   <div class="form-group">
     <label for="description">Description</label>
-    <textarea name="description" class="form-control" id="" rows="3" required>{{question.description}}</textarea>
+    <textarea name="description" id="description" class="form-control" id="" rows="3" required>{{question.description}}</textarea>
   </div>
   <div class="form-group">
     <label for="tags">Tags</label>
