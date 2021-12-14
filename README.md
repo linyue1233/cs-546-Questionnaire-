@@ -3,9 +3,10 @@
 In daily life, we always encounter various problems, but the answers on the Internet are not well classified. So we developed this website to facilitate users to ask questions and get answers. Users can post questions with different tags in different communities and search for answers.
 
 
-# Install
-Before run the code, you should run npm -install or npm -i to download packages
-
+# How to run
+Before run the code, you should run "npm -install" or "npm -i" to download packages
+We have seed file to initialize database. So then you should "npm run seed".
+At last, you can run "npm start" to start the project. And input the url of "http://localhost:3000/" in the browse.
 
 # Usage
 
