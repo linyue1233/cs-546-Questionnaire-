@@ -7,6 +7,7 @@ const uuid = require("uuid");
 let community = mongoCollections.communities;
 
 const getAllWithoutParams = async () => {
+  console.log("111");
   const questionCollection = await questions();
   const allQuestions = await questionCollection.find({}).toArray();
   allQuestions.reverse();
